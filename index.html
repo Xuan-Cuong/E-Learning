@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TriThuc Hub - Khám phá Tri thức, Mở lối Tương lai</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Link Font Awesome để dùng icon kính lúp, user, etc. -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Link Google Fonts - Poppins cho tiêu đề, Inter cho nội dung -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <!-- Logo đơn giản hoặc chữ -->
+                <span id="home-link"><i class="fas fa-graduation-cap"></i> TriThuc Hub</span>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="#" class="nav-link active-nav" data-section="homepage">Trang chủ</a></li>
+                    <li><a href="#" class="nav-link" data-section="all-courses">Khóa học</a></li>
+                    <li><a href="#" class="nav-link" data-section="learning-plan">Kế hoạch học tập</a></li>
+                    <!-- Thêm các mục khác nếu cần -->
+                </ul>
+            </nav>
+            <div class="auth-user-area">
+                <div class="auth-buttons">
+                    <button class="btn btn-link login-btn">Đăng nhập</button>
+                    <button class="btn btn-primary signup-btn">Đăng ký</button>
+                </div>
+                 <!-- User Info area (clickable) -->
+                <div class="user-info hidden">
+                     <!-- Placeholder for user avatar or default icon -->
+                     <!-- You can replace this div with an <img> tag if you have user avatars -->
+                    <div class="user-avatar-placeholder" id="user-avatar-placeholder"></div>
+                    <span id="user-display-name"></span>
+                    <!-- Logout button is now inside user-info but styled smaller -->
+                    <button class="btn btn-danger logout-btn">Đăng xuất</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area - This is where different sections will be shown -->
+    <div id="main-content-area">
+
+        <!-- Homepage Section -->
+        <section id="homepage" class="content-section">
+             <section class="hero-section-lw">
+                <div class="container">
+                    <div class="hero-content-lw">
+                        <h1>Nâng tầm kiến thức, mở lối tương lai</h1>
+                        <p>Học mọi lúc, mọi nơi với các khóa học chất lượng cao từ chuyên gia.</p>
+                         <div class="cta-buttons-hero">
+                             <button class="btn btn-primary cta-trial">Bắt đầu miễn phí</button>
+                             <!-- Nút tạo khóa học có thể đặt ở CTA section riêng bên dưới -->
+                         </div>
+                    </div>
+                    <!-- Illustration or image can be added here -->
+                </div>
+            </section>
+
+            <main class="main-content container">
+
+                 <section class="search-filter-area">
+                     <div class="section-header">
+                          <h2>Khám phá các khóa học</h2>
+                           <div class="search-bar-lw">
+                                <input type="text" id="course-search-input" placeholder="Tìm kiếm khóa học...">
+                                <button id="course-search-button"><i class="fas fa-search"></i></button>
+                           </div>
+                     </div>
+                     <div id="featured-course-list" class="course-list-grid">
+                        <!-- Course cards will be populated here by JS (initially featured/all, then search results) -->
+                     </div>
+                 </section>
+
+
+                 <section class="cta-section-lw">
+                    <div class="cta-content-lw">
+                        <h2>Bạn là chuyên gia? Chia sẻ kiến thức của mình.</h2>
+                        <p>Trở thành giảng viên và tiếp cận hàng ngàn học viên tiềm năng.</p>
+                    </div>
+                    <div class="cta-buttons-lw">
+                         <button class="btn btn-secondary cta-create">Trở thành Giảng viên</button>
+                    </div>
+                </section>
+
+                <!-- Có thể thêm các section khác như "Danh mục phổ biến", "Tại sao chọn chúng tôi", etc. theo bố cục LearnWorlds -->
+
+            </main>
+        </section>
+        <!-- End Homepage Section -->
+
+        <!-- All Courses Section -->
+        <section id="all-courses-section" class="content-section hidden">
+             <div class="container">
+                 <div class="section-header">
+                     <h2>Tất cả Khóa học</h2>
+                 </div>
+                  <div id="all-course-list" class="course-list-grid">
+                     <!-- All course cards will be populated here by JS -->
+                  </div>
+             </div>
+        </section>
+        <!-- End All Courses Section -->
+
+        <!-- Learning Plan Section -->
+        <section id="learning-plan-section" class="content-section hidden">
+             <div class="container">
+                 <div class="section-header">
+                     <h2>Kế hoạch học tập của bạn</h2>
+                 </div>
+                 <div class="plan-content">
+                     <h3>Quản lý hành trình học tập</h3>
+                     <p>Tại đây, bạn có thể theo dõi tiến độ các khóa học đã đăng ký, đặt mục tiêu cá nhân, và xem các gợi ý học tập phù hợp.</p>
+                     <p><i class="fas fa-chart-line"></i> Xem tiến độ học tập</p>
+                     <p><i class="fas fa-tasks"></i> Quản lý mục tiêu</p>
+                      <p><i class="fas fa-bookmark"></i> Các khóa học đã lưu</p>
+                      <!-- Thêm các thành phần UI thực tế sau -->
+                 </div>
+             </div>
+        </section>
+        <!-- End Learning Plan Section -->
+
+        <!-- User Profile Section -->
+         <section id="user-profile-section" class="content-section hidden">
+             <div class="container">
+                 <div class="section-header">
+                     <h2>Thông tin Cá nhân</h2>
+                 </div>
+                  <div class="profile-content">
+                       <div class="profile-info">
+                            <p><i class="fas fa-user"></i> <strong>Họ và tên:</strong> <span id="profile-display-name"></span></p>
+                            <p><i class="fas fa-envelope"></i> <strong>Email:</strong> <span id="profile-display-email"></span></p>
+                            <p><i class="fas fa-briefcase"></i> <strong>Vai trò:</strong> <span id="profile-display-role"></span></p>
+                       </div>
+
+                       <div id="profile-courses-section">
+                           <!-- Content will be added by JS based on role -->
+                           <!-- h3, and course list grid -->
+                       </div>
+
+                  </div>
+             </div>
+        </section>
+        <!-- End User Profile Section -->
+
+
+        <!-- Create Course Section -->
+        <section id="create-course-section" class="content-section hidden">
+            <div class="container">
+                 <div class="section-header">
+                    <h2>Tạo khóa học mới</h2>
+                 </div>
+                <form id="create-course-form" class="lw-form">
+                    <div class="form-group">
+                        <label for="course-title"><i class="fas fa-book"></i> Tiêu đề khóa học:</label>
+                        <input type="text" id="course-title" required placeholder="Nhập tiêu đề khóa học...">
+                    </div>
+                    <div class="form-group">
+                        <label for="course-description"><i class="fas fa-align-left"></i> Mô tả khóa học:</label>
+                        <textarea id="course-description" rows="8" required placeholder="Mô tả chi tiết về khóa học của bạn..."></textarea>
+                    </div>
+                     <div class="form-group">
+                        <label for="course-price"><i class="fas fa-dollar-sign"></i> Giá khóa học:</label>
+                        <input type="text" id="course-price" required placeholder="Ví dụ: Miễn phí hoặc 500.000 VNĐ">
+                    </div>
+                     <div class="form-group">
+                        <label for="course-image"><i class="fas fa-image"></i> Ảnh bìa khóa học (URL):</label>
+                        <input type="text" id="course-image-url" placeholder="Dán URL ảnh bìa...">
+                        <span class="file-info">Hoặc sử dụng placeholder nếu để trống.</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="course-files"><i class="fas fa-file-upload"></i> Tải lên tài liệu (Giả lập - không thực sự upload):</label>
+                        <input type="file" id="course-files" multiple class="file-input">
+                         <span class="file-info">Chọn nhiều tệp nếu cần. Chức năng upload chỉ là giả lập.</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="course-videos"><i class="fas fa-video"></i> Tải lên video bài giảng (Giả lập):</label>
+                        <input type="file" id="course-videos" accept="video/*" multiple class="file-input">
+                        <span class="file-info">Chọn nhiều video nếu cần. Chức năng upload chỉ là giả lập.</span>
+                    </div>
+                    <button type="submit" class="btn btn-success submit-course-btn">Tạo khóa học</button>
+                </form>
+            </div>
+        </section>
+        <!-- End Create Course Section -->
+
+        <!-- Course Detail Section -->
+        <section id="course-detail-section" class="content-section hidden">
+             <div class="container">
+                 <!-- Added data-section attribute to button -->
+                 <button id="back-to-home" class="btn btn-outline" data-section="homepage"><i class="fas fa-arrow-left"></i> Trở về Trang chủ</button>
+                 <div class="detail-header-lw">
+                    <h2 id="detail-course-title">Tên Khóa học Chi tiết</h2>
+                    <p id="detail-course-instructor" class="instructor">Giảng viên: Tên Giảng viên</p>
+                    <p id="detail-course-price" class="price">Giá: </p>
+                 </div>
+
+                 <div class="detail-content-lw">
+                     <div class="course-video-player-lw">
+                         <!-- Video player will be embedded here -->
+                         <div class="placeholder-video-lw"><i class="fas fa-play-circle"></i> <p>Video bài giảng</p></div>
+                         <!-- Hoặc dùng thẻ video HTML -->
+                         <!-- <video controls src="your-video-source.mp4" style="width: 100%; height: auto;"></video> -->
+                     </div>
+                     <div class="course-info-lw">
+                          <div class="course-description-lw">
+                             <h3><i class="fas fa-info-circle"></i> Mô tả khóa học</h3>
+                             <p id="detail-course-description">Mô tả chi tiết về khóa học sẽ được hiển thị tại đây...</p>
+                         </div>
+                         <div class="course-materials-lw">
+                             <h3><i class="fas fa-file-alt"></i> Tài liệu khóa học</h3>
+                             <ul id="detail-course-files">
+                                 <!-- Danh sách tài liệu sẽ được thêm vào đây -->
+                             </ul>
+                         </div>
+                         <!-- Có thể thêm các phần khác như danh sách bài học, bình luận... -->
+                     </div>
+                 </div>
+             </div>
+        </section>
+        <!-- End Course Detail Section -->
+
+    </div>
+    <!-- End Main Content Area -->
+
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content lw-modal">
+            <span class="close-button" data-modal="login-modal">×</span>
+            <h2>Đăng nhập</h2>
+            <form id="login-form" class="lw-form">
+                <div class="form-group">
+                    <label for="login-email"><i class="fas fa-envelope"></i> Email:</label>
+                    <input type="email" id="login-email" required placeholder="Nhập email...">
+                </div>
+                <div class="form-group">
+                    <label for="login-password"><i class="fas fa-lock"></i> Mật khẩu:</label>
+                    <input type="password" id="login-password" required placeholder="Nhập mật khẩu...">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-briefcase"></i> Bạn là:</label>
+                    <div class="role-selection">
+                         <label><input type="radio" name="login-role" value="Học viên" checked> Học viên</label>
+                         <label><input type="radio" name="login-role" value="Giảng viên"> Giảng viên</label>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Đăng nhập</button>
+            </form>
+            <p class="switch-auth">Chưa có tài khoản? <a href="#" id="show-signup-link">Đăng ký ngay</a></p>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signup-modal" class="modal">
+        <div class="modal-content lw-modal">
+            <span class="close-button" data-modal="signup-modal">×</span>
+            <h2>Đăng ký</h2>
+            <form id="signup-form" class="lw-form">
+                 <div class="form-group">
+                    <label for="signup-name"><i class="fas fa-user"></i> Họ và tên:</label>
+                    <input type="text" id="signup-name" required placeholder="Nhập họ và tên...">
+                </div>
+                <div class="form-group">
+                    <label for="signup-email"><i class="fas fa-envelope"></i> Email:</label>
+                    <input type="email" id="signup-email" required placeholder="Nhập email...">
+                </div>
+                <div class="form-group">
+                    <label for="signup-password"><i class="fas fa-lock"></i> Mật khẩu:</label>
+                    <input type="password" id="signup-password" required placeholder="Tạo mật khẩu...">
+                </div>
+                 <div class="form-group">
+                    <label for="signup-confirm-password"><i class="fas fa-lock"></i> Xác nhận mật khẩu:</label>
+                    <input type="password" id="signup-confirm-password" required placeholder="Nhập lại mật khẩu...">
+                </div>
+                 <div class="form-group">
+                    <label><i class="fas fa-briefcase"></i> Đăng ký với vai trò:</label>
+                    <div class="role-selection">
+                         <label><input type="radio" name="signup-role" value="Học viên" checked> Học viên</label>
+                         <label><input type="radio" name="signup-role" value="Giảng viên"> Giảng viên</label>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Đăng ký</button>
+            </form>
+             <p class="switch-auth">Đã có tài khoản? <a href="#" id="show-login-link">Đăng nhập</a></p>
+        </div>
+    </div>
+
+
+    <footer class="footer-lw">
+        <div class="container">
+            <div class="footer-grid-lw">
+                <div class="footer-col-lw footer-brand">
+                     <div class="logo">
+                        <span><i class="fas fa-graduation-cap"></i> TriThuc Hub</span>
+                    </div>
+                    <p>Nền tảng học trực tuyến hàng đầu cho sinh viên.</p>
+                     <!-- Add social links if needed -->
+                </div>
+                <div class="footer-col-lw">
+                    <h4>Về chúng tôi</h4>
+                    <ul>
+                        <li><a href="#">Giới thiệu</a></li>
+                        <li><a href="#">Tuyển dụng</a></li>
+                        <li><a href="#">Liên hệ</a></li>
+                    </ul>
+                </div>
+                 <div class="footer-col-lw">
+                    <h4>Hỗ trợ</h4>
+                    <ul>
+                        <li><a href="#">Trung tâm trợ giúp</a></li>
+                        <li><a href="#">Chính sách bảo mật</a></li>
+                        <li><a href="#">Điều khoản dịch vụ</a></li>
+                    </ul>
+                </div>
+                 <div class="footer-col-lw">
+                    <h4>Cộng đồng</h4>
+                    <ul>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Diễn đàn</a></li>
+                        <li><a href="#">Sự kiện</a></li>
+                    </ul>
+                </div>
+            </div>
+         </div>
+         <div class="footer-bottom-lw">
+            <div class="container">
+                 <p>© 2023 TriThuc Hub. All rights reserved.</p>
+            </div>
+         </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
