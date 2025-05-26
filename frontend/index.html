@@ -21,19 +21,17 @@
                 <ul>
                     <li><a href="#" class="nav-link active-nav" data-section="homepage">Trang chủ</a></li>
                     <li><a href="#" class="nav-link" data-section="all-courses">Khóa học</a></li>
-                    <li><a href="#" class="nav-link" data-section="learning-plan">Kế hoạch học tập</a></li>
-                    <!-- Quản lý Khóa học chuyển vào đây, chỉ hiển thị cho Giảng viên -->
-                    <li class="nav-manage-courses-item hidden">
+                    <!-- <li><a href="#" class="nav-link" data-section="learning-plan">Kế hoạch học tập</a></li> -- ĐÃ XÓA -->
+                    <!-- Quản lý Khóa học chuyển vào đây, chỉ hiển thị cho Giảng viên -- ĐÃ XÓA KHỎI NAV CHÍNH -->
+                    <!-- <li class="nav-manage-courses-item hidden">
                         <a href="#" class="nav-link" id="nav-link-manage-courses" data-section="user-profile" title="Quản lý các khóa học của bạn">
                             <i class="fas fa-edit"></i> Quản lý Khóa học
                         </a>
-                    </li>
+                    </li> -->
                 </ul>
             </nav>
             
-            <!-- Khu vực cho nút Tạo mới và thông tin người dùng -->
             <div class="header-right-actions">
-                <!-- ĐÃ XÓA: instructor-create-button-container -->
                 <div class="auth-user-area">
                     <div class="auth-buttons">
                         <button class="btn btn-link login-btn">Đăng nhập</button>
@@ -56,7 +54,7 @@
                 <div class="container">
                     <div class="hero-content-lw">
                         <h1>Nâng tầm kiến thức, mở lối tương lai</h1>
-                        <p>Học mọi lúc, mọi nơi với các khóa học chất lượng cao từ chuyên gia.</p>
+                        <p>Học mọi lúc, mọi nơi với các khóa học chất lượng cao.</p>
                          <div class="cta-buttons-hero">
                              <button class="btn btn-primary cta-trial">Khám phá khóa học</button>
                          </div>
@@ -77,11 +75,11 @@
                  </section>
                  <section class="cta-section-lw">
                     <div class="cta-content-lw">
-                        <h2>Bạn là chuyên gia? Chia sẻ kiến thức của mình.</h2>
-                        <p>Trở thành giảng viên và tiếp cận hàng ngàn học viên tiềm năng.</p>
+                        <h2>Chia sẻ kiến thức của bạn.</h2> <!-- THAY ĐỔI TEXT -->
+                        <p>Tạo khóa học và tiếp cận hàng ngàn học viên tiềm năng.</p>
                     </div>
                     <div class="cta-buttons-lw">
-                         <button class="btn btn-secondary cta-create">Trở thành Giảng viên</button>
+                         <button class="btn btn-secondary cta-create">Tạo khóa học ngay</button> <!-- THAY ĐỔI TEXT BUTTON -->
                     </div>
                 </section>
             </main>
@@ -97,20 +95,8 @@
              </div>
         </section>
 
-        <section id="learning-plan-section" class="content-section hidden">
-             <div class="container">
-                 <div class="section-header">
-                     <h2>Kế hoạch học tập của bạn</h2>
-                 </div>
-                 <div class="plan-content">
-                     <h3>Quản lý hành trình học tập</h3>
-                     <p>Tại đây, bạn có thể theo dõi tiến độ các khóa học đã đăng ký, đặt mục tiêu cá nhân, và xem các gợi ý học tập phù hợp.</p>
-                     <p><i class="fas fa-chart-line"></i> Xem tiến độ học tập</p>
-                     <p><i class="fas fa-tasks"></i> Quản lý mục tiêu</p>
-                      <p><i class="fas fa-bookmark"></i> Các khóa học đã lưu</p>
-                 </div>
-             </div>
-        </section>
+        <!-- SECTION KẾ HOẠCH HỌC TẬP ĐÃ XÓA -->
+        <!-- <section id="learning-plan-section" class="content-section hidden"> ... </section> -->
 
          <section id="user-profile-section" class="content-section hidden">
              <div class="container">
@@ -121,13 +107,13 @@
                        <div class="profile-info">
                             <p><i class="fas fa-user"></i> <strong>Họ và tên:</strong> <span id="profile-display-name"></span></p>
                             <p><i class="fas fa-envelope"></i> <strong>Email:</strong> <span id="profile-display-email"></span></p>
-                            <p><i class="fas fa-briefcase"></i> <strong>Vai trò:</strong> <span id="profile-display-role"></span></p>
+                            <!-- <p><i class="fas fa-briefcase"></i> <strong>Vai trò:</strong> <span id="profile-display-role"></span></p> -- ĐÃ XÓA -->
                        </div>
                        <div id="profile-actions" class="profile-actions">
-                           <!-- Nút "Tạo Khóa học mới từ Profile" sẽ được thêm vào đây bằng JS cho Giảng viên -->
+                           <!-- Nút "Tạo Khóa học mới từ Profile" sẽ được thêm vào đây bằng JS cho người dùng đã đăng nhập -->
                        </div>
                        <div id="profile-courses-section">
-                           <!-- Danh sách khóa học của người dùng sẽ được hiển thị ở đây -->
+                           <!-- Danh sách khóa học của người dùng (đã tạo) sẽ được hiển thị ở đây -->
                        </div>
                   </div>
              </div>
@@ -166,7 +152,7 @@
                 <button id="back-to-list-or-home" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Trở về</button>
                 
                 <div class="course-detail-wrapper">
-                    <!-- Instructor Aside (Conditional Display) -->
+                    <!-- Instructor Aside (Conditional Display for Course Creator) -->
                     <aside id="instructor-course-aside" class="instructor-course-aside hidden">
                         <h3>Quản lý Khóa học</h3>
                         <ul id="instructor-aside-actions">
@@ -177,25 +163,23 @@
                         </ul>
                     </aside>
 
-                    <!-- Main Course Content Area -->
                     <div class="course-detail-main-content">
                         <div class="detail-header-lw">
                             <h2 id="detail-course-title">Tên Khóa học Chi tiết</h2>
-                            <p id="detail-course-instructor" class="instructor">Giảng viên: Tên Giảng viên</p>
+                            <p id="detail-course-instructor" class="instructor">Người tạo: Tên Người tạo</p>
                             <p id="detail-course-price" class="price">Giá: </p>
-                            <!-- Student actions here -->
+                            <!-- Student actions (enroll button) removed -->
                             <div id="student-course-actions" class="student-course-actions">
-                                <!-- Buttons like "Đăng ký học" or "Vào học" will go here via JS -->
+                                <!-- Buttons like "Đăng ký học" or "Vào học" will be removed or simplified -->
                             </div>
                         </div>
 
                         <div class="detail-content-lw">
                             <div class="course-section-block">
                                 <h3><i class="fas fa-info-circle"></i> Mô tả khóa học</h3>
-                                <p id="detail-course-description">Mô tả chi tiết về khóa học sẽ được hiển thị tại đây...</p>
+                                <p id="detail-course-description">Mô tả chi tiết về khóa học...</p>
                             </div>
 
-                            <!-- Course Video Player / Lesson Content Display -->
                             <div class="course-section-block">
                                 <h3><i class="fas fa-tv"></i> Nội dung Bài giảng Hiện tại</h3>
                                 <div class="course-video-player-lw">
@@ -203,13 +187,12 @@
                                 </div>
                             </div>
 
-                            <!-- Course Structure (Chapters/Lessons) and Instructor Tools -->
                             <div id="course-content-display-area" class="course-section-block">
                                 <h3><i class="fas fa-book-open"></i> Cấu trúc Khóa học</h3>
                                 <div id="course-structure-render-area">
-                                    <p>Nội dung bài giảng (các chương, bài học) sẽ được hiển thị tại đây.</p>
+                                    <p>Nội dung bài giảng sẽ được hiển thị tại đây.</p>
                                 </div>
-                                <!-- Instructor tools for adding chapters/lessons -->
+                                <!-- Creator tools for adding chapters/lessons -->
                                 <div id="instructor-lesson-management-tools" class="hidden">
                                     <button class="btn btn-success btn-add-chapter"><i class="fas fa-plus"></i> Thêm Chương mới</button>
                                 </div>
@@ -218,16 +201,15 @@
                             <div class="course-section-block">
                                 <h3><i class="fas fa-file-alt"></i> Tài liệu chung của Khóa học</h3>
                                 <ul id="detail-course-files">
-                                    <!-- Files will be populated by JS -->
                                 </ul>
                             </div>
                         </div>
-                    </div> <!-- End .course-detail-main-content -->
-                </div> <!-- End .course-detail-wrapper -->
+                    </div>
+                </div>
             </div>
         </section>
 
-    </div> <!-- End Main Content Area -->
+    </div> 
 
     <div id="login-modal" class="modal">
         <div class="modal-content lw-modal">
@@ -242,13 +224,11 @@
                     <label for="login-password"><i class="fas fa-lock"></i> Mật khẩu:</label>
                     <input type="password" id="login-password" required placeholder="Nhập mật khẩu...">
                 </div>
-                <div class="form-group">
+                <!-- Role Selection Removed -->
+                <!-- <div class="form-group">
                     <label><i class="fas fa-briefcase"></i> Bạn là:</label>
-                    <div class="role-selection">
-                         <label><input type="radio" name="login-role" value="Học viên" checked> Học viên</label>
-                         <label><input type="radio" name="login-role" value="Giảng viên"> Giảng viên</label>
-                    </div>
-                </div>
+                    <div class="role-selection"> ... </div>
+                </div> -->
                 <button type="submit" class="btn btn-primary btn-block">Đăng nhập</button>
             </form>
             <p class="switch-auth">Chưa có tài khoản? <a href="#" id="show-signup-link">Đăng ký ngay</a></p>
@@ -276,49 +256,45 @@
                     <label for="signup-confirm-password"><i class="fas fa-lock"></i> Xác nhận mật khẩu:</label>
                     <input type="password" id="signup-confirm-password" required placeholder="Nhập lại mật khẩu...">
                 </div>
-                 <div class="form-group">
+                <!-- Role Selection Removed -->
+                 <!-- <div class="form-group">
                     <label><i class="fas fa-briefcase"></i> Đăng ký với vai trò:</label>
-                    <div class="role-selection">
-                         <label><input type="radio" name="signup-role" value="Học viên" checked> Học viên</label>
-                         <label><input type="radio" name="signup-role" value="Giảng viên"> Giảng viên</label>
-                    </div>
-                </div>
+                    <div class="role-selection"> ... </div>
+                </div> -->
                 <button type="submit" class="btn btn-primary btn-block">Đăng ký</button>
             </form>
              <p class="switch-auth">Đã có tài khoản? <a href="#" id="show-login-link">Đăng nhập</a></p>
         </div>
     </div>
-    <!-- Chapter Form Modal -->
+
     <div id="chapter-form-modal" class="modal">
         <div class="modal-content lw-modal">
             <span class="close-button" data-modal="chapter-form-modal">×</span>
             <h2>Thêm/Sửa Chương</h2>
             <form id="chapter-form" class="lw-form">
                 <input type="hidden" id="chapter-form-course-id">
-                <input type="hidden" id="chapter-form-chapter-id"> <!-- For editing -->
+                <input type="hidden" id="chapter-form-chapter-id"> 
                 <div class="form-group">
                     <label for="chapter-title"><i class="fas fa-heading"></i> Tên Chương:</label>
                     <input type="text" id="chapter-title" required placeholder="Nhập tên chương...">
                 </div>
                 <div class="form-group">
                     <label for="chapter-description"><i class="fas fa-file-alt"></i> Mô tả Chương (tùy chọn):</label>
-                    <textarea id="chapter-description" rows="5" placeholder="Mô tả chi tiết về nội dung của chương..."></textarea>
+                    <textarea id="chapter-description" rows="5" placeholder="Mô tả chi tiết ..."></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">Thêm Chương</button>
             </form>
         </div>
     </div>
 
-    <!-- Lesson Form Modal -->
-       <!-- Lesson Form Modal -->
     <div id="lesson-form-modal" class="modal">
-        <div class="modal-content lw-modal large-modal"> <!-- Added large-modal for more space -->
+        <div class="modal-content lw-modal large-modal">
             <span class="close-button" data-modal="lesson-form-modal">×</span>
             <h2>Thêm/Sửa Bài giảng</h2>
             <form id="lesson-form" class="lw-form">
                 <input type="hidden" id="lesson-form-course-id">
                 <input type="hidden" id="lesson-form-chapter-id">
-                <input type="hidden" id="lesson-form-lesson-id"> <!-- For editing -->
+                <input type="hidden" id="lesson-form-lesson-id"> 
 
                 <div class="form-group">
                     <label for="lesson-title"><i class="fas fa-book-reader"></i> Tên Bài giảng:</label>
@@ -327,27 +303,26 @@
 
                 <div class="form-group">
                     <label for="lesson-description"><i class="fas fa-align-left"></i> Mô tả/Nội dung bài giảng:</label>
-                    <textarea id="lesson-description" rows="5" placeholder="Nhập nội dung chi tiết hoặc mô tả cho bài giảng..."></textarea>
+                    <textarea id="lesson-description" rows="5" placeholder="Nhập nội dung chi tiết..."></textarea>
                 </div>
 
-                <!-- THÊM MỚI: Input cho URL Video -->
                 <div class="form-group">
                     <label for="lesson-content-video-url"><i class="fas fa-link"></i> URL Video bài giảng (nếu có):</label>
-                    <input type="url" id="lesson-content-video-url" placeholder="Dán URL video tại đây (VD: YouTube, Vimeo, .mp4)...">
+                    <input type="url" id="lesson-content-video-url" placeholder="Dán URL video tại đây...">
                     <small class="file-upload-info">Nếu điền URL, nó sẽ được ưu tiên hơn file upload bên dưới.</small>
                 </div>
 
                 <div class="form-group">
                     <label for="lesson-content-media-file"><i class="fas fa-photo-video"></i> Hoặc Upload Video/Ảnh bài giảng:</label>
                     <input type="file" id="lesson-content-media-file" accept="video/*, image/*">
-                    <small class="file-upload-info">Chức năng upload chỉ là giả lập, file không được tải lên server.</small>
+                    <small class="file-upload-info">Chức năng upload chỉ là giả lập.</small>
                     <div id="lesson-media-file-name-display" class="file-name-display"></div>
                 </div>
 
                 <div class="form-group">
                     <label for="lesson-content-attachment-file"><i class="fas fa-paperclip"></i> Upload File đính kèm (nếu có):</label>
-                    <input type="file" id="lesson-content-attachment-file" accept="*/*"> <!-- accept="*/*" cho phép mọi loại file -->
-                    <small class="file-upload-info">Chức năng upload chỉ là giả lập, file không được tải lên server.</small>
+                    <input type="file" id="lesson-content-attachment-file" accept="*/*">
+                    <small class="file-upload-info">Chức năng upload chỉ là giả lập.</small>
                     <div id="lesson-attachment-file-name-display" class="file-name-display"></div>
                 </div>
 
@@ -397,7 +372,7 @@
             </div>
          </div>
     </footer>
-
+    <script src="api.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
