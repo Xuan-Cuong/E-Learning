@@ -6,7 +6,7 @@ async function apiRequest(endpoint, method = 'GET', body = null, requiresAuth = 
         'Content-Type': 'application/json',
     };
 
-    const config = {
+    const config = { 
         method: method,
         headers: headers,
     };

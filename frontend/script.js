@@ -589,8 +589,8 @@ async function navigateToSection(sectionId, entityId = null, pushHistory = true)
             if (!isLoggedIn || !loggedInUser || !loggedInUser.id) {
                 alert("Vui lòng đăng nhập để tạo khóa học.");
                 openModal(loginModal);
-                return;
-            }
+                return; 
+            } 
             sectionElement = createCourseSection;
             if (createCourseForm) createCourseForm.reset();
             const createCourseTitleH2 = document.getElementById('create-course-section')?.querySelector('h2');
