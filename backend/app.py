@@ -1,10 +1,12 @@
 # backend/app.py
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import pyodbc
 import datetime
 from db_config import get_db_connection
 import logging
+from uploads import init_upload_folder, save_uploaded_file, UPLOAD_FOLDER
+import os
 
 # Set up logging
 logging.basicConfig(
@@ -36,6 +38,7 @@ def init_database():
             cursor.execute("IF OBJECT_ID('dbo.Lessons', 'U') IS NOT NULL DROP TABLE dbo.Lessons")
             cursor.execute("IF OBJECT_ID('dbo.Chapters', 'U') IS NOT NULL DROP TABLE dbo.Chapters")
             cursor.execute("IF OBJECT_ID('dbo.Courses', 'U') IS NOT NULL DROP TABLE dbo.Courses")
+            cursor.execute("IF OBJECT_ID('dbo.Categories', 'U') IS NOT NULL DROP TABLE dbo.Categories")
             cursor.execute("IF OBJECT_ID('dbo.Users', 'U') IS NOT NULL DROP TABLE dbo.Users")
             conn.commit()
             logger.info("Old tables dropped.")
@@ -53,8 +56,37 @@ def init_database():
                 CREATE UNIQUE INDEX IX_Users_Email ON Users(Email);
             """)
             logger.info("Users table created.")
-
-            # Tạo bảng Courses
+            
+            # Tạo bảng Categories
+            logger.info("Creating Categories table...")
+            cursor.execute("""
+                CREATE TABLE Categories (
+                    CategoryID INT IDENTITY(1,1) PRIMARY KEY,
+                    Name NVARCHAR(100) NOT NULL,
+                    Description NVARCHAR(500),
+                    IconClass NVARCHAR(50),
+                    Slug NVARCHAR(100),
+                    CreatedAt DATETIME DEFAULT GETDATE()
+                )
+            """)
+            logger.info("Categories table created.")
+            
+            # Insert default categories
+            logger.info("Inserting default categories...")
+            cursor.execute("""
+                INSERT INTO Categories (Name, Description, IconClass, Slug) VALUES
+                ('Lập trình Web', 'Học phát triển web từ cơ bản đến nâng cao', 'fas fa-code', 'lap-trinh-web'),
+                ('Lập trình Mobile', 'Phát triển ứng dụng di động đa nền tảng', 'fas fa-mobile-alt', 'lap-trinh-mobile'),
+                ('Khoa học Dữ liệu', 'Phân tích dữ liệu và học máy', 'fas fa-chart-bar', 'khoa-hoc-du-lieu'),
+                ('Marketing Số', 'Chiến lược marketing online', 'fas fa-bullhorn', 'marketing-so'),
+                ('Thiết kế đồ họa', 'Thiết kế và xử lý hình ảnh chuyên nghiệp', 'fas fa-palette', 'thiet-ke-do-hoa'),
+                ('Ngoại ngữ', 'Các khóa học ngoại ngữ', 'fas fa-language', 'ngoai-ngu'),
+                ('Kinh doanh', 'Khởi nghiệp và phát triển doanh nghiệp', 'fas fa-briefcase', 'kinh-doanh'),
+                ('Phát triển cá nhân', 'Kỹ năng mềm và phát triển bản thân', 'fas fa-user-graduate', 'phat-trien-ca-nhan')
+            """)
+            logger.info("Default categories inserted.")
+            
+            # Tạo bảng Courses với thêm CategoryID
             logger.info("Creating Courses table...")
             cursor.execute("""
                 CREATE TABLE Courses (
@@ -63,10 +95,13 @@ def init_database():
                     Description NVARCHAR(MAX),
                     Price NVARCHAR(50),
                     ImageURL NVARCHAR(500),
+                    CategoryID INT,
                     CreatorUserID INT NOT NULL,
+                    Status NVARCHAR(20) DEFAULT 'draft',
                     CreatedAt DATETIME DEFAULT GETDATE(),
                     UpdatedAt DATETIME DEFAULT GETDATE(),
-                    FOREIGN KEY (CreatorUserID) REFERENCES Users(UserID) ON DELETE CASCADE
+                    FOREIGN KEY (CreatorUserID) REFERENCES Users(UserID) ON DELETE CASCADE,
+                    FOREIGN KEY (CategoryID) REFERENCES Categories(CategoryID)
                 )
             """)
             logger.info("Courses table created.")
@@ -117,6 +152,47 @@ def init_database():
 
 init_database()
 
+
+# Khởi tạo folder upload
+init_upload_folder()
+
+@app.route('/uploads/videos/<path:filename>')
+def serve_video(filename):
+    return send_from_directory(os.path.join(UPLOAD_FOLDER, 'videos'), filename)
+
+@app.route('/uploads/attachments/<path:filename>')
+def serve_attachment(filename):
+    return send_from_directory(os.path.join(UPLOAD_FOLDER, 'attachments'), filename)
+
+@app.route('/api/lessons/upload', methods=['POST'])
+def upload_files():
+    try:
+        video_file = request.files.get('video')
+        attachment_file = request.files.get('attachment')
+        response = {}
+
+        if video_file:
+            video_filename = save_uploaded_file(video_file, 'videos')
+            if video_filename:
+                response['videoUrl'] = f'/uploads/videos/{video_filename}'
+                response['videoFileName'] = video_filename
+                logger.info(f"Video file uploaded successfully: {video_filename}")
+
+        if attachment_file:
+            attachment_filename = save_uploaded_file(attachment_file, 'attachments')
+            if attachment_filename:
+                response['attachmentUrl'] = f'/uploads/attachments/{attachment_filename}'
+                response['attachmentFileName'] = attachment_filename
+                logger.info(f"Attachment file uploaded successfully: {attachment_filename}")
+
+        if response:
+            return jsonify({"success": True, "data": response}), 200
+        else:
+            return jsonify({"success": False, "error": "Không có file nào được upload thành công"}), 400
+
+    except Exception as e:
+        logger.error(f"Error uploading files: {e}")
+        return jsonify({"error": str(e)}), 500
 
 # --- Authentication Routes ---
 @app.route('/api/auth/register', methods=['POST'])
@@ -175,22 +251,32 @@ def login_user():
 
     conn = get_db_connection()
     if not conn:
-        return jsonify({"error": "Lỗi kết nối server."}), 500
-
-    cursor = conn.cursor()
+        return jsonify({"error": "Lỗi kết nối server."}), 500    
     try:
-        # Bỏ Role khỏi SELECT
-        cursor.execute("SELECT UserID, Name, Email FROM Users WHERE Email = ? AND Password = ?",
-                       email, password)
+        # Kiểm tra user
+        cursor.execute("""
+            SELECT UserID, Name, Email 
+            FROM Users 
+            WHERE Email = ? AND Password = ?
+        """, email, password)
         user_row = cursor.fetchone()
 
         if user_row:
+            # Lấy danh sách khóa học đã tạo
+            cursor.execute("""
+                SELECT CourseID
+                FROM Courses
+                WHERE CreatorUserID = ?
+            """, user_row.UserID)
+            created_courses = [row.CourseID for row in cursor.fetchall()]
+
             user_data = {
                 "id": user_row.UserID,
                 "name": user_row.Name,
-                "email": user_row.Email
-                # "role": user_row.Role -- ĐÃ XÓA
-                # "enrolledCourses" không còn nữa
+                "email": user_row.Email,
+                "createdCourseIds": created_courses,
+                "enrolledCourseIds": [],  # Sẽ cập nhật sau khi có bảng Enrollments
+                "wishlist": []  # Sẽ cập nhật sau khi có bảng Wishlist
             }
             return jsonify({"message": "Đăng nhập thành công", "user": user_data}), 200
         else:
@@ -201,6 +287,11 @@ def login_user():
     finally:
         if cursor: cursor.close()
         if conn: conn.close()
+
+# Serve static files
+@app.route('/uploads/<path:filename>')
+def serve_upload(filename):
+    return send_from_directory(UPLOAD_FOLDER, filename)
 
 # --- Course Routes ---
 @app.route('/api/courses', methods=['GET'])
@@ -264,70 +355,81 @@ def get_course_detail(course_id):
     conn = get_db_connection()
     if not conn: return jsonify({"error": "Lỗi kết nối server."}), 500
     cursor = conn.cursor()
-    
-    course_data = {}
+
     try:
         cursor.execute("""
-            SELECT c.CourseID, c.Title, c.Description, c.Price, c.ImageURL, 
-                   u.Name AS InstructorName, u.Email AS CreatorEmail, c.CreatorUserID
+            SELECT c.CourseID, c.Title, c.Description, c.Price, c.ImageURL, c.CreatorUserID,
+                   u.Name as InstructorName, u.Email as CreatorEmail
             FROM Courses c
             JOIN Users u ON c.CreatorUserID = u.UserID
             WHERE c.CourseID = ?
         """, course_id)
         course_row = cursor.fetchone()
+        
         if not course_row:
             return jsonify({"error": "Không tìm thấy khóa học."}), 404
 
-        course_data = {
+        course_detail = {
             "id": course_row.CourseID,
             "title": course_row.Title,
             "description": course_row.Description,
             "price": course_row.Price,
             "image": course_row.ImageURL,
-            "instructor": course_row.InstructorName, # Tên người tạo
+            "instructor": course_row.InstructorName,
             "creatorEmail": course_row.CreatorEmail,
             "creatorUserID": course_row.CreatorUserID,
-            "files": [], 
+            "files": [],
             "structure": []
         }
 
-        cursor.execute("SELECT ChapterID, Title, Description FROM Chapters WHERE CourseID = ? ORDER BY SortOrder, ChapterID", course_id)
-        chapters_rows = cursor.fetchall()
-        
-        for chap_row in chapters_rows:
-            chapter_obj = {
-                "id": chap_row.ChapterID,
-                "title": chap_row.Title,
-                "description": chap_row.Description,
+        # Get chapters
+        cursor.execute("""
+            SELECT ChapterID, Title, Description, SortOrder 
+            FROM Chapters 
+            WHERE CourseID = ? 
+            ORDER BY SortOrder, ChapterID
+        """, course_id)
+        chapters = cursor.fetchall()
+
+        # For each chapter, get its lessons
+        for chapter in chapters:
+            chapter_data = {
+                "id": chapter.ChapterID,
+                "title": chapter.Title,
+                "description": chapter.Description,
                 "lessons": []
             }
+
             cursor.execute("""
-                SELECT LessonID, Title, Description, VideoURL, MediaFileName, AttachmentURL, AttachmentFileName
+                SELECT LessonID, Title, Description, VideoURL, MediaFileName, 
+                       AttachmentURL, AttachmentFileName, SortOrder
                 FROM Lessons 
                 WHERE ChapterID = ? 
                 ORDER BY SortOrder, LessonID
-            """, chap_row.ChapterID)
-            lessons_rows = cursor.fetchall()
-            for less_row in lessons_rows:
-                lesson_content = {}
-                if less_row.VideoURL: lesson_content['mediaUrl'] = less_row.VideoURL
-                if less_row.MediaFileName: lesson_content['mediaFileName'] = less_row.MediaFileName
-                if less_row.AttachmentURL: lesson_content['attachmentUrl'] = less_row.AttachmentURL
-                if less_row.AttachmentFileName: lesson_content['attachmentFileName'] = less_row.AttachmentFileName
-                
-                chapter_obj["lessons"].append({
-                    "id": less_row.LessonID,
-                    "title": less_row.Title,
-                    "description": less_row.Description,
-                    "content": lesson_content if lesson_content else None
-                })
-            course_data["structure"].append(chapter_obj)
-            
-        return jsonify(course_data), 200
+            """, chapter.ChapterID)
+            lessons = cursor.fetchall()
 
-    except pyodbc.Error as e:
-        logger.error(f"DB Error on get_course_detail for ID {course_id}: {e}")
-        return jsonify({"error": f"Lỗi server khi lấy chi tiết khóa học ID {course_id}."}), 500
+            for lesson in lessons:
+                lesson_data = {
+                    "id": lesson.LessonID,
+                    "title": lesson.Title,
+                    "description": lesson.Description,
+                    "content": {
+                        "mediaUrl": f"/uploads/videos/{lesson.MediaFileName}" if lesson.MediaFileName else lesson.VideoURL,
+                        "mediaFileName": lesson.MediaFileName,
+                        "attachmentUrl": f"/uploads/attachments/{lesson.AttachmentFileName}" if lesson.AttachmentFileName else lesson.AttachmentURL,
+                        "attachmentFileName": lesson.AttachmentFileName
+                    }
+                }
+                chapter_data["lessons"].append(lesson_data)
+
+            course_detail["structure"].append(chapter_data)
+
+        return jsonify({"success": True, "data": course_detail}), 200
+
+    except Exception as e:
+        logger.error(f"Error getting course detail: {str(e)}")
+        return jsonify({"error": "Lỗi khi lấy thông tin khóa học."}), 500
     finally:
         if cursor: cursor.close()
         if conn: conn.close()
@@ -609,6 +711,12 @@ def add_lesson_to_chapter_by_id(chapter_id):
     title = data.get('title')
     description = data.get('description', '')
     content = data.get('content', {})
+    
+    # Extract media and attachment info from content
+    video_url = content.get('mediaUrl', '')
+    media_file_name = content.get('mediaFileName', '')
+    attachment_url = content.get('attachmentUrl', '')
+    attachment_file_name = content.get('attachmentFileName', '')
 
     if not all([title, current_user_id]):
         return jsonify({"error": "Thiếu thông tin (title, currentUserID)."}), 400
@@ -650,12 +758,16 @@ def add_lesson_to_chapter_by_id(chapter_id):
             if new_lesson_row.AttachmentFileName: returned_content['attachmentFileName'] = new_lesson_row.AttachmentFileName
             
             return jsonify({
-                "message": "Bài giảng mới đã được thêm.",
-                "lesson": {
+                "message": "Bài giảng mới đã được thêm.",                "lesson": {
                     "id": new_lesson_row.LessonID,
                     "title": new_lesson_row.Title,
                     "description": new_lesson_row.Description,
-                    "content": returned_content if returned_content else None
+                    "content": {
+                        "mediaUrl": f"/uploads/videos/{new_lesson_row.MediaFileName}" if new_lesson_row.MediaFileName else new_lesson_row.VideoURL,
+                        "mediaFileName": new_lesson_row.MediaFileName,
+                        "attachmentUrl": f"/uploads/attachments/{new_lesson_row.AttachmentFileName}" if new_lesson_row.AttachmentFileName else new_lesson_row.AttachmentURL,
+                        "attachmentFileName": new_lesson_row.AttachmentFileName
+                    }
                 }
             }), 201
         else:
@@ -794,9 +906,128 @@ def get_user_courses_by_id(user_id): # Bây giờ chỉ trả về các khóa h�
         if cursor: cursor.close()
         if conn: conn.close()
 
-# Endpoint enroll không còn cần thiết nữa
-# @app.route('/api/courses/<int:course_id>/enroll', methods=['POST'])
-# def enroll_in_course(course_id): ...
+# Initialize storage for courses and enrollments
+courses_data = []
+enrolled_courses_by_user = {}
 
+# User course management routes
+@app.route('/api/users/<user_id>/courses', methods=['GET'])
+def get_user_courses(user_id):
+    try:
+        # Get all courses where the user is the creator
+        user_courses = [course for course in courses_data if course.get('creatorUserID') == user_id]
+        return jsonify(user_courses)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/users/<user_id>/enrolled-courses', methods=['GET'])
+def get_user_enrolled_courses(user_id):
+    try:
+        # Get all courses that the user is enrolled in
+        enrolled_courses = enrolled_courses_by_user.get(user_id, [])
+        enrolled_course_details = [course for course in courses_data if course.get('id') in enrolled_courses]
+        return jsonify(enrolled_course_details)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/courses/<course_id>/enroll', methods=['POST'])
+def enroll_in_course():
+    try:
+        data = request.get_json()
+        user_id = data.get('userId')
+        course_id = request.view_args.get('course_id')
+        
+        if not user_id or not course_id:
+            return jsonify({'error': 'Missing user ID or course ID'}), 400
+
+        # Initialize the enrolled courses list for this user if it doesn't exist
+        if user_id not in enrolled_courses_by_user:
+            enrolled_courses_by_user[user_id] = []
+
+        # Check if user is already enrolled
+        if course_id in enrolled_courses_by_user[user_id]:
+            return jsonify({'error': 'User is already enrolled in this course'}), 400
+
+        # Add the course to user's enrolled courses
+        enrolled_courses_by_user[user_id].append(course_id)
+        
+        return jsonify({'message': 'Successfully enrolled in course'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Initialize enrolled courses storage
+enrolled_courses_by_user = {}
+
+# --- Categories API Routes ---
+@app.route('/api/categories', methods=['GET'])
+def get_categories():
+    conn = get_db_connection()
+    if not conn:
+        return jsonify({"error": "Lỗi kết nối server."}), 500
+    
+    cursor = conn.cursor()
+    try:
+        # Kiểm tra xem bảng Categories đã tồn tại chưa
+        cursor.execute("""
+            IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Categories' AND xtype='U')
+            CREATE TABLE Categories (
+                CategoryID INT PRIMARY KEY IDENTITY(1,1),
+                Name NVARCHAR(100) NOT NULL,
+                Description NVARCHAR(500),
+                IconClass NVARCHAR(50),
+                Slug NVARCHAR(100),
+                CreatedAt DATETIME DEFAULT GETDATE()
+            )
+        """)
+        
+        # Kiểm tra xem đã có dữ liệu chưa
+        cursor.execute("SELECT COUNT(*) as count FROM Categories")
+        count = cursor.fetchone().count
+
+        # Nếu chưa có dữ liệu, thêm các danh mục mặc định
+        if count == 0:
+            default_categories = [
+                ("Lập trình Web", "Học phát triển web từ cơ bản đến nâng cao", "fas fa-code", "lap-trinh-web"),
+                ("Lập trình Mobile", "Phát triển ứng dụng di động đa nền tảng", "fas fa-mobile-alt", "lap-trinh-mobile"),
+                ("Khoa học Dữ liệu", "Phân tích dữ liệu và học máy", "fas fa-chart-bar", "khoa-hoc-du-lieu"),
+                ("Marketing Số", "Chiến lược marketing online", "fas fa-bullhorn", "marketing-so"),
+                ("Thiết kế đồ họa", "Thiết kế và xử lý hình ảnh chuyên nghiệp", "fas fa-palette", "thiet-ke-do-hoa"),
+                ("Ngoại ngữ", "Các khóa học ngoại ngữ", "fas fa-language", "ngoai-ngu"),
+                ("Kinh doanh", "Khởi nghiệp và phát triển doanh nghiệp", "fas fa-briefcase", "kinh-doanh"),
+                ("Phát triển cá nhân", "Kỹ năng mềm và phát triển bản thân", "fas fa-user-graduate", "phat-trien-ca-nhan")
+            ]
+            
+            cursor.executemany("""
+                INSERT INTO Categories (Name, Description, IconClass, Slug)
+                VALUES (?, ?, ?, ?)
+            """, default_categories)
+            conn.commit()
+
+        # Lấy tất cả danh mục
+        cursor.execute("""
+            SELECT CategoryID, Name, Description, IconClass, Slug
+            FROM Categories
+            ORDER BY Name
+        """)
+        
+        categories = []
+        for row in cursor.fetchall():
+            categories.append({
+                "id": row.CategoryID,
+                "name": row.Name,
+                "description": row.Description,
+                "iconClass": row.IconClass,
+                "slug": row.Slug
+            })
+            
+        return jsonify(categories), 200
+
+    except Exception as e:
+        logger.error(f"Error in get_categories: {str(e)}")
+        return jsonify({"error": f"Lỗi server: {str(e)}"}), 500
+    finally:
+        if cursor: cursor.close()
+        if conn: conn.close()
+        
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
