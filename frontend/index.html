@@ -38,18 +38,20 @@
                     <div class="user-menu hidden">
                         <div class="user-avatar-container" id="user-avatar-container">
                             <span class="user-avatar-placeholder" id="user-avatar-placeholder-header"></span>
+                            <!-- <img src="" alt="User Avatar" class="user-avatar-img hidden" id="user-avatar-img-header"> -->
                             <i class="fas fa-chevron-down"></i>
                         </div>
                         <div class="dropdown-menu user-dropdown-menu hidden">
                             <div class="dropdown-user-info">
                                 <span class="user-avatar-placeholder" id="user-avatar-placeholder-dropdown"></span>
+                                <!-- <img src="" alt="User Avatar" class="user-avatar-img hidden" id="user-avatar-img-dropdown"> -->
                                 <span id="user-display-name-dropdown"></span>
                             </div>
                             <a href="#" class="dropdown-item" data-section="user-dashboard" data-tab="dashboard-overview"><i class="fas fa-tachometer-alt"></i> Bảng điều khiển</a>
                             <a href="#" class="dropdown-item" data-section="user-dashboard" data-tab="my-courses"><i class="fas fa-chalkboard-teacher"></i> Khóa học của tôi</a>
                             <a href="#" class="dropdown-item" data-section="user-dashboard" data-tab="enrolled-courses"><i class="fas fa-graduation-cap"></i> Khóa học đã đăng ký</a>
                             <a href="#" class="dropdown-item" data-section="user-dashboard" data-tab="wishlist"><i class="fas fa-heart"></i> Danh sách yêu thích</a>
-                            <a href="#" class="dropdown-item" data-section="user-dashboard" data-tab="profile-settings"><i class="fas fa-cog"></i> Cài đặt tài khoản</a>
+                            <a href="#" class="dropdown-item" data-section="user-dashboard" data-tab="profile-settings"><i class="fas fa-user-cog"></i> Cài đặt tài khoản</a>
                             <button class="dropdown-item btn-logout"><i class="fas fa-sign-out-alt"></i> Đăng xuất</button>
                         </div>
                     </div>
@@ -141,10 +143,11 @@
                             <option value="beginner">Người mới bắt đầu</option>
                             <option value="intermediate">Trung bình</option>
                             <option value="advanced">Nâng cao</option>
+                            <option value="all">Mọi trình độ</option> 
                         </select>
                         <select id="sort-courses">
-                            <option value="popular">Phổ biến nhất</option>
                             <option value="newest">Mới nhất</option>
+                            <option value="popular">Phổ biến nhất</option>
                             <option value="rating">Đánh giá cao</option>
                         </select>
                     </div>
@@ -179,7 +182,7 @@
                 <div class="course-detail-main">
                     <div class="course-video-preview" id="course-video-preview-player">
                         <img id="detail-course-image-main" src="" alt="Course Image">
-                        <button class="play-preview-btn"><i class="fas fa-play"></i> Xem Preview</button>
+                        <button class="play-preview-btn hidden"><i class="fas fa-play"></i> Xem Preview</button>
                     </div>
                     <nav class="course-detail-tabs">
                         <a href="#overview" class="tab-link active" data-tab="overview">Tổng quan</a>
@@ -225,6 +228,7 @@
                     <aside class="dashboard-sidebar">
                         <div class="dashboard-user-profile-summary">
                             <span class="user-avatar-placeholder" id="dashboard-avatar"></span>
+                            <!-- <img src="" alt="User Avatar" class="user-avatar-img hidden" id="dashboard-avatar-img"> -->
                             <h3 id="dashboard-username"></h3>
                             <p id="dashboard-useremail"></p>
                         </div>
@@ -254,6 +258,7 @@
                     <input type="hidden" id="course-form-course-id">
                     <div class="form-tabs">
                         <button type="button" class="form-tab-link active" data-form-tab="basic-info">Thông tin cơ bản</button>
+                        <button type="button" class="form-tab-link" data-form-tab="details">Chi tiết & Mục tiêu</button>
                         <button type="button" class="form-tab-link" data-form-tab="curriculum">Nội dung học</button>
                         <button type="button" class="form-tab-link" data-form-tab="media-pricing">Media & Giá</button>
                         <button type="button" class="form-tab-link" data-form-tab="publish">Xuất bản</button>
@@ -266,8 +271,8 @@
                             <input type="text" id="course-title-input" required placeholder="VD: Lập trình Python cho người mới bắt đầu">
                         </div>
                         <div class="form-group">
-                            <label for="course-subtitle-input">Tiêu đề phụ (Slogan)</label>
-                            <input type="text" id="course-subtitle-input" placeholder="VD: Thành thạo Python từ A-Z trong 30 ngày">
+                            <label for="course-subtitle-input">Tiêu đề phụ (Slogan) <span class="required">*</span></label>
+                            <input type="text" id="course-subtitle-input" required placeholder="VD: Thành thạo Python từ A-Z trong 30 ngày">
                         </div>
                         <div class="form-group">
                             <label for="course-description-input">Mô tả chi tiết <span class="required">*</span></label>
@@ -291,11 +296,29 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group hidden"> <!-- Tạm ẩn Ngôn ngữ nếu không cần thiết -->
-                            <label for="course-language-input">Ngôn ngữ</label>
-                            <input type="text" id="course-language-input" value="Tiếng Việt">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="course-language-input">Ngôn ngữ</label>
+                                <input type="text" id="course-language-input" value="Tiếng Việt" placeholder="VD: Tiếng Việt">
+                            </div>
                         </div>
                     </div>
+
+                    <div class="form-tab-content" data-form-tab-id="details">
+                        <h3>Chi tiết & Mục tiêu khóa học</h3>
+                        <div class="form-group">
+                            <label for="course-what-you-will-learn">Bạn sẽ học được gì? (Mỗi mục tiêu một dòng)</label>
+                            <textarea id="course-what-you-will-learn" rows="5" placeholder="VD: Xây dựng ứng dụng web hoàn chỉnh
+Hiểu rõ về Django Framework
+Kỹ năng giải quyết vấn đề thực tế"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="course-requirements">Yêu cầu của khóa học (Mỗi yêu cầu một dòng)</label>
+                            <textarea id="course-requirements" rows="5" placeholder="VD: Máy tính có kết nối internet
+Kiến thức HTML, CSS cơ bản (nếu có)"></textarea>
+                        </div>
+                    </div>
+
 
                     <div class="form-tab-content" data-form-tab-id="curriculum">
                         <h3>Nội dung học (Chương & Bài giảng)</h3>
@@ -308,9 +331,14 @@
                     <div class="form-tab-content" data-form-tab-id="media-pricing">
                         <h3>Media & Giá</h3>
                         <div class="form-group">
-                            <label for="course-image-url-input">URL Ảnh bìa khóa học</label>
+                            <label for="course-image-url-input">URL Ảnh bìa chính</label>
                             <input type="url" id="course-image-url-input" placeholder="Dán URL ảnh (VD: https://example.com/image.jpg)">
                             <small>Kích thước đề xuất: 750x422 pixels. Để trống sẽ dùng ảnh placeholder.</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="course-banner-image-url-input">URL Ảnh banner chi tiết khóa học (Tùy chọn)</label>
+                            <input type="url" id="course-banner-image-url-input" placeholder="Dán URL ảnh banner (VD: https://example.com/banner.jpg)">
+                            <small>Kích thước đề xuất: 1920x400 pixels. Nếu trống, sẽ dùng màu hoặc ảnh bìa chính.</small>
                         </div>
                         <div class="form-group">
                             <label for="course-promo-video-url-input">URL Video giới thiệu (YouTube, Vimeo)</label>
@@ -318,11 +346,11 @@
                         </div>
                         <div class="form-group">
                             <label for="course-price-input">Giá khóa học (VNĐ) <span class="required">*</span></label>
-                            <input type="number" id="course-price-input" required min="0" placeholder="VD: 500000 (Nhập 0 nếu miễn phí)">
+                            <input type="number" id="course-price-input" required min="0" step="1000" placeholder="VD: 500000 (Nhập 0 nếu miễn phí)">
                         </div>
                          <div class="form-group">
-                            <label for="course-discount-price-input">Giá gốc (nếu có khuyến mãi - VNĐ)</label>
-                            <input type="number" id="course-discount-price-input" min="0" placeholder="Giá gốc trước khi giảm, VD: 700000">
+                            <label for="course-original-price-input">Giá gốc (nếu có khuyến mãi - VNĐ)</label>
+                            <input type="number" id="course-original-price-input" min="0" step="1000" placeholder="Giá gốc trước khi giảm, VD: 700000">
                             <small>Giá khóa học ở trên sẽ là giá sau khuyến mãi. Để trống nếu không có khuyến mãi.</small>
                         </div>
                     </div>
@@ -332,24 +360,20 @@
                         <p>Hãy kiểm tra kỹ tất cả thông tin trước khi lưu hoặc xuất bản. Khóa học có thể được lưu dưới dạng bản nháp.</p>
                         <div class="form-group">
                              <label>Trạng thái khóa học:</label>
-                             <select id="course-status-select" disabled> <!-- Disabled, controlled by buttons -->
+                             <select id="course-status-select" disabled> <!-- Controlled by buttons -->
                                  <option value="draft">Bản nháp</option>
                                  <option value="published">Đã Xuất bản</option>
                              </select>
                         </div>
+                        <div id="publish-checklist" class="hidden" style="margin-top: 20px; padding:15px; background-color: #f8f9fa; border-radius: var(--border-radius-medium);">
+                            <h4>Để xuất bản, khóa học cần (tối thiểu):</h4>
+                            <ul>
+                                <!-- Checklist items injected by JS -->
+                            </ul>
+                        </div>
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary" id="save-course-btn"><i class="fas fa-save"></i> Lưu Khóa học</button>
                             <button type="button" class="btn btn-success hidden" id="publish-course-btn"><i class="fas fa-rocket"></i> Xuất bản ngay</button>
-                        </div>
-                         <div id="publish-checklist" class="hidden" style="margin-top: 20px; padding:15px; background-color: #f8f9fa; border-radius: var(--border-radius-medium);">
-                            <h4>Để xuất bản, khóa học cần:</h4>
-                            <ul>
-                                <li><i class="fas fa-check-circle text-success"></i> Tiêu đề, mô tả, danh mục.</li>
-                                <li><i class="fas fa-book"></i> Ít nhất 1 chương.</li>
-                                <li><i class="fas fa-video"></i> Mỗi chương có ít nhất 1 bài giảng.</li>
-                                <li><i class="fas fa-image"></i> Ảnh bìa (hoặc sẽ dùng ảnh mặc định).</li>
-                                <li><i class="fas fa-dollar-sign"></i> Giá khóa học.</li>
-                            </ul>
                         </div>
                     </div>
                 </form>
@@ -379,10 +403,10 @@
                     <p>Chúng tôi tin rằng giáo dục là chìa khóa để mở ra những cơ hội mới và xây dựng một tương lai tốt đẹp hơn. Với đội ngũ giảng viên tâm huyết và nền tảng công nghệ hiện đại, TriThuc Hub cam kết mang đến trải nghiệm học tập tốt nhất cho học viên.</p>
                     <h3>Giá trị cốt lõi</h3>
                     <ul>
-                        <li><i class="fas fa-check-circle"></i> Chất lượng: Cung cấp nội dung học thuật và thực tiễn.</li>
-                        <li><i class="fas fa-check-circle"></i> Linh hoạt: Học mọi lúc, mọi nơi, theo tốc độ của riêng bạn.</li>
-                        <li><i class="fas fa-check-circle"></i> Cộng đồng: Xây dựng một cộng đồng học tập tương tác và hỗ trợ.</li>
-                        <li><i class="fas fa-check-circle"></i> Đổi mới: Luôn cập nhật công nghệ và phương pháp giảng dạy tiên tiến.</li>
+                        <li><i class="fas fa-check-circle text-success"></i> Chất lượng: Cung cấp nội dung học thuật và thực tiễn.</li>
+                        <li><i class="fas fa-check-circle text-success"></i> Linh hoạt: Học mọi lúc, mọi nơi, theo tốc độ của riêng bạn.</li>
+                        <li><i class="fas fa-check-circle text-success"></i> Cộng đồng: Xây dựng một cộng đồng học tập tương tác và hỗ trợ.</li>
+                        <li><i class="fas fa-check-circle text-success"></i> Đổi mới: Luôn cập nhật công nghệ và phương pháp giảng dạy tiên tiến.</li>
                     </ul>
                 </div>
             </div>
@@ -442,8 +466,8 @@
             <span class="close-button" data-modal="chapter-form-modal">×</span>
             <h2 id="chapter-modal-title">Thêm Chương</h2>
             <form id="chapter-form" class="modern-form">
-                <input type="hidden" id="chapter-form-course-id-modal">
-                <input type="hidden" id="chapter-form-chapter-id-modal"> 
+                <input type="hidden" id="chapter-form-course-id-modal"> <!-- Might not be needed if form data is self-contained -->
+                <input type="hidden" id="chapter-form-chapter-id-modal"> <!-- UI ID of chapter being edited -->
                 <div class="form-group">
                     <label for="chapter-title-modal">Tên Chương:<span class="required">*</span></label>
                     <input type="text" id="chapter-title-modal" required placeholder="VD: Chương 1: Giới thiệu">
@@ -462,26 +486,29 @@
             <span class="close-button" data-modal="lesson-form-modal">×</span>
             <h2 id="lesson-modal-title">Thêm Bài giảng</h2>
             <form id="lesson-form" class="modern-form">
-                <input type="hidden" id="lesson-form-course-id-modal">
-                <input type="hidden" id="lesson-form-chapter-id-modal">
-                <input type="hidden" id="lesson-form-lesson-id-modal"> 
+                <input type="hidden" id="lesson-form-course-id-modal"> <!-- Might not be needed -->
+                <input type="hidden" id="lesson-form-chapter-id-modal"> <!-- UI ID of parent chapter -->
+                <input type="hidden" id="lesson-form-lesson-id-modal"> <!-- UI ID of lesson being edited -->
 
                 <div class="form-group">
                     <label for="lesson-title-modal">Tên Bài giảng:<span class="required">*</span></label>
                     <input type="text" id="lesson-title-modal" required placeholder="VD: Bài 1.1: Cài đặt môi trường">
                 </div>
                 <div class="form-group">
-                    <label for="lesson-type-modal">Loại nội dung:</label>
+                    <label for="lesson-type-modal">Loại nội dung:<span class="required">*</span></label>
                     <select id="lesson-type-modal">
                         <option value="video">Video</option>
                         <option value="text">Văn bản (Text)</option>
+                        <option value="document">Tài liệu (PDF, Doc, etc.)</option>
+                        <option value="audio">Audio</option>
                         <option value="quiz" disabled>Quiz/Bài tập (Coming soon)</option>
-                        <option value="document">Tài liệu (PDF, Doc)</option>
                     </select>
                 </div>
+                
                 <div id="lesson-content-fields">
                     <!-- Fields for video URL, text content, file upload based on type -->
                 </div>
+
                  <div class="form-group">
                     <label for="lesson-duration-modal">Thời lượng (phút, nếu là video/audio)</label>
                     <input type="number" id="lesson-duration-modal" min="0" placeholder="VD: 15">
@@ -496,7 +523,6 @@
         </div>
     </div> 
     
-    <!-- Lesson Preview Modal (Ý tưởng mới) -->
     <div id="lesson-preview-modal" class="modal">
         <div class="modal-content large-modal">
             <span class="close-button" data-modal="lesson-preview-modal">×</span>
@@ -517,10 +543,10 @@
                     </div>
                     <p>Nền tảng học trực tuyến hàng đầu, đồng hành cùng bạn trên con đường chinh phục tri thức.</p>
                     <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
-                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="#"><i class="fab fa-tiktok"></i></a>
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
                     </div>
                 </div>
                 <div class="footer-col">

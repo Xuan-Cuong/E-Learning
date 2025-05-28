@@ -11,7 +11,7 @@ DB_PASSWORD = '123456' # Nếu dùng SQL Server Authentication
 #CONN_STRING = f'DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={DB_SERVER};DATABASE={DB_DATABASE};Trusted_Connection=yes;'
 
 # Connection string (ví dụ cho SQL Server Authentication)
-CONN_STRING = f'DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={DB_SERVER};DATABASE={DB_DATABASE};UID={DB_USERNAME};PWD={DB_PASSWORD}'
+CONN_STRING = f'DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={DB_SERVER};DATABASE={DB_DATABASE};UID={DB_USERNAME};PWD={DB_PASSWORD};TrustServerCertificate=yes' # Added TrustServerCertificate for local SQL Server
 
 
 def get_db_connection():

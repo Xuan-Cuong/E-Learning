@@ -1,0 +1,589 @@
+2025-05-28 11:16:59,041 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:16:59,073 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 11:18:08,359 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:18:08,655 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:18:08,679 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 11:18:22,068 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:18:22,363 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:18:22,387 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 11:18:34,794 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:18:34,820 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 11:18:38,520 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:18:38,949 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:18:38,973 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 11:18:43,552 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:18:43,861 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:18:43,885 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 11:20:02,853 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:20:02,884 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 11:21:13,264 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:21:13,335 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 11:22:12,117 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:22:12,147 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 11:23:05,849 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:23:06,431 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:23:06,464 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 11:23:58,194 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:23:58,231 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:23:58,282 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:23:58,284 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:23:58,318 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 11:23:58,320 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 11:26:25,032 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:26:25,150 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:26:25,575 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:26:25,586 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:26:25,617 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 11:26:46,399 [ERROR] - e_learning_app - DB Error on get_courses_list: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'EnrollmentsCount'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'AverageRating'. (207)")
+2025-05-28 11:26:46,661 [ERROR] - e_learning_app - DB Error on get_courses_list: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'EnrollmentsCount'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'AverageRating'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'EnrollmentsCount'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'AverageRating'. (207)")
+2025-05-28 11:27:10,109 [ERROR] - e_learning_app - DB Error on get_courses_list: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'EnrollmentsCount'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'AverageRating'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'EnrollmentsCount'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'AverageRating'. (207)")
+2025-05-28 11:27:10,357 [ERROR] - e_learning_app - DB Error on get_courses_list: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'EnrollmentsCount'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'AverageRating'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'EnrollmentsCount'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'AverageRating'. (207)")
+2025-05-28 11:28:05,126 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:28:05,126 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:28:05,225 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:28:05,225 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:28:05,225 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:28:05,259 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 11:28:05,286 [ERROR] - e_learning_app - DB Error on get_courses_list: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'EnrollmentsCount'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'AverageRating'. (207)")
+2025-05-28 11:31:38,966 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:31:39,071 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:31:39,423 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:31:39,433 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:31:39,460 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 11:34:26,658 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:34:26,760 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:34:27,130 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:34:27,140 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:34:27,168 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 11:37:32,166 [ERROR] - e_learning_app - Unexpected error during registration: 400 Bad Request: Failed to decode JSON object: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)
+2025-05-28 11:37:42,030 [ERROR] - e_learning_app - Unexpected error during registration: 400 Bad Request: Failed to decode JSON object: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)
+2025-05-28 11:38:29,626 [INFO] - e_learning_app - Received data for new course: {'short_description': 'Mô tả ngắn về khóa học', 'chapters': [{'title': 'Chương 1: Giới thiệu', 'lessons': [{'title': 'Bài 1: Tổng quan', 'is_previewable': True, 'content_text': 'Nội dung bài học', 'type': 'video'}], 'description': 'Giới thiệu về khóa học'}], 'category_id': 1, 'language': 'Tiếng Việt', 'status': 'draft', 'title': 'Khóa học Test', 'difficulty': 'beginner', 'description': 'Mô tả chi tiết về khóa học', 'price': 99.99, 'creator_user_id': 2}
+2025-05-28 11:38:29,650 [ERROR] - e_learning_app - DB Error on create_course_full: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'PromoVideoURL'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Language'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Statement(s) could not be prepared. (8180)")
+2025-05-28 11:38:41,271 [ERROR] - e_learning_app - DB Error on get_courses_list: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'EnrollmentsCount'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'AverageRating'. (207)")
+2025-05-28 11:39:21,981 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:39:22,298 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:39:22,336 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:39:22,355 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 11:39:22,376 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:39:22,399 [ERROR] - e_learning_app - DB Error on get_courses_list: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'EnrollmentsCount'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'AverageRating'. (207)")
+2025-05-28 11:39:22,429 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 11:39:28,083 [ERROR] - e_learning_app - DB Error on get_courses_list: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'EnrollmentsCount'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'AverageRating'. (207)")
+2025-05-28 11:39:28,804 [ERROR] - e_learning_app - DB Error on get_courses_list: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'EnrollmentsCount'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'AverageRating'. (207)")
+2025-05-28 11:39:44,744 [ERROR] - e_learning_app - DB Error on get_courses_list: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'EnrollmentsCount'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'AverageRating'. (207)")
+2025-05-28 11:41:10,595 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:41:11,295 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:41:11,783 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:41:13,390 [INFO] - e_learning_app - Received data for new course: {'title': 'Test Course', 'category_id': 1, 'creator_user_id': 1, 'price': 0, 'difficulty': 'beginner', 'status': 'draft', 'short_description': 'Short Desc', 'description': 'Test Description'}
+2025-05-28 11:41:14,077 [ERROR] - e_learning_app - DB Error on create_course_full: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'PromoVideoURL'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Language'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Statement(s) could not be prepared. (8180)")
+2025-05-28 11:41:14,167 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:41:14,206 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 11:41:40,595 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:41:40,885 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:41:41,458 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:41:41,730 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:41:41,763 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 11:42:03,098 [INFO] - e_learning_app - Received data for new course: {'short_description': 'Short description', 'category_id': 1, 'language': 'Vietnamese', 'status': 'draft', 'title': 'Test Course', 'difficulty': 'beginner', 'description': 'This is a test course', 'price': 0, 'creator_user_id': 1}
+2025-05-28 11:42:03,103 [ERROR] - e_learning_app - DB Error on create_course_full: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'PromoVideoURL'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Language'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Statement(s) could not be prepared. (8180)")
+2025-05-28 11:43:28,950 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:43:29,043 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:43:29,639 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:43:29,643 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:43:29,688 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:43:29,688 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:43:29,688 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:43:29,688 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:43:29,734 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 11:43:29,734 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 11:43:29,764 [ERROR] - e_learning_app - DB Error on get_courses_list: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'EnrollmentsCount'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'AverageRating'. (207)")
+2025-05-28 11:43:29,764 [ERROR] - e_learning_app - DB Error on get_courses_list: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'EnrollmentsCount'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'AverageRating'. (207)")
+2025-05-28 11:43:29,764 [ERROR] - e_learning_app - DB Error on get_courses_list: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'EnrollmentsCount'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'AverageRating'. (207)")
+2025-05-28 11:43:29,884 [ERROR] - e_learning_app - DB Error on get_courses_list: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'EnrollmentsCount'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'AverageRating'. (207)")
+2025-05-28 11:43:30,393 [ERROR] - e_learning_app - DB Error on get_courses_list: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'EnrollmentsCount'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'AverageRating'. (207)")
+2025-05-28 11:43:53,184 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:43:53,274 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:43:53,672 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:43:53,683 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:43:53,711 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 11:44:36,859 [INFO] - e_learning_app - Received data for new course: {'short_description': 'Short description', 'category_id': 1, 'language': 'Vietnamese', 'status': 'draft', 'title': 'Test Course', 'difficulty': 'beginner', 'description': 'This is a test course', 'price': 0, 'creator_user_id': 2}
+2025-05-28 11:44:36,865 [ERROR] - e_learning_app - DB Error on create_course_full: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'PromoVideoURL'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Language'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Statement(s) could not be prepared. (8180)")
+2025-05-28 11:46:17,474 [INFO] - e_learning_app - Received data for new course: {'title': 'Khóa học Python cơ bản', 'category_id': 1, 'creator_user_id': 2, 'price': 0, 'difficulty': 'beginner', 'status': 'draft', 'short_description': 'Khóa học Python cho người mới bắt đầu', 'description': 'Học Python từ cơ bản đến nâng cao'}
+2025-05-28 11:46:17,494 [ERROR] - e_learning_app - DB Error on create_course_full: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'PromoVideoURL'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Language'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Statement(s) could not be prepared. (8180)")
+2025-05-28 11:46:52,876 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:46:52,981 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:46:53,456 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:46:53,609 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:46:53,643 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 11:47:29,177 [INFO] - e_learning_app - Received data for new course: {'title': 'Khóa học Python cơ bản', 'category_id': 1, 'creator_user_id': 2, 'price': 0, 'difficulty': 'beginner', 'status': 'draft', 'short_description': 'Khóa học Python cho người mới bắt đầu', 'description': 'Học Python từ cơ bản đến nâng cao'}
+2025-05-28 11:47:29,209 [ERROR] - e_learning_app - DB Error on create_course_full: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'PromoVideoURL'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Language'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Statement(s) could not be prepared. (8180)")
+2025-05-28 11:47:48,252 [ERROR] - e_learning_app - DB Error on get_courses_list: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'EnrollmentsCount'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'AverageRating'. (207)")
+2025-05-28 11:49:53,798 [INFO] - e_learning_app - Received data for new course: {'title': 'Python Programming', 'short_description': 'Learn Python basics', 'description': 'Comprehensive Python course for beginners', 'price': 49.99, 'category_id': 1, 'creator_user_id': 2, 'difficulty': 'beginner', 'language': 'English', 'whatYouWillLearn': ['Basic Python syntax', 'Functions', 'Classes'], 'requirements': ['No prior programming experience needed']}
+2025-05-28 11:49:53,822 [ERROR] - e_learning_app - DB Error on create_course_full: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'PromoVideoURL'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Language'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Statement(s) could not be prepared. (8180)")
+2025-05-28 11:50:13,747 [ERROR] - e_learning_app - DB Error on get_courses_list: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'EnrollmentsCount'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'AverageRating'. (207)")
+2025-05-28 11:50:16,538 [ERROR] - e_learning_app - DB Error on get_courses_list: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'EnrollmentsCount'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'AverageRating'. (207)")
+2025-05-28 11:50:17,179 [ERROR] - e_learning_app - DB Error on get_courses_list: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'EnrollmentsCount'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'AverageRating'. (207)")
+2025-05-28 11:50:33,031 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:50:33,123 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:50:33,535 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:50:33,559 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 11:50:33,588 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 11:51:03,527 [INFO] - e_learning_app - Received data for new course: {'title': 'Python Programming', 'description': 'Comprehensive Python course for beginners', 'short_description': 'Learn Python basics', 'price': 49.99, 'original_price': 99.99, 'difficulty': 'beginner', 'language': 'English', 'status': 'draft', 'creator_user_id': 2, 'category_id': 1}
+2025-05-28 11:51:03,548 [ERROR] - e_learning_app - DB Error on create_course_full: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'PromoVideoURL'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Language'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Statement(s) could not be prepared. (8180)")
+2025-05-28 11:52:18,661 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:52:18,797 [ERROR] - e_learning_app - Error initializing database schema: ('42000', "[42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Could not drop object 'Courses' because it is referenced by a FOREIGN KEY constraint. (3726) (SQLExecDirectW)")
+2025-05-28 11:52:18,836 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 11:52:18,867 [ERROR] - e_learning_app - DB Error on get_courses_list: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'EnrollmentsCount'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'AverageRating'. (207)")
+2025-05-28 11:52:57,848 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:52:57,898 [ERROR] - e_learning_app - Error initializing database schema: ('42000', "[42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Could not drop object 'Courses' because it is referenced by a FOREIGN KEY constraint. (3726) (SQLExecDirectW)")
+2025-05-28 11:52:58,347 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:52:58,391 [ERROR] - e_learning_app - Error initializing database schema: ('42000', "[42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Could not drop object 'Courses' because it is referenced by a FOREIGN KEY constraint. (3726) (SQLExecDirectW)")
+2025-05-28 11:52:58,429 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 11:52:58,463 [ERROR] - e_learning_app - DB Error on get_courses_list: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'EnrollmentsCount'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'AverageRating'. (207)")
+2025-05-28 11:54:06,352 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:54:06,466 [ERROR] - e_learning_app - Error initializing database schema: ('42000', "[42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Could not drop object 'Courses' because it is referenced by a FOREIGN KEY constraint. (3726) (SQLExecDirectW)")
+2025-05-28 11:54:06,523 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 11:54:06,567 [ERROR] - e_learning_app - DB Error on get_courses_list: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'EnrollmentsCount'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'AverageRating'. (207)")
+2025-05-28 11:54:26,079 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:54:26,137 [ERROR] - e_learning_app - Error initializing database schema: ('42000', "[42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Could not drop object 'Courses' because it is referenced by a FOREIGN KEY constraint. (3726) (SQLExecDirectW)")
+2025-05-28 11:54:26,523 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:54:26,559 [ERROR] - e_learning_app - Error initializing database schema: ('42000', "[42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Could not drop object 'Courses' because it is referenced by a FOREIGN KEY constraint. (3726) (SQLExecDirectW)")
+2025-05-28 11:54:26,586 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 11:54:26,608 [ERROR] - e_learning_app - DB Error on get_courses_list: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'EnrollmentsCount'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'AverageRating'. (207)")
+2025-05-28 11:55:42,654 [ERROR] - e_learning_app - DB Error on get_courses_list: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'EnrollmentsCount'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'AverageRating'. (207)")
+2025-05-28 11:55:43,414 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 11:55:43,558 [ERROR] - e_learning_app - Error initializing database schema: ('42000', "[42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Could not drop object 'Courses' because it is referenced by a FOREIGN KEY constraint. (3726) (SQLExecDirectW)")
+2025-05-28 11:55:43,593 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 11:55:43,618 [ERROR] - e_learning_app - DB Error on get_courses_list: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ShortDescription'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'OriginalPrice'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'Difficulty'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'EnrollmentsCount'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'AverageRating'. (207)")
+2025-05-28 12:16:17,845 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 12:16:17,952 [ERROR] - e_learning_app - Error initializing database schema: ('42000', "[42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Could not drop object 'Courses' because it is referenced by a FOREIGN KEY constraint. (3726) (SQLExecDirectW)")
+2025-05-28 12:16:18,455 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 12:16:18,583 [ERROR] - e_learning_app - Error initializing database schema: ('42000', "[42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Could not drop object 'Courses' because it is referenced by a FOREIGN KEY constraint. (3726) (SQLExecDirectW)")
+2025-05-28 12:16:18,613 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 12:17:41,288 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 12:17:41,569 [INFO] - e_learning_app - Users table created.
+2025-05-28 12:17:41,747 [INFO] - e_learning_app - Test user created.
+2025-05-28 12:17:41,751 [INFO] - e_learning_app - Categories table created.
+2025-05-28 12:17:41,759 [INFO] - e_learning_app - Default categories inserted.
+2025-05-28 12:17:41,767 [INFO] - e_learning_app - Courses table created.
+2025-05-28 12:17:41,772 [INFO] - e_learning_app - Chapters table created.
+2025-05-28 12:17:41,779 [INFO] - e_learning_app - Lessons table created.
+2025-05-28 12:17:41,787 [INFO] - e_learning_app - UserEnrollments table created.
+2025-05-28 12:17:41,794 [INFO] - e_learning_app - Wishlist table created.
+2025-05-28 12:17:41,797 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 12:17:41,831 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 12:17:41,902 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 12:17:41,949 [INFO] - e_learning_app - Users table created.
+2025-05-28 12:17:42,085 [INFO] - e_learning_app - Test user created.
+2025-05-28 12:17:42,086 [INFO] - e_learning_app - Categories table created.
+2025-05-28 12:17:42,092 [INFO] - e_learning_app - Default categories inserted.
+2025-05-28 12:17:42,096 [INFO] - e_learning_app - Courses table created.
+2025-05-28 12:17:42,099 [INFO] - e_learning_app - Chapters table created.
+2025-05-28 12:17:42,102 [INFO] - e_learning_app - Lessons table created.
+2025-05-28 12:17:42,104 [INFO] - e_learning_app - UserEnrollments table created.
+2025-05-28 12:17:42,108 [INFO] - e_learning_app - Wishlist table created.
+2025-05-28 12:17:42,108 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 12:17:42,134 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 12:17:59,358 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 12:17:59,434 [INFO] - e_learning_app - Users table created.
+2025-05-28 12:17:59,575 [INFO] - e_learning_app - Test user created.
+2025-05-28 12:17:59,578 [INFO] - e_learning_app - Categories table created.
+2025-05-28 12:17:59,585 [INFO] - e_learning_app - Default categories inserted.
+2025-05-28 12:17:59,591 [INFO] - e_learning_app - Courses table created.
+2025-05-28 12:17:59,596 [INFO] - e_learning_app - Chapters table created.
+2025-05-28 12:17:59,600 [INFO] - e_learning_app - Lessons table created.
+2025-05-28 12:17:59,604 [INFO] - e_learning_app - UserEnrollments table created.
+2025-05-28 12:17:59,608 [INFO] - e_learning_app - Wishlist table created.
+2025-05-28 12:17:59,610 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 12:17:59,972 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 12:18:00,050 [INFO] - e_learning_app - Users table created.
+2025-05-28 12:18:00,443 [INFO] - e_learning_app - Test user created.
+2025-05-28 12:18:00,456 [INFO] - e_learning_app - Categories table created.
+2025-05-28 12:18:00,464 [INFO] - e_learning_app - Default categories inserted.
+2025-05-28 12:18:00,471 [INFO] - e_learning_app - Courses table created.
+2025-05-28 12:18:00,474 [INFO] - e_learning_app - Chapters table created.
+2025-05-28 12:18:00,492 [INFO] - e_learning_app - Lessons table created.
+2025-05-28 12:18:00,498 [INFO] - e_learning_app - UserEnrollments table created.
+2025-05-28 12:18:00,503 [INFO] - e_learning_app - Wishlist table created.
+2025-05-28 12:18:00,504 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 12:18:00,547 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 12:18:45,567 [INFO] - e_learning_app - Received data for new course: {'original_price': 99.99, 'short_description': 'Learn Python basics', 'category_id': 1, 'language': 'English', 'status': 'draft', 'title': 'Python Programming', 'difficulty': 'beginner', 'description': 'Comprehensive Python course for beginners', 'price': 49.99, 'creator_user_id': 1}
+2025-05-28 12:21:21,274 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 12:21:21,982 [INFO] - e_learning_app - Users table created.
+2025-05-28 12:21:22,273 [INFO] - e_learning_app - Test user created.
+2025-05-28 12:21:22,281 [INFO] - e_learning_app - Categories table created.
+2025-05-28 12:21:22,311 [INFO] - e_learning_app - Default categories inserted.
+2025-05-28 12:21:22,345 [INFO] - e_learning_app - Courses table created.
+2025-05-28 12:21:22,355 [INFO] - e_learning_app - Chapters table created.
+2025-05-28 12:21:22,385 [INFO] - e_learning_app - Lessons table created.
+2025-05-28 12:21:22,402 [INFO] - e_learning_app - UserEnrollments table created.
+2025-05-28 12:21:22,413 [INFO] - e_learning_app - Wishlist table created.
+2025-05-28 12:21:22,416 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 12:21:22,552 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 12:22:10,256 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 12:22:10,699 [INFO] - e_learning_app - Users table created.
+2025-05-28 12:22:11,014 [INFO] - e_learning_app - Test user created.
+2025-05-28 12:22:11,018 [INFO] - e_learning_app - Categories table created.
+2025-05-28 12:22:11,036 [INFO] - e_learning_app - Default categories inserted.
+2025-05-28 12:22:11,044 [INFO] - e_learning_app - Courses table created.
+2025-05-28 12:22:11,049 [INFO] - e_learning_app - Chapters table created.
+2025-05-28 12:22:11,055 [INFO] - e_learning_app - Lessons table created.
+2025-05-28 12:22:11,062 [INFO] - e_learning_app - UserEnrollments table created.
+2025-05-28 12:22:11,069 [INFO] - e_learning_app - Wishlist table created.
+2025-05-28 12:22:11,070 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 12:22:12,195 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 12:22:12,542 [INFO] - e_learning_app - Users table created.
+2025-05-28 12:22:12,909 [INFO] - e_learning_app - Test user created.
+2025-05-28 12:22:12,916 [INFO] - e_learning_app - Categories table created.
+2025-05-28 12:22:12,936 [INFO] - e_learning_app - Default categories inserted.
+2025-05-28 12:22:12,943 [INFO] - e_learning_app - Courses table created.
+2025-05-28 12:22:12,967 [INFO] - e_learning_app - Chapters table created.
+2025-05-28 12:22:12,975 [INFO] - e_learning_app - Lessons table created.
+2025-05-28 12:22:12,989 [INFO] - e_learning_app - UserEnrollments table created.
+2025-05-28 12:22:13,014 [INFO] - e_learning_app - Wishlist table created.
+2025-05-28 12:22:13,017 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 12:22:13,142 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 12:22:58,436 [INFO] - e_learning_app - Received data for new course: {'original_price': 99.99, 'short_description': 'Learn Python basics', 'category_id': 1, 'language': 'English', 'status': 'draft', 'title': 'Python Programming', 'difficulty': 'beginner', 'description': 'Comprehensive Python course for beginners', 'price': 49.99, 'creator_user_id': 1}
+2025-05-28 12:24:06,551 [INFO] - e_learning_app - Received data for updating course 1: {'original_price': 99.99, 'short_description': 'Learn Python basics', 'category_id': 1, 'language': 'English', 'status': 'published', 'title': 'Python Programming', 'difficulty': 'beginner', 'description': 'Comprehensive Python course for beginners', 'price': 49.99, 'creator_user_id': 1}
+2025-05-28 12:25:38,568 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 12:25:38,905 [INFO] - e_learning_app - Users table created.
+2025-05-28 12:25:39,181 [INFO] - e_learning_app - Test user created.
+2025-05-28 12:25:39,192 [INFO] - e_learning_app - Categories table created.
+2025-05-28 12:25:39,200 [INFO] - e_learning_app - Default categories inserted.
+2025-05-28 12:25:39,209 [INFO] - e_learning_app - Courses table created.
+2025-05-28 12:25:39,214 [INFO] - e_learning_app - Chapters table created.
+2025-05-28 12:25:39,225 [INFO] - e_learning_app - Lessons table created.
+2025-05-28 12:25:39,234 [INFO] - e_learning_app - UserEnrollments table created.
+2025-05-28 12:25:39,239 [INFO] - e_learning_app - Wishlist table created.
+2025-05-28 12:25:39,241 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 12:25:39,321 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 12:25:46,105 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 12:25:46,760 [INFO] - e_learning_app - Users table created.
+2025-05-28 12:25:46,984 [INFO] - e_learning_app - Test user created.
+2025-05-28 12:25:46,988 [INFO] - e_learning_app - Categories table created.
+2025-05-28 12:25:47,071 [INFO] - e_learning_app - Default categories inserted.
+2025-05-28 12:25:47,077 [INFO] - e_learning_app - Courses table created.
+2025-05-28 12:25:47,082 [INFO] - e_learning_app - Chapters table created.
+2025-05-28 12:25:47,087 [INFO] - e_learning_app - Lessons table created.
+2025-05-28 12:25:47,094 [INFO] - e_learning_app - UserEnrollments table created.
+2025-05-28 12:25:47,100 [INFO] - e_learning_app - Wishlist table created.
+2025-05-28 12:25:47,103 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 12:25:47,709 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 12:25:47,852 [INFO] - e_learning_app - Users table created.
+2025-05-28 12:25:48,106 [INFO] - e_learning_app - Test user created.
+2025-05-28 12:25:48,109 [INFO] - e_learning_app - Categories table created.
+2025-05-28 12:25:48,117 [INFO] - e_learning_app - Default categories inserted.
+2025-05-28 12:25:48,129 [INFO] - e_learning_app - Courses table created.
+2025-05-28 12:25:48,134 [INFO] - e_learning_app - Chapters table created.
+2025-05-28 12:25:48,141 [INFO] - e_learning_app - Lessons table created.
+2025-05-28 12:25:48,146 [INFO] - e_learning_app - UserEnrollments table created.
+2025-05-28 12:25:48,154 [INFO] - e_learning_app - Wishlist table created.
+2025-05-28 12:25:48,161 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 12:25:48,232 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 13:26:44,453 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 13:26:44,467 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 13:26:44,684 [ERROR] - e_learning_app - Error initializing database schema: ('42000', "[42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]'FK__Courses__Creator__5EB4F1FC' is not a constraint. (3728) (SQLExecDirectW); [42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Could not drop constraint. See previous errors. (3727)")
+2025-05-28 13:26:44,717 [INFO] - e_learning_app - Users table created.
+2025-05-28 13:26:44,741 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 13:26:44,787 [ERROR] - e_learning_app - Error in get_categories: ('42S02', "[42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid object name 'Categories'. (208) (SQLExecDirectW)")
+2025-05-28 13:26:44,787 [ERROR] - e_learning_app - DB Error on get_courses_list: ('42S02', "[42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid object name 'Courses'. (208) (SQLExecDirectW)")
+2025-05-28 13:26:44,918 [INFO] - e_learning_app - Test user created.
+2025-05-28 13:26:44,923 [INFO] - e_learning_app - Categories table created.
+2025-05-28 13:26:44,931 [INFO] - e_learning_app - Default categories inserted.
+2025-05-28 13:26:44,941 [INFO] - e_learning_app - Courses table created.
+2025-05-28 13:26:44,946 [INFO] - e_learning_app - Chapters table created.
+2025-05-28 13:26:44,952 [INFO] - e_learning_app - Lessons table created.
+2025-05-28 13:26:44,957 [INFO] - e_learning_app - UserEnrollments table created.
+2025-05-28 13:26:44,960 [INFO] - e_learning_app - Wishlist table created.
+2025-05-28 13:26:44,963 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 13:26:44,993 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 13:27:17,414 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 13:27:17,496 [INFO] - e_learning_app - Users table created.
+2025-05-28 13:27:17,662 [INFO] - e_learning_app - Test user created.
+2025-05-28 13:27:17,666 [INFO] - e_learning_app - Categories table created.
+2025-05-28 13:27:17,672 [INFO] - e_learning_app - Default categories inserted.
+2025-05-28 13:27:17,675 [INFO] - e_learning_app - Courses table created.
+2025-05-28 13:27:17,678 [INFO] - e_learning_app - Chapters table created.
+2025-05-28 13:27:17,682 [INFO] - e_learning_app - Lessons table created.
+2025-05-28 13:27:17,686 [INFO] - e_learning_app - UserEnrollments table created.
+2025-05-28 13:27:17,689 [INFO] - e_learning_app - Wishlist table created.
+2025-05-28 13:27:17,691 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 13:27:18,130 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 13:27:18,189 [INFO] - e_learning_app - Users table created.
+2025-05-28 13:27:18,343 [INFO] - e_learning_app - Test user created.
+2025-05-28 13:27:18,357 [INFO] - e_learning_app - Categories table created.
+2025-05-28 13:27:18,363 [INFO] - e_learning_app - Default categories inserted.
+2025-05-28 13:27:18,367 [INFO] - e_learning_app - Courses table created.
+2025-05-28 13:27:18,369 [INFO] - e_learning_app - Chapters table created.
+2025-05-28 13:27:18,372 [INFO] - e_learning_app - Lessons table created.
+2025-05-28 13:27:18,376 [INFO] - e_learning_app - UserEnrollments table created.
+2025-05-28 13:27:18,378 [INFO] - e_learning_app - Wishlist table created.
+2025-05-28 13:27:18,380 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 13:27:18,417 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 13:31:09,705 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 13:31:09,815 [INFO] - e_learning_app - Users table created.
+2025-05-28 13:31:09,960 [INFO] - e_learning_app - Test user created.
+2025-05-28 13:31:09,974 [INFO] - e_learning_app - Categories table created.
+2025-05-28 13:31:09,979 [INFO] - e_learning_app - Default categories inserted.
+2025-05-28 13:31:09,983 [INFO] - e_learning_app - Courses table created.
+2025-05-28 13:31:09,986 [INFO] - e_learning_app - Chapters table created.
+2025-05-28 13:31:09,988 [INFO] - e_learning_app - Lessons table created.
+2025-05-28 13:31:09,990 [INFO] - e_learning_app - UserEnrollments table created.
+2025-05-28 13:31:09,993 [INFO] - e_learning_app - Wishlist table created.
+2025-05-28 13:31:09,994 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 13:31:10,339 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 13:31:10,397 [INFO] - e_learning_app - Users table created.
+2025-05-28 13:31:10,545 [INFO] - e_learning_app - Test user created.
+2025-05-28 13:31:10,560 [INFO] - e_learning_app - Categories table created.
+2025-05-28 13:31:10,566 [INFO] - e_learning_app - Default categories inserted.
+2025-05-28 13:31:10,571 [INFO] - e_learning_app - Courses table created.
+2025-05-28 13:31:10,574 [INFO] - e_learning_app - Chapters table created.
+2025-05-28 13:31:10,577 [INFO] - e_learning_app - Lessons table created.
+2025-05-28 13:31:10,580 [INFO] - e_learning_app - UserEnrollments table created.
+2025-05-28 13:31:10,583 [INFO] - e_learning_app - Wishlist table created.
+2025-05-28 13:31:10,584 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 13:31:10,612 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 13:31:25,027 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 13:31:25,075 [INFO] - e_learning_app - Users table created.
+2025-05-28 13:31:25,214 [INFO] - e_learning_app - Test user created.
+2025-05-28 13:31:25,216 [INFO] - e_learning_app - Categories table created.
+2025-05-28 13:31:25,220 [INFO] - e_learning_app - Default categories inserted.
+2025-05-28 13:31:25,224 [INFO] - e_learning_app - Courses table created.
+2025-05-28 13:31:25,225 [INFO] - e_learning_app - Chapters table created.
+2025-05-28 13:31:25,226 [INFO] - e_learning_app - Lessons table created.
+2025-05-28 13:31:25,228 [INFO] - e_learning_app - UserEnrollments table created.
+2025-05-28 13:31:25,230 [INFO] - e_learning_app - Wishlist table created.
+2025-05-28 13:31:25,231 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 13:31:25,256 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 13:32:01,738 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 13:32:01,859 [INFO] - e_learning_app - Users table created.
+2025-05-28 13:32:02,001 [INFO] - e_learning_app - Test user created.
+2025-05-28 13:32:02,002 [INFO] - e_learning_app - Categories table created.
+2025-05-28 13:32:02,006 [INFO] - e_learning_app - Default categories inserted.
+2025-05-28 13:32:02,009 [INFO] - e_learning_app - Courses table created.
+2025-05-28 13:32:02,011 [INFO] - e_learning_app - Chapters table created.
+2025-05-28 13:32:02,013 [INFO] - e_learning_app - Lessons table created.
+2025-05-28 13:32:02,014 [INFO] - e_learning_app - UserEnrollments table created.
+2025-05-28 13:32:02,016 [INFO] - e_learning_app - Wishlist table created.
+2025-05-28 13:32:02,017 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 13:32:02,044 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 13:32:05,609 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 13:32:05,657 [INFO] - e_learning_app - Users table created.
+2025-05-28 13:32:05,785 [INFO] - e_learning_app - Test user created.
+2025-05-28 13:32:05,787 [INFO] - e_learning_app - Categories table created.
+2025-05-28 13:32:05,791 [INFO] - e_learning_app - Default categories inserted.
+2025-05-28 13:32:05,794 [INFO] - e_learning_app - Courses table created.
+2025-05-28 13:32:05,797 [INFO] - e_learning_app - Chapters table created.
+2025-05-28 13:32:05,798 [INFO] - e_learning_app - Lessons table created.
+2025-05-28 13:32:05,801 [INFO] - e_learning_app - UserEnrollments table created.
+2025-05-28 13:32:05,803 [INFO] - e_learning_app - Wishlist table created.
+2025-05-28 13:32:05,804 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 13:32:06,068 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 13:32:06,105 [INFO] - e_learning_app - Users table created.
+2025-05-28 13:32:06,234 [INFO] - e_learning_app - Test user created.
+2025-05-28 13:32:06,248 [INFO] - e_learning_app - Categories table created.
+2025-05-28 13:32:06,253 [INFO] - e_learning_app - Default categories inserted.
+2025-05-28 13:32:06,256 [INFO] - e_learning_app - Courses table created.
+2025-05-28 13:32:06,258 [INFO] - e_learning_app - Chapters table created.
+2025-05-28 13:32:06,260 [INFO] - e_learning_app - Lessons table created.
+2025-05-28 13:32:06,262 [INFO] - e_learning_app - UserEnrollments table created.
+2025-05-28 13:32:06,264 [INFO] - e_learning_app - Wishlist table created.
+2025-05-28 13:32:06,265 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 13:32:06,291 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 13:37:19,151 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 13:37:19,292 [INFO] - e_learning_app - Users table created.
+2025-05-28 13:37:19,462 [INFO] - e_learning_app - Test user created.
+2025-05-28 13:37:19,465 [INFO] - e_learning_app - Categories table created.
+2025-05-28 13:37:19,472 [INFO] - e_learning_app - Default categories inserted.
+2025-05-28 13:37:19,474 [INFO] - e_learning_app - Courses table created.
+2025-05-28 13:37:19,476 [INFO] - e_learning_app - Chapters table created.
+2025-05-28 13:37:19,478 [INFO] - e_learning_app - Lessons table created.
+2025-05-28 13:37:19,480 [INFO] - e_learning_app - UserEnrollments table created.
+2025-05-28 13:37:19,483 [INFO] - e_learning_app - Wishlist table created.
+2025-05-28 13:37:19,485 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 13:37:19,869 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 13:37:20,118 [INFO] - e_learning_app - Users table created.
+2025-05-28 13:37:20,288 [INFO] - e_learning_app - Test user created.
+2025-05-28 13:37:20,291 [INFO] - e_learning_app - Categories table created.
+2025-05-28 13:37:20,300 [INFO] - e_learning_app - Default categories inserted.
+2025-05-28 13:37:20,304 [INFO] - e_learning_app - Courses table created.
+2025-05-28 13:37:20,307 [INFO] - e_learning_app - Chapters table created.
+2025-05-28 13:37:20,310 [INFO] - e_learning_app - Lessons table created.
+2025-05-28 13:37:20,314 [INFO] - e_learning_app - UserEnrollments table created.
+2025-05-28 13:37:20,316 [INFO] - e_learning_app - Wishlist table created.
+2025-05-28 13:37:20,318 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 13:37:20,358 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 13:40:29,966 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 13:40:30,063 [INFO] - e_learning_app - Users table created.
+2025-05-28 13:40:30,195 [INFO] - e_learning_app - Test user created.
+2025-05-28 13:40:30,197 [INFO] - e_learning_app - Categories table created.
+2025-05-28 13:40:30,202 [INFO] - e_learning_app - Default categories inserted.
+2025-05-28 13:40:30,205 [INFO] - e_learning_app - Courses table created.
+2025-05-28 13:40:30,206 [INFO] - e_learning_app - Chapters table created.
+2025-05-28 13:40:30,208 [INFO] - e_learning_app - Lessons table created.
+2025-05-28 13:40:30,210 [INFO] - e_learning_app - UserEnrollments table created.
+2025-05-28 13:40:30,211 [INFO] - e_learning_app - Wishlist table created.
+2025-05-28 13:40:30,213 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 13:40:30,477 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 13:40:30,525 [INFO] - e_learning_app - Users table created.
+2025-05-28 13:40:30,655 [INFO] - e_learning_app - Test user created.
+2025-05-28 13:40:30,657 [INFO] - e_learning_app - Categories table created.
+2025-05-28 13:40:30,661 [INFO] - e_learning_app - Default categories inserted.
+2025-05-28 13:40:30,665 [INFO] - e_learning_app - Courses table created.
+2025-05-28 13:40:30,666 [INFO] - e_learning_app - Chapters table created.
+2025-05-28 13:40:30,668 [INFO] - e_learning_app - Lessons table created.
+2025-05-28 13:40:30,670 [INFO] - e_learning_app - UserEnrollments table created.
+2025-05-28 13:40:30,673 [INFO] - e_learning_app - Wishlist table created.
+2025-05-28 13:40:30,674 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 13:40:30,699 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 13:42:35,256 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 13:42:49,182 [INFO] - e_learning_app - Users table created.
+2025-05-28 13:42:49,333 [INFO] - e_learning_app - Test user created.
+2025-05-28 13:42:49,334 [INFO] - e_learning_app - Categories table created.
+2025-05-28 13:42:49,339 [INFO] - e_learning_app - Default categories inserted.
+2025-05-28 13:42:49,343 [INFO] - e_learning_app - Courses table created.
+2025-05-28 13:42:49,345 [INFO] - e_learning_app - Chapters table created.
+2025-05-28 13:42:49,347 [INFO] - e_learning_app - Lessons table created.
+2025-05-28 13:42:49,350 [INFO] - e_learning_app - UserEnrollments table created.
+2025-05-28 13:42:49,354 [INFO] - e_learning_app - Wishlist table created.
+2025-05-28 13:42:49,355 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 13:42:49,785 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 13:42:49,855 [INFO] - e_learning_app - Users table created.
+2025-05-28 13:42:49,995 [INFO] - e_learning_app - Test user created.
+2025-05-28 13:42:50,007 [INFO] - e_learning_app - Categories table created.
+2025-05-28 13:42:50,012 [INFO] - e_learning_app - Default categories inserted.
+2025-05-28 13:42:50,016 [INFO] - e_learning_app - Courses table created.
+2025-05-28 13:42:50,018 [INFO] - e_learning_app - Chapters table created.
+2025-05-28 13:42:50,019 [INFO] - e_learning_app - Lessons table created.
+2025-05-28 13:42:50,021 [INFO] - e_learning_app - UserEnrollments table created.
+2025-05-28 13:42:50,023 [INFO] - e_learning_app - Wishlist table created.
+2025-05-28 13:42:50,023 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 13:42:50,050 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 14:10:54,221 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 14:10:54,394 [INFO] - e_learning_app - Dropping table Wishlist...
+2025-05-28 14:10:54,403 [INFO] - e_learning_app - Dropping table UserEnrollments...
+2025-05-28 14:10:54,407 [INFO] - e_learning_app - Dropping table Lessons...
+2025-05-28 14:10:54,412 [INFO] - e_learning_app - Dropping table Chapters...
+2025-05-28 14:10:54,416 [INFO] - e_learning_app - Dropping table Courses...
+2025-05-28 14:10:54,421 [INFO] - e_learning_app - Dropping table Categories...
+2025-05-28 14:10:54,425 [INFO] - e_learning_app - Dropping table Users...
+2025-05-28 14:10:54,431 [INFO] - e_learning_app - Users table created.
+2025-05-28 14:10:54,434 [INFO] - e_learning_app - Test user created.
+2025-05-28 14:10:54,436 [INFO] - e_learning_app - Categories table created.
+2025-05-28 14:10:54,440 [INFO] - e_learning_app - Default categories inserted.
+2025-05-28 14:10:54,445 [INFO] - e_learning_app - Courses table created.
+2025-05-28 14:10:54,448 [INFO] - e_learning_app - Chapters table created.
+2025-05-28 14:10:54,451 [INFO] - e_learning_app - Lessons table created.
+2025-05-28 14:10:54,454 [INFO] - e_learning_app - UserEnrollments table created.
+2025-05-28 14:10:54,457 [INFO] - e_learning_app - Wishlist table created.
+2025-05-28 14:10:54,458 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 14:10:54,486 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 14:11:40,895 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 14:11:41,118 [INFO] - e_learning_app - Dropping table Wishlist...
+2025-05-28 14:11:41,125 [INFO] - e_learning_app - Dropping table UserEnrollments...
+2025-05-28 14:11:41,136 [INFO] - e_learning_app - Dropping table Lessons...
+2025-05-28 14:11:41,147 [INFO] - e_learning_app - Dropping table Chapters...
+2025-05-28 14:11:41,154 [INFO] - e_learning_app - Dropping table Courses...
+2025-05-28 14:11:41,160 [INFO] - e_learning_app - Dropping table Categories...
+2025-05-28 14:11:41,166 [INFO] - e_learning_app - Dropping table Users...
+2025-05-28 14:11:41,172 [INFO] - e_learning_app - Users table created.
+2025-05-28 14:11:41,178 [INFO] - e_learning_app - Test user created.
+2025-05-28 14:11:41,180 [INFO] - e_learning_app - Categories table created.
+2025-05-28 14:11:41,190 [INFO] - e_learning_app - Default categories inserted.
+2025-05-28 14:11:41,194 [INFO] - e_learning_app - Courses table created.
+2025-05-28 14:11:41,197 [INFO] - e_learning_app - Chapters table created.
+2025-05-28 14:11:41,200 [INFO] - e_learning_app - Lessons table created.
+2025-05-28 14:11:41,203 [INFO] - e_learning_app - UserEnrollments table created.
+2025-05-28 14:11:41,207 [INFO] - e_learning_app - Wishlist table created.
+2025-05-28 14:11:41,208 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 14:11:41,510 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 14:11:41,717 [INFO] - e_learning_app - Dropping table Wishlist...
+2025-05-28 14:11:41,723 [INFO] - e_learning_app - Dropping table UserEnrollments...
+2025-05-28 14:11:41,728 [INFO] - e_learning_app - Dropping table Lessons...
+2025-05-28 14:11:41,734 [INFO] - e_learning_app - Dropping table Chapters...
+2025-05-28 14:11:41,739 [INFO] - e_learning_app - Dropping table Courses...
+2025-05-28 14:11:41,754 [INFO] - e_learning_app - Dropping table Categories...
+2025-05-28 14:11:41,761 [INFO] - e_learning_app - Dropping table Users...
+2025-05-28 14:11:41,768 [INFO] - e_learning_app - Users table created.
+2025-05-28 14:11:41,775 [INFO] - e_learning_app - Test user created.
+2025-05-28 14:11:41,777 [INFO] - e_learning_app - Categories table created.
+2025-05-28 14:11:41,787 [INFO] - e_learning_app - Default categories inserted.
+2025-05-28 14:11:41,791 [INFO] - e_learning_app - Courses table created.
+2025-05-28 14:11:41,792 [INFO] - e_learning_app - Chapters table created.
+2025-05-28 14:11:41,795 [INFO] - e_learning_app - Lessons table created.
+2025-05-28 14:11:41,798 [INFO] - e_learning_app - UserEnrollments table created.
+2025-05-28 14:11:41,800 [INFO] - e_learning_app - Wishlist table created.
+2025-05-28 14:11:41,801 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 14:11:41,828 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 14:17:48,719 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 14:17:48,852 [INFO] - e_learning_app - Dropping table Wishlist...
+2025-05-28 14:17:48,857 [INFO] - e_learning_app - Dropping table UserEnrollments...
+2025-05-28 14:17:48,860 [INFO] - e_learning_app - Dropping table Lessons...
+2025-05-28 14:17:48,863 [INFO] - e_learning_app - Dropping table Chapters...
+2025-05-28 14:17:48,866 [INFO] - e_learning_app - Dropping table Courses...
+2025-05-28 14:17:48,871 [INFO] - e_learning_app - Dropping table Categories...
+2025-05-28 14:17:48,875 [INFO] - e_learning_app - Dropping table Users...
+2025-05-28 14:17:48,881 [INFO] - e_learning_app - Users table created.
+2025-05-28 14:17:48,886 [INFO] - e_learning_app - Test user created.
+2025-05-28 14:17:48,889 [INFO] - e_learning_app - Categories table created.
+2025-05-28 14:17:48,895 [INFO] - e_learning_app - Default categories inserted.
+2025-05-28 14:17:48,899 [INFO] - e_learning_app - Courses table created.
+2025-05-28 14:17:48,902 [INFO] - e_learning_app - Chapters table created.
+2025-05-28 14:17:48,905 [INFO] - e_learning_app - Lessons table created.
+2025-05-28 14:17:48,908 [INFO] - e_learning_app - UserEnrollments table created.
+2025-05-28 14:17:48,911 [INFO] - e_learning_app - Wishlist table created.
+2025-05-28 14:17:48,912 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 14:17:49,207 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 14:17:49,555 [INFO] - e_learning_app - Dropping table Wishlist...
+2025-05-28 14:17:49,560 [INFO] - e_learning_app - Dropping table UserEnrollments...
+2025-05-28 14:17:49,563 [INFO] - e_learning_app - Dropping table Lessons...
+2025-05-28 14:17:49,568 [INFO] - e_learning_app - Dropping table Chapters...
+2025-05-28 14:17:49,572 [INFO] - e_learning_app - Dropping table Courses...
+2025-05-28 14:17:49,577 [INFO] - e_learning_app - Dropping table Categories...
+2025-05-28 14:17:49,582 [INFO] - e_learning_app - Dropping table Users...
+2025-05-28 14:17:49,587 [INFO] - e_learning_app - Users table created.
+2025-05-28 14:17:49,592 [INFO] - e_learning_app - Test user created.
+2025-05-28 14:17:49,594 [INFO] - e_learning_app - Categories table created.
+2025-05-28 14:17:49,607 [INFO] - e_learning_app - Default categories inserted.
+2025-05-28 14:17:49,610 [INFO] - e_learning_app - Courses table created.
+2025-05-28 14:17:49,613 [INFO] - e_learning_app - Chapters table created.
+2025-05-28 14:17:49,616 [INFO] - e_learning_app - Lessons table created.
+2025-05-28 14:17:49,618 [INFO] - e_learning_app - UserEnrollments table created.
+2025-05-28 14:17:49,620 [INFO] - e_learning_app - Wishlist table created.
+2025-05-28 14:17:49,620 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 14:17:49,648 [WARNING] - werkzeug -  * Debugger is active!
+2025-05-28 14:28:49,950 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 14:29:09,494 [INFO] - e_learning_app - Dropping table Wishlist...
+2025-05-28 14:29:09,501 [INFO] - e_learning_app - Dropping table UserEnrollments...
+2025-05-28 14:29:09,505 [INFO] - e_learning_app - Dropping table Lessons...
+2025-05-28 14:29:09,511 [INFO] - e_learning_app - Dropping table Chapters...
+2025-05-28 14:29:09,518 [INFO] - e_learning_app - Dropping table Courses...
+2025-05-28 14:29:19,148 [INFO] - e_learning_app - Dropping table Categories...
+2025-05-28 14:29:19,153 [INFO] - e_learning_app - Dropping table Users...
+2025-05-28 14:29:19,156 [INFO] - e_learning_app - Users table created.
+2025-05-28 14:29:19,160 [INFO] - e_learning_app - Test user created.
+2025-05-28 14:29:19,162 [INFO] - e_learning_app - Categories table created.
+2025-05-28 14:29:19,168 [INFO] - e_learning_app - Default categories inserted.
+2025-05-28 14:29:19,170 [INFO] - e_learning_app - Courses table created.
+2025-05-28 14:29:19,172 [INFO] - e_learning_app - Chapters table created.
+2025-05-28 14:29:19,174 [INFO] - e_learning_app - Lessons table created.
+2025-05-28 14:29:19,176 [INFO] - e_learning_app - UserEnrollments table created.
+2025-05-28 14:29:19,179 [INFO] - e_learning_app - Wishlist table created.
+2025-05-28 14:29:19,179 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 14:29:19,443 [INFO] - e_learning_app - Kiểm tra và tạo bảng nếu chưa tồn tại...
+2025-05-28 14:29:19,506 [INFO] - e_learning_app - Dropping table Wishlist...
+2025-05-28 14:29:19,509 [INFO] - e_learning_app - Dropping table UserEnrollments...
+2025-05-28 14:29:19,511 [INFO] - e_learning_app - Dropping table Lessons...
+2025-05-28 14:29:19,515 [INFO] - e_learning_app - Dropping table Chapters...
+2025-05-28 14:29:19,518 [INFO] - e_learning_app - Dropping table Courses...
+2025-05-28 14:29:19,522 [INFO] - e_learning_app - Dropping table Categories...
+2025-05-28 14:29:19,525 [INFO] - e_learning_app - Dropping table Users...
+2025-05-28 14:29:19,528 [INFO] - e_learning_app - Users table created.
+2025-05-28 14:29:19,530 [INFO] - e_learning_app - Test user created.
+2025-05-28 14:29:19,531 [INFO] - e_learning_app - Categories table created.
+2025-05-28 14:29:19,536 [INFO] - e_learning_app - Default categories inserted.
+2025-05-28 14:29:19,539 [INFO] - e_learning_app - Courses table created.
+2025-05-28 14:29:19,541 [INFO] - e_learning_app - Chapters table created.
+2025-05-28 14:29:19,543 [INFO] - e_learning_app - Lessons table created.
+2025-05-28 14:29:19,545 [INFO] - e_learning_app - UserEnrollments table created.
+2025-05-28 14:29:19,547 [INFO] - e_learning_app - Wishlist table created.
+2025-05-28 14:29:19,547 [INFO] - e_learning_app - Database schema check/initialization complete!
+2025-05-28 14:29:19,571 [WARNING] - werkzeug -  * Debugger is active!

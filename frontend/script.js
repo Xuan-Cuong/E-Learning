@@ -1,11 +1,13 @@
-// --- GLOBAL STATE & CONFIGURATION ---
-let currentUser = null; 
+let currentUser = null;
 let currentSection = 'homepage';
-let currentCourseDetailId = null;
+let currentCourseDetailId = null; // ID of course being viewed
 let currentDashboardTab = 'dashboard-overview';
-let currentCreateEditCourseId = null; 
-let coursesDataCache = []; 
-let categoriesDataCache = []; 
+let currentCreateEditCourseId = null; // ID of course being edited/created
+let isEditingCourse = false; // Flag to differentiate create vs edit mode
+
+
+let coursesDataCache = [];
+let categoriesDataCache = [];
 
 // --- DOM ELEMENT SELECTORS ---
 const DOMElements = {
@@ -26,7 +28,7 @@ const DOMElements = {
     mainNavLinks: document.querySelectorAll('.main-nav .nav-link'),
     globalSearchInput: document.getElementById('global-search-input'),
     globalSearchButton: document.getElementById('global-search-button'),
-    authActions: document.querySelector('.auth-actions'), // Parent of buttons and user menu
+    authActions: document.querySelector('.auth-actions'),
     authButtonsContainer: document.querySelector('.auth-actions .auth-buttons'),
     userMenuContainer: document.querySelector('.auth-actions .user-menu'),
     userAvatarContainer: document.getElementById('user-avatar-container'),
@@ -51,9 +53,9 @@ const DOMElements = {
     // Forms
     loginForm: document.getElementById('login-form'),
     signupForm: document.getElementById('signup-form'),
-    courseForm: document.getElementById('course-form'), 
-    chapterForm: document.getElementById('chapter-form'), 
-    lessonForm: document.getElementById('lesson-form'),   
+    courseForm: document.getElementById('course-form'),
+    chapterForm: document.getElementById('chapter-form'),
+    lessonForm: document.getElementById('lesson-form'),
 
     // Homepage
     exploreCoursesBtn: document.querySelector('.explore-courses-btn'),
@@ -104,27 +106,29 @@ const DOMElements = {
     // Create/Edit Course Form
     createEditCourseTitle: document.getElementById('create-edit-course-title'),
     courseFormCourseId: document.getElementById('course-form-course-id'),
-    courseFormTabs: document.querySelectorAll('.form-tab-link'),
-    courseFormTabContents: document.querySelectorAll('.form-tab-content'),
+    courseFormTabs: document.querySelectorAll('#create-edit-course .form-tab-link'),
+    courseFormTabContents: document.querySelectorAll('#create-edit-course .form-tab-content'),
     courseTitleInput: document.getElementById('course-title-input'),
     courseSubtitleInput: document.getElementById('course-subtitle-input'),
     courseDescriptionInput: document.getElementById('course-description-input'),
     courseCategorySelect: document.getElementById('course-category-select'),
     courseDifficultySelect: document.getElementById('course-difficulty-select'),
     courseLanguageInput: document.getElementById('course-language-input'),
+    courseWhatYouWillLearnTextarea: document.getElementById('course-what-you-will-learn'),
+    courseRequirementsTextarea: document.getElementById('course-requirements'),
     curriculumBuilderArea: document.getElementById('curriculum-builder-area'),
     addChapterBtnForm: document.getElementById('add-chapter-btn-form'),
     courseImageUrlInput: document.getElementById('course-image-url-input'),
+    courseBannerImageUrlInput: document.getElementById('course-banner-image-url-input'),
     coursePromoVideoUrlInput: document.getElementById('course-promo-video-url-input'),
     coursePriceInput: document.getElementById('course-price-input'),
-    courseDiscountPriceInput: document.getElementById('course-discount-price-input'),
+    courseOriginalPriceInput: document.getElementById('course-original-price-input'),
     courseStatusSelect: document.getElementById('course-status-select'),
     saveCourseBtn: document.getElementById('save-course-btn'),
     publishCourseBtn: document.getElementById('publish-course-btn'),
     publishChecklist: document.getElementById('publish-checklist'),
 
-
-    // Chapter/Lesson Modals 
+    // Chapter/Lesson Modals
     chapterModalTitle: document.getElementById('chapter-modal-title'),
     chapterFormCourseIdModal: document.getElementById('chapter-form-course-id-modal'),
     chapterFormChapterIdModal: document.getElementById('chapter-form-chapter-id-modal'),
@@ -153,9 +157,9 @@ const DOMElements = {
     toastNotificationsArea: document.getElementById('toast-notifications-area'),
 
     // Mobile Navigation
-    mobileNavOverlay: null, 
-    mobileMainNav: null,    
-    closeMobileMenuBtn: null, 
+    mobileNavOverlay: null,
+    mobileMainNav: null,
+    closeMobileMenuBtn: null,
 };
 
 // --- INITIALIZATION ---
@@ -164,22 +168,22 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function initApp() {
+    console.log("App Initializing...");
     loadCurrentUser();
     updateAuthUI();
     setupEventListeners();
-    await loadInitialData(); 
+    await loadInitialData();
     handleInitialNavigation();
     if (DOMElements.currentYearSpan) {
         DOMElements.currentYearSpan.textContent = new Date().getFullYear();
     }
+    console.log("App Initialized.");
 }
 
 async function loadInitialData() {
     try {
         const categoriesPromise = window.api.getCategoriesApi();
-        const coursesPromise = window.api.getCoursesApi(); 
-
-        const [categoriesResponse, coursesResponse] = await Promise.all([categoriesPromise, coursesPromise]);
+        const [categoriesResponse] = await Promise.all([categoriesPromise]);
 
         if (categoriesResponse.success) {
             categoriesDataCache = categoriesResponse.data;
@@ -187,13 +191,7 @@ async function loadInitialData() {
             populateCourseFormCategorySelect(categoriesDataCache);
         } else {
             console.error("Failed to load categories:", categoriesResponse.error);
-        }
-
-        if (coursesResponse.success) {
-            coursesDataCache = coursesResponse.data;
-            // console.log("Courses loaded into cache:", coursesDataCache.length);
-        } else {
-            console.error("Failed to load courses:", coursesResponse.error);
+            showToast("Lỗi tải danh mục.", "error");
         }
     } catch (error) {
         console.error("Error loading initial data:", error);
@@ -201,21 +199,22 @@ async function loadInitialData() {
     }
 }
 
-
 function handleInitialNavigation() {
     const hash = window.location.hash.substring(1);
     if (hash) {
         const [sectionId, param, subParam] = hash.split('/');
         if (sectionId === 'course-detail' && param) {
-            navigateTo('course-detail', { courseId: param }, false);
+            navigateTo(sectionId, { courseId: param }, false);
         } else if (sectionId === 'user-dashboard' && param) {
-            navigateTo('user-dashboard', { tab: param }, false);
+            navigateTo(sectionId, { tab: param }, false);
         } else if (sectionId === 'create-edit-course') {
-             navigateTo('create-edit-course', { courseId: param, formTab: subParam }, false);
-        } else if (sectionId) {
+            const courseIdFromHash = (param && param !== '_') ? param : null;
+            // isEditingCourse and currentCreateEditCourseId will be set correctly by navigateTo
+            navigateTo(sectionId, { courseId: courseIdFromHash, formTab: subParam || 'basic-info' }, false);
+        } else if (document.getElementById(sectionId)) { // Check if section exists
             navigateTo(sectionId, null, false);
         } else {
-            navigateTo('homepage', null, false);
+            navigateTo('homepage', null, false); // Fallback if section in hash doesn't exist
         }
     } else {
         navigateTo('homepage', null, false);
@@ -242,14 +241,15 @@ function updateAuthUI() {
     if (currentUser) {
         DOMElements.authButtonsContainer.classList.add('hidden');
         DOMElements.userMenuContainer.classList.remove('hidden');
-        const avatarChar = currentUser.name ? currentUser.name.charAt(0).toUpperCase() : '?';
+        const avatarChar = currentUser.name ? currentUser.name.charAt(0).toUpperCase() : (currentUser.email ? currentUser.email.charAt(0).toUpperCase() : '?');
+
         DOMElements.userAvatarPlaceholderHeader.textContent = avatarChar;
         DOMElements.userAvatarPlaceholderDropdown.textContent = avatarChar;
-        DOMElements.userDisplayNameDropdown.textContent = currentUser.name;
+        DOMElements.userDisplayNameDropdown.textContent = currentUser.name || currentUser.email;
 
-        if (currentSection === 'user-dashboard') {
+        if (currentSection === 'user-dashboard' && DOMElements.dashboardAvatar) {
             DOMElements.dashboardAvatar.textContent = avatarChar;
-            DOMElements.dashboardUsername.textContent = currentUser.name;
+            DOMElements.dashboardUsername.textContent = currentUser.name || currentUser.email;
             DOMElements.dashboardUserEmail.textContent = currentUser.email;
         }
     } else {
@@ -263,21 +263,25 @@ function updateAuthUI() {
     }
 }
 
-function handleLogin(userData) {
+function handleLogin(userDataFromApi) {
     currentUser = {
-        ...userData,
-        avatarChar: userData.name ? userData.name.charAt(0).toUpperCase() : '?',
-        enrolledCourseIds: userData.enrolledCourseIds || [],
-        createdCourseIds: userData.createdCourseIds || [],
-        wishlist: userData.wishlist || [],
+        id: userDataFromApi.id,
+        name: userDataFromApi.name,
+        email: userDataFromApi.email,
+        avatarUrl: userDataFromApi.avatarUrl,
+        createdCourseIds: userDataFromApi.createdCourseIds || [],
+        enrolledCourseIds: userDataFromApi.enrolledCourseIds || [],
+        wishlist: userDataFromApi.wishlist || [],
     };
     saveCurrentUser();
     updateAuthUI();
     closeModal(DOMElements.loginModal);
-    showToast(`Chào mừng trở lại, ${currentUser.name}!`, "success");
-    
-    if (['course-detail', 'user-dashboard', 'create-edit-course'].includes(currentSection) || (currentSection === 'all-courses' && DOMElements.globalSearchInput.value)) {
-        loadSectionContent(currentSection, { courseId: currentCourseDetailId, tab: currentDashboardTab, courseIdForEdit: currentCreateEditCourseId });
+    showToast(`Chào mừng trở lại, ${currentUser.name || currentUser.email}!`, "success");
+
+    if (currentSection === 'course-detail' && currentCourseDetailId) {
+        renderCourseDetail(currentCourseDetailId);
+    } else if (currentSection === 'all-courses') {
+        renderAllCoursesPage();
     } else {
         navigateTo('user-dashboard', { tab: 'dashboard-overview' });
     }
@@ -293,97 +297,148 @@ function handleLogout() {
         DOMElements.userDropdownMenu.classList.add('hidden');
         DOMElements.userDropdownMenu.classList.remove('open');
     }
+
+    if (currentSection === 'create-edit-course') {
+        currentCreateEditCourseId = null;
+        isEditingCourse = false;
+    }
+
     if (['user-dashboard', 'create-edit-course'].includes(currentSection)) {
         navigateTo('homepage');
     } else if (currentSection === 'course-detail' && currentCourseDetailId) {
-        renderCourseDetail(currentCourseDetailId); // Re-render to update buttons
+        renderCourseDetail(currentCourseDetailId);
     } else if (currentSection === 'all-courses') {
-        renderAllCoursesPage(); // Re-render to update wishlist icons
+        renderAllCoursesPage();
     }
 }
 
 // --- NAVIGATION ---
 function navigateTo(sectionId, params = {}, pushState = true) {
-    // console.log(`Navigating to: ${sectionId}`, params);
+    console.log(`Navigating to: ${sectionId} with params:`, params);
     currentSection = sectionId;
-    currentCourseDetailId = (sectionId === 'course-detail' && params.courseId) ? params.courseId : null;
-    currentDashboardTab = (sectionId === 'user-dashboard' && params.tab) ? params.tab : (sectionId === 'user-dashboard' ? 'dashboard-overview' : currentDashboardTab);
-    currentCreateEditCourseId = (sectionId === 'create-edit-course' && params.courseId) ? params.courseId : null;
 
+    // Update global state variables based on navigation target
+    currentCourseDetailId = (sectionId === 'course-detail' && params && params.courseId) ? params.courseId : null;
+    currentDashboardTab = (sectionId === 'user-dashboard' && params && params.tab) ? params.tab : (sectionId === 'user-dashboard' ? 'dashboard-overview' : currentDashboardTab);
 
-    DOMElements.allSections.forEach(section => section.classList.add('hidden'));
+    if (sectionId === 'create-edit-course') {
+        isEditingCourse = !!(params && params.courseId); // True if courseId is present (editing)
+        currentCreateEditCourseId = (params && params.courseId) ? params.courseId : null; // Store the ID being edited or null for new
+    }
+    // Note: currentCreateEditCourseId and isEditingCourse are NOT reset when navigating AWAY from create-edit-course.
+    // They are only set/cleared when navigating TO create-edit-course or explicitly (e.g., logout).
+
+    // Hide all sections, then show the target one
+    DOMElements.allSections.forEach(section => {
+        section.classList.remove('active-section');
+        section.classList.add('hidden');
+    });
+
     const targetSection = document.getElementById(sectionId);
     if (targetSection) {
         targetSection.classList.remove('hidden');
+        targetSection.classList.add('active-section');
     } else {
         console.warn(`Section with ID "${sectionId}" not found. Defaulting to homepage.`);
         DOMElements.homepageSection.classList.remove('hidden');
-        currentSection = 'homepage';
+        DOMElements.homepageSection.classList.add('active-section');
+        currentSection = 'homepage'; // Update currentSection to reflect fallback
     }
 
+    // Update active state for main navigation links
     DOMElements.mainNavLinks.forEach(link => {
         link.classList.toggle('active-nav', link.dataset.section === currentSection);
     });
-    if (DOMElements.mobileMainNav) { // Update mobile nav too
+    if (DOMElements.mobileMainNav) {
         DOMElements.mobileMainNav.querySelectorAll('.nav-link').forEach(link => {
             link.classList.toggle('active-nav', link.dataset.section === currentSection);
         });
     }
 
-    if (currentSection === 'user-dashboard') {
+    // Update active state for dashboard navigation links
+    if (currentSection === 'user-dashboard' && DOMElements.dashboardNavLinks) {
         DOMElements.dashboardNavLinks.forEach(link => {
             link.classList.toggle('active', link.dataset.tab === currentDashboardTab);
         });
     }
 
-    loadSectionContent(currentSection, params);
+    loadSectionContent(currentSection, params); // Load content for the new section
 
+    // Update browser history and URL
     if (pushState) {
         let historyUrl = `#${currentSection}`;
-        if (currentCourseDetailId) historyUrl += `/${currentCourseDetailId}`;
-        else if (currentSection === 'user-dashboard' && currentDashboardTab) historyUrl += `/${currentDashboardTab}`;
-        else if (currentSection === 'create-edit-course' && currentCreateEditCourseId) historyUrl += `/${currentCreateEditCourseId}`;
-        else if (currentSection === 'create-edit-course' && params.formTab) historyUrl += `/_/${params.formTab}`; // For new course, specific tab
-        history.pushState({ section: currentSection, params }, '', historyUrl);
+        if (currentCourseDetailId) {
+            historyUrl += `/${currentCourseDetailId}`;
+        } else if (sectionId === 'user-dashboard' && currentDashboardTab) {
+            historyUrl += `/${currentDashboardTab}`;
+        } else if (sectionId === 'create-edit-course') {
+            if (currentCreateEditCourseId) { // Editing existing
+                historyUrl += `/${currentCreateEditCourseId}`;
+            } else { // Creating new
+                historyUrl += `/_`; // Placeholder for new course ID
+            }
+            // Append form tab if provided
+            if (params && params.formTab) {
+                historyUrl += `/${params.formTab}`;
+            }
+        }
+        // Only push state if URL actually changes from current hash to avoid redundant entries
+        if (window.location.hash !== historyUrl) {
+            history.pushState({ section: currentSection, params: params }, '', historyUrl);
+        }
     }
-    window.scrollTo(0, 0);
+    window.scrollTo(0, 0); // Scroll to top of page on navigation
 }
+
 
 window.onpopstate = (event) => {
     if (event.state && event.state.section) {
-        navigateTo(event.state.section, event.state.params, false);
+        // When using browser back/forward, params are in event.state.params
+        navigateTo(event.state.section, event.state.params || {}, false);
     } else {
+        // If no state, might be initial load or manual hash change
         handleInitialNavigation();
     }
 };
 
 async function loadSectionContent(sectionId, params) {
+    console.log(`Loading content for section: ${sectionId} with params:`, params);
+    // Hide all tab contents before loading new one
+    DOMElements.allSections.forEach(s => {
+      if(s.id !== sectionId) s.classList.remove('active-section'); // Remove active from others
+    });
+
     switch (sectionId) {
         case 'homepage':
             renderHomepage();
             break;
         case 'all-courses':
-            // params can include category from category page click
-            renderAllCoursesPage(params); 
+            renderAllCoursesPage(params);
             break;
         case 'course-detail':
-            if (params.courseId) renderCourseDetail(params.courseId);
+            if (params && params.courseId) renderCourseDetail(params.courseId);
+            else {
+                console.warn("Course ID missing for course-detail section.");
+                navigateTo('all-courses');
+            }
             break;
         case 'user-dashboard':
             if (!currentUser) { navigateTo('homepage'); showToast("Vui lòng đăng nhập.", "info"); return; }
-            renderUserDashboard(params.tab || 'dashboard-overview');
+            renderUserDashboard((params && params.tab) ? params.tab : 'dashboard-overview');
             break;
         case 'create-edit-course':
             if (!currentUser) { navigateTo('homepage'); showToast("Vui lòng đăng nhập.", "info"); return; }
-            renderCreateEditCourseForm(params.courseId, params.formTab); 
+            renderCreateEditCourseForm(currentCreateEditCourseId, (params && params.formTab) ? params.formTab : 'basic-info');
             break;
         case 'categories':
             renderCategoriesPage();
             break;
         case 'about-us':
+            // Static content, no specific load function needed
             break;
         default:
-            renderHomepage(); 
+            console.warn("Unhandled section:", sectionId);
+            renderHomepage(); // Fallback to homepage
     }
 }
 
@@ -392,8 +447,8 @@ async function loadSectionContent(sectionId, params) {
 // Homepage
 async function renderHomepage() {
     if (DOMElements.featuredCourseList) {
-        DOMElements.featuredCourseList.innerHTML = '<p>Đang tải khóa học...</p>'; // Loading state
-        const response = await window.api.getCoursesApi(6); // Get 6, assume API sorts by featured/popular
+        DOMElements.featuredCourseList.innerHTML = '<p>Đang tải khóa học...</p>';
+        const response = await window.api.getCoursesApi(6, '', '', '', 'popular');
         if (response.success) {
             renderCourseGrid(response.data, DOMElements.featuredCourseList);
         } else {
@@ -404,25 +459,23 @@ async function renderHomepage() {
 
 // All Courses Page
 async function renderAllCoursesPage(filters = {}) {
-    DOMElements.allCourseListContainer.innerHTML = '<p>Đang tìm kiếm khóa học...</p>'; // Loading state
+    DOMElements.allCourseListContainer.innerHTML = '<p>Đang tìm kiếm khóa học...</p>';
     const queryParams = {
-        category: filters.category || DOMElements.categoryFilter.value, // Use passed filter first
+        categoryId: filters.category || DOMElements.categoryFilter.value,
         difficulty: DOMElements.difficultyFilter.value,
         sortBy: DOMElements.sortCourses.value,
-        search: DOMElements.globalSearchInput.value.trim(),
-        ...filters // Allows passing other params like page number later
+        search: filters.search || DOMElements.globalSearchInput.value.trim(), // Use passed search first
+        ...filters
     };
-    
-    // Always fetch from API for All Courses page to ensure fresh data and server-side filtering/sorting
-    const response = await window.api.getCoursesApi(null, queryParams.search, queryParams.category, queryParams.difficulty, queryParams.sortBy);
+
+    const response = await window.api.getCoursesApi(null, queryParams.search, queryParams.categoryId, queryParams.difficulty, queryParams.sortBy);
 
     if (response.success) {
-        coursesDataCache = response.data; // Update cache with latest full/filtered list
+        coursesDataCache = response.data;
         renderCourseGrid(response.data, DOMElements.allCourseListContainer);
     } else {
         DOMElements.allCourseListContainer.innerHTML = `<p class="empty-state-message">Không thể tải danh sách khóa học.</p>`;
     }
-    // renderPagination(response.data.totalPages, response.data.currentPage); // If API supports pagination
 }
 
 // Course Detail Page
@@ -435,37 +488,36 @@ async function renderCourseDetail(courseId) {
         return;
     }
     const course = response.data;
-    currentCourseDetailId = course.id; // Ensure it's set
+    currentCourseDetailId = course.id;
 
     DOMElements.detailCourseTitleBanner.textContent = course.title;
     DOMElements.detailCourseShortDescBanner.textContent = course.shortDescription || '';
-    DOMElements.detailCourseInstructorBanner.innerHTML = `<i class="fas fa-user-tie"></i> ${course.instructorName || 'N/A'}`;
+    DOMElements.detailCourseInstructorBanner.innerHTML = `<i class="fas fa-user-tie"></i> ${escapeHTML(course.instructorName || 'N/A')}`;
     DOMElements.detailCourseRatingBanner.textContent = (course.rating || 0).toFixed(1);
     DOMElements.detailCourseReviewsCountBanner.textContent = course.reviewsCount || 0;
     DOMElements.detailCourseEnrollmentsBanner.textContent = course.enrollments || 0;
-    
-    const bannerImageUrl = course.bannerImage || course.image; // Use bannerImage if available, else course image
+
+    const bannerImageUrl = course.bannerImage || course.image;
     if (bannerImageUrl) {
-      DOMElements.courseDetailBanner.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('${bannerImageUrl}')`;
+      DOMElements.courseDetailBanner.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.7)), url('${escapeHTML(bannerImageUrl)}')`;
     } else {
-      DOMElements.courseDetailBanner.style.backgroundImage = ''; // fallback to CSS bg
+      DOMElements.courseDetailBanner.style.backgroundImage = `linear-gradient(135deg, var(--primary-color) 0%, #2980B9 100%)`;
     }
 
     DOMElements.detailCourseImageMain.src = course.image || getPlaceholderImage(course.title);
     DOMElements.detailCourseImageMain.alt = course.title;
-    
+
     const playPreviewBtn = DOMElements.courseVideoPreviewPlayer.querySelector('.play-preview-btn');
     if (course.promoVideoUrl) {
         playPreviewBtn.classList.remove('hidden');
         playPreviewBtn.onclick = () => showLessonPreviewModal({
             title: `Preview: ${course.title}`,
             type: 'video',
-            contentUrl: course.promoVideoUrl, // Assuming promoVideoUrl is embeddable or direct link
+            contentUrl: course.promoVideoUrl,
         });
     } else {
         playPreviewBtn.classList.add('hidden');
     }
-
 
     DOMElements.detailCoursePriceSidebar.textContent = formatPrice(course.price);
     if (course.originalPrice && course.originalPrice > course.price) {
@@ -478,8 +530,8 @@ async function renderCourseDetail(courseId) {
 
     updateCourseDetailButtons(course);
 
-    DOMElements.courseIncludesList.innerHTML = (course.whatYouWillLearn || course.includes || []) // Prefer 'whatYouWillLearn' if available
-        .map(item => `<li><i class="fas fa-check-circle"></i> ${item}</li>`).join('') || '<li>Thông tin đang được cập nhật.</li>';
+    DOMElements.courseIncludesList.innerHTML = (course.whatYouWillLearn || [])
+        .map(item => `<li><i class="fas fa-check-circle text-success"></i> ${escapeHTML(item)}</li>`).join('') || '<li>Thông tin đang được cập nhật.</li>';
 
     if (currentUser && currentUser.id === course.creatorUserID) {
         DOMElements.instructorManagementSidebar.classList.remove('hidden');
@@ -488,9 +540,9 @@ async function renderCourseDetail(courseId) {
     }
 
     const activeTabLink = DOMElements.courseDetailTabs.querySelector('.tab-link.active') || DOMElements.courseDetailTabs.querySelector('.tab-link[data-tab="overview"]');
-    renderCourseDetailTab(activeTabLink.dataset.tab, course);
     DOMElements.courseDetailTabs.querySelectorAll('.tab-link').forEach(tl => tl.classList.remove('active'));
     activeTabLink.classList.add('active');
+    renderCourseDetailTab(activeTabLink.dataset.tab, course);
 }
 
 function updateCourseDetailButtons(course) {
@@ -500,7 +552,7 @@ function updateCourseDetailButtons(course) {
 
     if (isCreator) {
         DOMElements.enrollNowSidebarBtn.classList.add('hidden');
-        DOMElements.goToCourseBtn.classList.add('hidden'); 
+        DOMElements.goToCourseBtn.classList.add('hidden');
         DOMElements.addToWishlistBtn.classList.add('hidden');
         DOMElements.instructorManagementSidebar.classList.remove('hidden');
     } else {
@@ -508,7 +560,7 @@ function updateCourseDetailButtons(course) {
         if (isEnrolled) {
             DOMElements.enrollNowSidebarBtn.classList.add('hidden');
             DOMElements.goToCourseBtn.classList.remove('hidden');
-            DOMElements.goToCourseBtn.onclick = () => { showToast("Chức năng vào học đang phát triển!", "info"); /* TODO: Navigate to learning interface */ };
+            DOMElements.goToCourseBtn.onclick = () => { navigateTo('course-detail', { courseId: course.id }); /* TODO: Navigate to learning interface */ };
         } else {
             DOMElements.enrollNowSidebarBtn.classList.remove('hidden');
             DOMElements.enrollNowSidebarBtn.innerHTML = `<i class="fas fa-bolt"></i> Đăng ký ngay`;
@@ -519,7 +571,7 @@ function updateCourseDetailButtons(course) {
 
         DOMElements.addToWishlistBtn.classList.remove('hidden');
         DOMElements.addToWishlistBtn.innerHTML = isWishlisted ?
-            `<i class="fas fa-heart"></i> Đã Yêu thích` :
+            `<i class="fas fa-heart text-danger"></i> Đã Yêu thích` :
             `<i class="far fa-heart"></i> Thêm vào Yêu thích`;
         DOMElements.addToWishlistBtn.classList.toggle('active', isWishlisted);
         DOMElements.addToWishlistBtn.onclick = () => handleToggleWishlist(course.id);
@@ -535,22 +587,22 @@ function renderCourseDetailTab(tabId, course) {
                 <div class="course-description-content">${course.description || '<p>Chưa có mô tả cho khóa học này.</p>'}</div>
                 ${course.whatYouWillLearn && course.whatYouWillLearn.length > 0 ? `
                     <h4>Bạn sẽ học được gì?</h4>
-                    <ul class="fa-ul">${course.whatYouWillLearn.map(item => `<li><span class="fa-li"><i class="fas fa-check"></i></span> ${item}</li>`).join('')}</ul>
+                    <ul class="fa-ul">${course.whatYouWillLearn.map(item => `<li><span class="fa-li"><i class="fas fa-check text-success"></i></span> ${escapeHTML(item)}</li>`).join('')}</ul>
                 ` : ''}
                 ${course.requirements && course.requirements.length > 0 ? `
                     <h4>Yêu cầu</h4>
-                    <ul class="fa-ul">${course.requirements.map(item => `<li><span class="fa-li"><i class="fas fa-angle-right"></i></span> ${item}</li>`).join('')}</ul>
+                    <ul class="fa-ul">${course.requirements.map(item => `<li><span class="fa-li"><i class="fas fa-angle-right"></i></span> ${escapeHTML(item)}</li>`).join('')}</ul>
                 ` : '<h4>Yêu cầu</h4><p>Không có yêu cầu đặc biệt.</p>'}
             `;
             break;
         case 'curriculum':
             content = `<h3>Nội dung khóa học</h3>`;
-            if (course.chapters && course.chapters.length > 0) { // Assuming API returns 'chapters' array
+            if (course.chapters && course.chapters.length > 0) {
                 course.chapters.forEach((chapter, index) => {
                     content += `
                         <div class="curriculum-section ${index === 0 ? 'open' : ''}">
                             <div class="curriculum-section-header" data-chapter-id="${chapter.id}">
-                                <h4>${chapter.title}</h4>
+                                <h4>${escapeHTML(chapter.title)}</h4>
                                 <span class="section-meta">${chapter.lessons_count || (chapter.lessons ? chapter.lessons.length : 0)} bài giảng • ${calculateChapterDuration(chapter.lessons)}</span>
                                 <i class="fas fa-chevron-down toggle-icon"></i>
                             </div>
@@ -558,8 +610,13 @@ function renderCourseDetailTab(tabId, course) {
                                 ${(chapter.lessons || []).map(lesson => `
                                     <li class="curriculum-lesson-item" data-lesson-id="${lesson.id}">
                                         <i class="fas ${getLessonIcon(lesson.type)} lesson-type-icon"></i>
-                                        <span class="lesson-title-curriculum">${lesson.title}</span>
-                                        ${lesson.is_previewable ? `<button class="btn btn-xs btn-outline lesson-preview-btn-curriculum" data-lesson-type="${lesson.type}" data-lesson-content="${lesson.content_url || escape(lesson.content_text || '')}" data-lesson-title="${escape(lesson.title)}">Xem trước</button>` : ''}
+                                        <span class="lesson-title-curriculum">${escapeHTML(lesson.title)}</span>
+                                        ${lesson.is_previewable ? `<button class="btn btn-xs btn-outline lesson-preview-btn-curriculum"
+                                            data-lesson-title="${escapeHTML(lesson.title)}"
+                                            data-lesson-type="${lesson.type}"
+                                            data-lesson-content-url="${lesson.content_url || ''}"
+                                            data-lesson-content-text="${escapeHTML(lesson.content_text || '')}"
+                                            >Xem trước</button>` : ''}
                                         <span class="lesson-duration-curriculum">${lesson.duration_minutes ? formatDuration(lesson.duration_minutes) : ''}</span>
                                     </li>
                                 `).join('')}
@@ -572,18 +629,17 @@ function renderCourseDetailTab(tabId, course) {
             }
             break;
         case 'instructor':
-            const instructor = course.instructor; // Assuming API returns instructor object
+            const instructor = course.instructor;
             if (instructor) {
                 content = `
                     <h3>Về Giảng viên</h3>
                     <div class="instructor-profile-box">
                         <div class="instructor-avatar">
-                            <img src="${instructor.avatar_url || getPlaceholderAvatar(instructor.name)}" alt="${instructor.name}">
+                            <img src="${instructor.avatar_url || getPlaceholderAvatar(instructor.name)}" alt="${escapeHTML(instructor.name)}">
                         </div>
                         <div class="instructor-info">
-                            <h4>${instructor.name}</h4>
-                            <p class="instructor-title">${instructor.title || 'Chuyên gia đào tạo'}</p>
-                            <!-- Add stats like total students, reviews, courses if available -->
+                            <h4>${escapeHTML(instructor.name)}</h4>
+                            <p class="instructor-title">${escapeHTML(instructor.title || 'Chuyên gia đào tạo')}</p>
                         </div>
                     </div>
                     <div class="instructor-bio">${instructor.bio || 'Chưa có thông tin giới thiệu về giảng viên.'}</div>
@@ -593,20 +649,19 @@ function renderCourseDetailTab(tabId, course) {
             }
             break;
         case 'reviews':
-            content = `<h3>Đánh giá từ học viên (${course.reviews_count || 0})</h3>`;
+            content = `<h3>Đánh giá từ học viên (${course.reviewsCount || 0})</h3>`;
             if (course.reviews && course.reviews.length > 0) {
-                 // TODO: Add rating summary (stars breakdown) if API provides it
                 content += `<div class="review-list">`;
                 course.reviews.forEach(review => {
                     content += `
                         <div class="review-item">
                             <div class="review-header">
                                 <span class="review-avatar">${review.user_name ? review.user_name.charAt(0).toUpperCase() : '?'}</span>
-                                <span class="review-author-name">${review.user_name}</span>
+                                <span class="review-author-name">${escapeHTML(review.user_name)}</span>
                                 <span class="review-rating">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</span>
                                 <span class="review-date">${formatDate(review.created_at)}</span>
                             </div>
-                            <p class="review-content">${review.comment}</p>
+                            <p class="review-content">${escapeHTML(review.comment)}</p>
                         </div>
                     `;
                 });
@@ -614,10 +669,9 @@ function renderCourseDetailTab(tabId, course) {
             } else {
                 content += `<p>Chưa có đánh giá nào cho khóa học này.</p>`;
             }
-            // TODO: Add "Write a review" button if user is enrolled and hasn't reviewed
             break;
         case 'qna':
-             content = `<h3>Hỏi & Đáp</h3><p>Tính năng Hỏi & Đáp sắp ra mắt. Đặt câu hỏi và nhận câu trả lời từ giảng viên và cộng đồng.</p>`;
+             content = `<h3>Hỏi & Đáp</h3><p>Tính năng Hỏi & Đáp sắp ra mắt.</p>`;
             break;
     }
     DOMElements.courseTabContentContainer.innerHTML = `<div class="tab-pane active">${content}</div>`;
@@ -630,14 +684,15 @@ function renderCourseDetailTab(tabId, course) {
         });
         document.querySelectorAll('.lesson-preview-btn-curriculum').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                const lessonTitle = unescape(e.currentTarget.dataset.lessonTitle);
+                const lessonTitle = e.currentTarget.dataset.lessonTitle;
                 const lessonType = e.currentTarget.dataset.lessonType;
-                const lessonContent = e.currentTarget.dataset.lessonContent;
+                const lessonContentUrl = e.currentTarget.dataset.lessonContentUrl;
+                const lessonContentText = e.currentTarget.dataset.lessonContentText;
                 showLessonPreviewModal({
-                    title: lessonTitle,
+                    title: unescapeHTML(lessonTitle),
                     type: lessonType,
-                    contentUrl: lessonType === 'video' ? lessonContent : null, // Assuming content is URL for video
-                    contentText: lessonType === 'text' ? unescape(lessonContent) : null,
+                    contentUrl: lessonContentUrl,
+                    contentText: unescapeHTML(lessonContentText),
                 });
             });
         });
@@ -651,66 +706,68 @@ async function renderUserDashboard(tabId = 'dashboard-overview') {
         link.classList.toggle('active', link.dataset.tab === tabId);
     });
      if (currentUser) {
-        DOMElements.dashboardAvatar.textContent = currentUser.avatarChar;
-        DOMElements.dashboardUsername.textContent = currentUser.name;
+        const avatarChar = currentUser.name ? currentUser.name.charAt(0).toUpperCase() : (currentUser.email ? currentUser.email.charAt(0).toUpperCase() : '?');
+        DOMElements.dashboardAvatar.textContent = avatarChar;
+        DOMElements.dashboardUsername.textContent = currentUser.name || currentUser.email;
         DOMElements.dashboardUserEmail.textContent = currentUser.email;
     }
     DOMElements.dashboardMainContent.innerHTML = `<div class="dashboard-tab-content active"><p>Đang tải nội dung...</p></div>`;
 
     let content = '';
+    let responseData;
+
     switch (tabId) {
         case 'dashboard-overview':
-            content = `<h2>Chào mừng, ${currentUser.name}!</h2><p>Đây là bảng điều khiển của bạn. Theo dõi tiến độ học tập và quản lý các khóa học.</p>`;
-            // TODO: Add widgets
+            content = `<h2>Chào mừng, ${escapeHTML(currentUser.name || currentUser.email)}!</h2><p>Đây là bảng điều khiển của bạn. Theo dõi tiến độ học tập và quản lý các khóa học.</p>`;
             break;
         case 'my-courses':
             content = `<h2>Khóa học đã tạo</h2>`;
-            const createdResponse = await window.api.getUserCoursesApi(currentUser.id, 'created');
-            if (createdResponse.success && createdResponse.data.length > 0) {
+            responseData = await window.api.getUserCreatedCoursesApi(currentUser.id);
+            if (responseData.success && responseData.data.length > 0) {
                 content += `<div class="course-grid dashboard-course-grid">`;
-                createdResponse.data.forEach(course => content += generateCourseCardHTML(course, { showManageButton: true }));
+                responseData.data.forEach(course => content += generateCourseCardHTML(course, { showManageButton: true, showStatus: true }));
                 content += `</div>`;
-            } else if (createdResponse.success) {
+            } else if (responseData.success) {
                  content += `<div class="empty-state-message">
                                 <i class="fas fa-chalkboard"></i>
                                 <p>Bạn chưa tạo khóa học nào.</p>
                                 <button class="btn btn-primary create-course-from-dashboard-btn"><i class="fas fa-plus"></i> Tạo khóa học mới</button>
                             </div>`;
             } else {
-                content += `<p class="text-danger">Lỗi tải khóa học đã tạo.</p>`;
+                content += `<p class="text-danger">Lỗi tải khóa học đã tạo: ${responseData.error || 'Unknown error'}</p>`;
             }
             break;
         case 'enrolled-courses':
             content = `<h2>Khóa học đã đăng ký</h2>`;
-            const enrolledResponse = await window.api.getUserEnrolledCoursesApi(currentUser.id);
-            if (enrolledResponse.success && enrolledResponse.data.length > 0) {
+            responseData = await window.api.getUserEnrolledCoursesApi(currentUser.id);
+            if (responseData.success && responseData.data.length > 0) {
                 content += `<div class="course-grid dashboard-course-grid">`;
-                enrolledResponse.data.forEach(course => content += generateCourseCardHTML(course, { showProgress: true })); // Assuming API returns course objects
+                responseData.data.forEach(course => content += generateCourseCardHTML(course, { showProgress: true }));
                 content += `</div>`;
-            } else if (enrolledResponse.success) {
+            } else if (responseData.success) {
                 content += `<div class="empty-state-message">
                                 <i class="fas fa-book-reader"></i>
                                 <p>Bạn chưa đăng ký khóa học nào.</p>
                                 <button class="btn btn-primary browse-courses-from-dashboard-btn"><i class="fas fa-search"></i> Duyệt khóa học</button>
                             </div>`;
             } else {
-                 content += `<p class="text-danger">Lỗi tải khóa học đã đăng ký.</p>`;
+                 content += `<p class="text-danger">Lỗi tải khóa học đã đăng ký: ${responseData.error || 'Unknown error'}</p>`;
             }
             break;
         case 'wishlist':
             content = `<h2>Danh sách Yêu thích</h2>`;
-            const wishlistResponse = await window.api.getUserWishlistApi(currentUser.id); // Needs new API endpoint
-            if (wishlistResponse.success && wishlistResponse.data.length > 0) {
+            responseData = await window.api.getUserWishlistApi(currentUser.id);
+            if (responseData.success && responseData.data.length > 0) {
                 content += `<div class="course-grid dashboard-course-grid">`;
-                wishlistResponse.data.forEach(course => content += generateCourseCardHTML(course));
+                responseData.data.forEach(course => content += generateCourseCardHTML(course));
                 content += `</div>`;
-            } else if (wishlistResponse.success) {
+            } else if (responseData.success) {
                 content += `<div class="empty-state-message">
                                 <i class="far fa-heart"></i>
                                 <p>Danh sách yêu thích của bạn trống.</p>
                             </div>`;
             } else {
-                content += `<p class="text-danger">Lỗi tải danh sách yêu thích.</p>`;
+                content += `<p class="text-danger">Lỗi tải danh sách yêu thích: ${responseData.error || 'Unknown error'}</p>`;
             }
             break;
         case 'order-history':
@@ -721,11 +778,11 @@ async function renderUserDashboard(tabId = 'dashboard-overview') {
                 <form id="profile-settings-form" class="modern-form" style="max-width: 600px; margin: 20px auto;">
                     <div class="form-group">
                         <label for="profile-name">Họ và tên:</label>
-                        <input type="text" id="profile-name" value="${currentUser.name}" required>
+                        <input type="text" id="profile-name" value="${escapeHTML(currentUser.name || '')}" required>
                     </div>
                     <div class="form-group">
                         <label for="profile-email">Email:</label>
-                        <input type="email" id="profile-email" value="${currentUser.email}" required disabled>
+                        <input type="email" id="profile-email" value="${escapeHTML(currentUser.email)}" required disabled>
                          <small>Email không thể thay đổi.</small>
                     </div>
                     <div class="form-group">
@@ -734,7 +791,7 @@ async function renderUserDashboard(tabId = 'dashboard-overview') {
                     </div>
                     <div class="form-group">
                         <label for="profile-new-password">Mật khẩu mới:</label>
-                        <input type="password" id="profile-new-password" minlength="6">
+                        <input type="password" id="profile-new-password" minlength="6" placeholder="Ít nhất 6 ký tự">
                     </div>
                     <div class="form-group">
                         <label for="profile-confirm-new-password">Xác nhận mật khẩu mới:</label>
@@ -749,7 +806,11 @@ async function renderUserDashboard(tabId = 'dashboard-overview') {
 
     if (tabId === 'my-courses') {
         const createBtn = DOMElements.dashboardMainContent.querySelector('.create-course-from-dashboard-btn');
-        if (createBtn) createBtn.addEventListener('click', () => navigateTo('create-edit-course'));
+        if (createBtn) createBtn.addEventListener('click', () => {
+            currentCreateEditCourseId = null;
+            isEditingCourse = false;
+            navigateTo('create-edit-course');
+        });
     }
     if (tabId === 'enrolled-courses') {
         const browseBtn = DOMElements.dashboardMainContent.querySelector('.browse-courses-from-dashboard-btn');
@@ -761,70 +822,91 @@ async function renderUserDashboard(tabId = 'dashboard-overview') {
     }
 }
 
-// Create/Edit Course Form
-function renderCreateEditCourseForm(courseId = null, targetTab = 'basic-info') {
-    currentCreateEditCourseId = courseId;
-    DOMElements.courseForm.reset(); 
-    DOMElements.curriculumBuilderArea.innerHTML = ''; 
-    
-    // Reset tabs
-    DOMElements.courseFormTabs.forEach(tab => tab.classList.remove('active'));
-    DOMElements.courseFormTabContents.forEach(content => content.classList.remove('active'));
-    
-    const activeTabButton = Array.from(DOMElements.courseFormTabs).find(tab => tab.dataset.formTab === targetTab) || DOMElements.courseFormTabs[0];
-    const activeTabContent = Array.from(DOMElements.courseFormTabContents).find(content => content.dataset.formTabId === targetTab) || DOMElements.courseFormTabContents[0];
-    
-    activeTabButton.classList.add('active');
-    activeTabContent.classList.add('active');
 
-    DOMElements.publishChecklist.classList.add('hidden'); // Hide checklist initially
-    DOMElements.publishCourseBtn.classList.add('hidden');
-    DOMElements.courseStatusSelect.value = 'draft'; // Default to draft
+async function renderCreateEditCourseForm(courseIdToUse = null, targetTab = 'basic-info') {
+    console.log(`renderCreateEditCourseForm: courseIdToUse=${courseIdToUse}, isEditingCourse=${isEditingCourse}, targetTab=${targetTab}`);
 
-    if (courseId) {
-        DOMElements.createEditCourseTitle.textContent = "Chỉnh sửa Khóa học";
-        DOMElements.saveCourseBtn.innerHTML = '<i class="fas fa-save"></i> Lưu Thay đổi';
-        loadCourseDataForEditing(courseId);
-    } else {
+    if (!isEditingCourse) { // Tạo mới
+        console.log("Rendering NEW course form.");
+        DOMElements.courseForm.reset();
+        DOMElements.courseFormCourseId.value = '';
+        DOMElements.curriculumBuilderArea.innerHTML = '';
         DOMElements.createEditCourseTitle.textContent = "Tạo Khóa Học Mới";
         DOMElements.saveCourseBtn.innerHTML = '<i class="fas fa-save"></i> Lưu Bản Nháp';
-        DOMElements.courseFormCourseId.value = ''; 
         DOMElements.courseLanguageInput.value = "Tiếng Việt";
-        updatePublishButtonState(); // Check if new course can be published
+        DOMElements.courseStatusSelect.value = 'draft';
+    } else if (courseIdToUse) { // Chỉnh sửa
+        console.log(`Rendering EDIT course form for ID: ${courseIdToUse}`);
+        DOMElements.createEditCourseTitle.textContent = "Chỉnh sửa Khóa học";
+        DOMElements.saveCourseBtn.innerHTML = '<i class="fas fa-save"></i> Lưu Thay đổi';
+        DOMElements.courseFormCourseId.value = courseIdToUse;
+        await loadCourseDataForEditing(courseIdToUse);
+    } else {
+        console.error("State error in renderCreateEditCourseForm: isEditingCourse is true but courseIdToUse is null.");
+        showToast("Lỗi tải form. Vui lòng thử lại.", "error");
+        navigateTo('user-dashboard', { tab: 'my-courses' });
+        return;
     }
-    // Add listeners to form inputs to update publish button state dynamically
-    ['input', 'change'].forEach(eventType => {
-        DOMElements.courseForm.addEventListener(eventType, updatePublishButtonState);
-    });
-}
 
+    DOMElements.courseFormTabs.forEach(tab => tab.classList.remove('active'));
+    DOMElements.courseFormTabContents.forEach(content => content.classList.remove('active'));
+
+    let validTargetTab = targetTab;
+    const availableTabs = Array.from(DOMElements.courseFormTabs).map(t => t.dataset.formTab);
+    if (!availableTabs.includes(targetTab)) {
+        validTargetTab = 'basic-info';
+    }
+
+    const activeTabButton = Array.from(DOMElements.courseFormTabs).find(tab => tab.dataset.formTab === validTargetTab);
+    const activeTabContent = Array.from(DOMElements.courseFormTabContents).find(content => content.dataset.formTabId === validTargetTab);
+
+    if(activeTabButton) activeTabButton.classList.add('active');
+    if(activeTabContent) activeTabContent.classList.add('active');
+
+    updatePublishButtonState();
+
+    if (!DOMElements.courseForm.dataset.listenersAttached) {
+        ['input', 'change'].forEach(eventType => {
+            DOMElements.courseForm.addEventListener(eventType, updatePublishButtonState);
+        });
+        DOMElements.curriculumBuilderArea.addEventListener('chapterAdded', updatePublishButtonState);
+        DOMElements.curriculumBuilderArea.addEventListener('chapterRemoved', updatePublishButtonState);
+        DOMElements.curriculumBuilderArea.addEventListener('lessonAdded', updatePublishButtonState);
+        DOMElements.curriculumBuilderArea.addEventListener('lessonRemoved', updatePublishButtonState);
+        DOMElements.curriculumBuilderArea.addEventListener('lessonUpdated', updatePublishButtonState);
+        DOMElements.courseForm.dataset.listenersAttached = 'true';
+    }
+}
 async function loadCourseDataForEditing(courseId) {
-    const response = await window.api.getCourseDetailApi(courseId); 
+    const response = await window.api.getCourseDetailApi(courseId);
     if (response.success && response.data) {
         const course = response.data;
         DOMElements.courseFormCourseId.value = course.id;
-        DOMElements.courseTitleInput.value = course.title;
-        DOMElements.courseSubtitleInput.value = course.short_description || '';
+        DOMElements.courseTitleInput.value = course.title || '';
+        DOMElements.courseSubtitleInput.value = course.shortDescription || '';
         DOMElements.courseDescriptionInput.value = course.description || '';
-        DOMElements.courseCategorySelect.value = course.category_id || ''; // Assuming API returns category_id
+        DOMElements.courseCategorySelect.value = course.category_id || '';
         DOMElements.courseDifficultySelect.value = course.difficulty || 'beginner';
         DOMElements.courseLanguageInput.value = course.language || 'Tiếng Việt';
 
-        DOMElements.curriculumBuilderArea.innerHTML = ''; 
+        DOMElements.courseWhatYouWillLearnTextarea.value = (course.whatYouWillLearn || []).join('\n');
+        DOMElements.courseRequirementsTextarea.value = (course.requirements || []).join('\n');
+
+        DOMElements.curriculumBuilderArea.innerHTML = '';
         if (course.chapters && course.chapters.length > 0) {
             course.chapters.forEach(chapter => {
-                // API returns lessons within chapter
                 addChapterToFormUI(chapter.id, chapter.title, chapter.description, chapter.lessons);
             });
         }
 
-        DOMElements.courseImageUrlInput.value = course.image_url || '';
-        DOMElements.coursePromoVideoUrlInput.value = course.promo_video_url || '';
-        DOMElements.coursePriceInput.value = course.price || 0;
-        DOMElements.courseDiscountPriceInput.value = course.original_price > course.price ? course.original_price : '';
+        DOMElements.courseImageUrlInput.value = course.image || '';
+        DOMElements.courseBannerImageUrlInput.value = course.bannerImage || '';
+        DOMElements.coursePromoVideoUrlInput.value = course.promoVideoUrl || '';
+        DOMElements.coursePriceInput.value = course.price === null || course.price === undefined ? '' : course.price;
+        DOMElements.courseOriginalPriceInput.value = course.originalPrice === null || course.originalPrice === undefined ? '' : course.originalPrice;
 
         DOMElements.courseStatusSelect.value = course.status || 'draft';
-        updatePublishButtonState(); // Update based on loaded data
+        updatePublishButtonState();
 
     } else {
         showToast("Lỗi tải dữ liệu khóa học để chỉnh sửa.", "error");
@@ -832,24 +914,22 @@ async function loadCourseDataForEditing(courseId) {
     }
 }
 
-
 // Categories Page
 async function renderCategoriesPage() {
     DOMElements.categoryListDisplay.innerHTML = "<p>Đang tải danh mục...</p>";
-    if (categoriesDataCache.length === 0) {
-        const response = await window.api.getCategoriesApi();
-        if (response.success) categoriesDataCache = response.data;
-        else {
-            DOMElements.categoryListDisplay.innerHTML = `<p class="empty-state-message">Không thể tải danh mục.</p>`;
-            return;
-        }
+    const response = await window.api.getCategoriesApi();
+    if (response.success) {
+        categoriesDataCache = response.data;
+    } else {
+        DOMElements.categoryListDisplay.innerHTML = `<p class="empty-state-message">Không thể tải danh mục.</p>`;
+        return;
     }
 
     if (categoriesDataCache.length > 0) {
         DOMElements.categoryListDisplay.innerHTML = categoriesDataCache.map(cat => `
             <a href="#" class="category-card" data-category-id="${cat.id}">
                 <i class="${cat.icon || 'fas fa-shapes'}"></i>
-                <h3>${cat.name}</h3>
+                <h3>${escapeHTML(cat.name)}</h3>
                 <p>${cat.course_count || 0} khóa học</p>
             </a>
         `).join('');
@@ -867,17 +947,17 @@ async function renderCategoriesPage() {
 // --- HELPER & UTILITY FUNCTIONS ---
 
 function formatPrice(price) {
-    if (price === null || price === undefined || price < 0) return "N/A"; // Handle null/undefined
-    if (price === 0 || price === '0') return "Miễn phí";
+    if (price === null || price === undefined || price < 0) return "N/A";
+    if (price === 0) return "Miễn phí";
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
 }
 
 function formatDate(dateString) {
     if (!dateString) return '';
     try {
-        return new Date(dateString).toLocaleDateString('vi-VN', { day: 'numeric', month: 'long', year: 'numeric' });
+        return new Date(dateString).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
     } catch (e) {
-        return dateString; // Fallback if date is invalid
+        return dateString;
     }
 }
 
@@ -885,12 +965,15 @@ function formatDuration(minutes) {
     if (!minutes || minutes <= 0) return '';
     const h = Math.floor(minutes / 60);
     const m = minutes % 60;
-    return `${h > 0 ? h + ' giờ ' : ''}${m > 0 ? m + ' phút' : ''}`.trim();
+    let parts = [];
+    if (h > 0) parts.push(`${h} giờ`);
+    if (m > 0) parts.push(`${m} phút`);
+    return parts.join(' ');
 }
 
 function calculateChapterDuration(lessons = []) {
     const totalMinutes = lessons.reduce((sum, lesson) => sum + (lesson.duration_minutes || 0), 0);
-    return formatDuration(totalMinutes);
+    return formatDuration(totalMinutes) || '0 phút';
 }
 
 function getLessonIcon(type) {
@@ -898,26 +981,45 @@ function getLessonIcon(type) {
         case 'video': return 'fa-play-circle';
         case 'text': return 'fa-file-alt';
         case 'quiz': return 'fa-question-circle';
-        case 'document': return 'fa-file-pdf'; 
+        case 'document': return 'fa-file-pdf';
         case 'audio': return 'fa-volume-up';
         default: return 'fa-book-reader';
     }
 }
-
 function getPlaceholderImage(text = 'Course') {
-    const cleanText = text.replace(/[^a-zA-Z0-9\s]/g, '').substring(0,20); // Sanitize and shorten
-    return `https://via.placeholder.com/750x422/E0E0E0/777777?text=${encodeURIComponent(cleanText)}`;
+    const cleanText = text.replace(/[^a-zA-Z0-9\sÀ-ỹ]/gu, '').substring(0,20);
+    return `https://via.placeholder.com/750x422/E0E0E0/777777?text=${encodeURIComponent(cleanText || 'TriThucHub')}`;
 }
 function getPlaceholderAvatar(name = 'User') {
-    return `https://via.placeholder.com/100/4A90E2/FFFFFF?text=${encodeURIComponent(name.charAt(0).toUpperCase())}`;
+    const char = name ? name.charAt(0).toUpperCase() : '?';
+    return `https://via.placeholder.com/100/4A90E2/FFFFFF?text=${encodeURIComponent(char)}`;
 }
+
+function escapeHTML(str) {
+    if (str === null || str === undefined) return '';
+    return String(str).replace(/[&<>"']/g, function (match) {
+        return {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        }[match];
+    });
+}
+function unescapeHTML(str) {
+    if (str === null || str === undefined) return '';
+    const doc = new DOMParser().parseFromString(String(str), 'text/html');
+    return doc.documentElement.textContent;
+}
+
 
 function populateCategoryFilter(categories) {
     if (DOMElements.categoryFilter) {
-        DOMElements.categoryFilter.innerHTML = `<option value="">Tất cả Danh mục</option>`; 
+        DOMElements.categoryFilter.innerHTML = `<option value="">Tất cả Danh mục</option>`;
         categories.forEach(cat => {
             const option = document.createElement('option');
-            option.value = cat.id; 
+            option.value = cat.id;
             option.textContent = cat.name;
             DOMElements.categoryFilter.appendChild(option);
         });
@@ -925,7 +1027,7 @@ function populateCategoryFilter(categories) {
 }
 function populateCourseFormCategorySelect(categories) {
      if (DOMElements.courseCategorySelect) {
-        DOMElements.courseCategorySelect.innerHTML = `<option value="">Chọn danh mục</option>`; 
+        DOMElements.courseCategorySelect.innerHTML = `<option value="">Chọn danh mục</option>`;
         categories.forEach(cat => {
             const option = document.createElement('option');
             option.value = cat.id;
@@ -938,41 +1040,45 @@ function populateCourseFormCategorySelect(categories) {
 
 function generateCourseCardHTML(course, options = {}) {
     const isWishlisted = currentUser && currentUser.wishlist && currentUser.wishlist.includes(course.id);
-    let footerContent = `
-        <span class="course-card-price">
-            ${formatPrice(course.price)}
-            ${(course.original_price && course.original_price > course.price) ? `<span class="original">${formatPrice(course.original_price)}</span>` : ''}
-        </span>
-        <i class="wishlist-icon ${isWishlisted ? 'fas fa-heart active' : 'far fa-heart'}" data-course-id="${course.id}" title="${isWishlisted ? 'Xóa khỏi Yêu thích' : 'Thêm vào Yêu thích'}"></i>
-    `;
 
-    if (options.showManageButton && currentUser && course.creator_user_id === currentUser.id) {
+    let footerContent;
+    if (options.showManageButton && currentUser && course.creatorUserID === currentUser.id) {
         footerContent = `<button class="btn btn-sm btn-primary manage-course-btn-card" data-course-id="${course.id}"><i class="fas fa-edit"></i> Quản lý</button>`;
+        if(options.showStatus && course.status) {
+             footerContent += `<span class="badge badge-${course.status === 'published' ? 'success' : 'warning'} ml-2">${course.status === 'published' ? 'Đã Xuất bản' : 'Bản nháp'}</span>`;
+        }
     } else if (options.showProgress && currentUser && currentUser.enrolledCourseIds.includes(course.id)) {
-        const progress = currentUser.courseProgress ? (currentUser.courseProgress[course.id] || 0) : 0; // Placeholder
+        const progress = course.progress || 0;
         footerContent = `
-            <div class="course-progress-bar" style="width:100%; background:#e0e0e0; border-radius:4px; height:8px; margin-bottom:5px;">
-                <div style="width:${progress}%; background:var(--success-color); height:100%; border-radius:4px;"></div>
+            <div class="course-progress-bar">
+                <div style="width:${progress}%;"></div>
             </div>
             <small>${progress}% hoàn thành</small>
             <button class="btn btn-sm btn-primary continue-learning-btn-card" data-course-id="${course.id}">Tiếp tục học</button>
         `;
+    } else {
+        footerContent = `
+            <span class="course-card-price">
+                ${formatPrice(course.price)}
+                ${(course.original_price && course.original_price > course.price) ? `<span class="original">${formatPrice(course.original_price)}</span>` : ''}
+            </span>
+            <i class="wishlist-icon ${isWishlisted ? 'fas fa-heart text-danger' : 'far fa-heart'}" data-course-id="${course.id}" title="${isWishlisted ? 'Xóa khỏi Yêu thích' : 'Thêm vào Yêu thích'}"></i>
+        `;
     }
-
 
     return `
         <div class="course-card" data-course-id="${course.id}">
             <div class="course-card-image">
-                <img src="${course.image_url || getPlaceholderImage(course.title)}" alt="${course.title}">
+                <img src="${course.image_url || getPlaceholderImage(course.title)}" alt="${escapeHTML(course.title)}">
             </div>
             <div class="course-card-content">
-                ${course.category_name ? `<span class="course-card-category">${course.category_name}</span>` : ''}
-                <h3 class="course-card-title" title="${course.title}">${course.title}</h3>
-                <p class="course-card-instructor"><i class="fas fa-chalkboard-teacher"></i> ${course.instructor_name || 'N/A'}</p>
+                ${course.category_name ? `<span class="course-card-category">${escapeHTML(course.category_name)}</span>` : ''}
+                <h3 class="course-card-title" title="${escapeHTML(course.title)}">${escapeHTML(course.title)}</h3>
+                <p class="course-card-instructor"><i class="fas fa-chalkboard-teacher"></i> ${escapeHTML(course.instructor_name || 'N/A')}</p>
                 <div class="course-card-meta">
-                    <span class="course-card-rating"><i class="fas fa-star"></i> ${(course.average_rating || course.rating || 0).toFixed(1)}</span>
-                    <span><i class="fas fa-users"></i> ${course.enrollments_count || course.enrollments || 0}</span>
-                    ${course.difficulty ? `<span><i class="fas fa-layer-group"></i> ${course.difficulty.charAt(0).toUpperCase() + course.difficulty.slice(1)}</span>` : ''}
+                    <span class="course-card-rating"><i class="fas fa-star"></i> ${(course.average_rating || 0).toFixed(1)}</span>
+                    <span><i class="fas fa-users"></i> ${course.enrollments_count || 0}</span>
+                    ${course.difficulty ? `<span><i class="fas fa-layer-group"></i> ${escapeHTML(course.difficulty.charAt(0).toUpperCase() + course.difficulty.slice(1))}</span>` : ''}
                 </div>
                 <div class="course-card-footer">
                     ${footerContent}
@@ -991,37 +1097,34 @@ function renderCourseGrid(courses, containerElement) {
     }
 }
 
-function showToast(message, type = 'info', duration = 3500) { 
+function showToast(message, type = 'info', duration = 3500) {
     const toast = document.createElement('div');
     toast.className = `toast-notification ${type}`;
     let iconClass = 'fas fa-info-circle';
     if (type === 'success') iconClass = 'fas fa-check-circle';
-    if (type === 'error') iconClass = 'fas fa-exclamation-circle';
+    if (type === 'error') iconClass = 'fas fa-times-circle';
     if (type === 'warning') iconClass = 'fas fa-exclamation-triangle';
-
 
     toast.innerHTML = `<i class="${iconClass}"></i> <p>${message}</p>`;
     DOMElements.toastNotificationsArea.appendChild(toast);
 
-    // Override animation duration for this specific toast
     if (duration !== 3500) {
       toast.style.animation = `toastInRight 0.5s forwards, toastOutRight 0.5s ${duration / 1000 - 0.5}s forwards`;
     }
 
-
     setTimeout(() => {
         toast.remove();
-    }, duration); 
+    }, duration);
 }
 
 // --- MODAL HANDLING ---
 function openModal(modalElement) {
     if (modalElement) {
-        modalElement.style.display = 'block';
+        modalElement.style.display = 'flex';
         document.body.classList.add('modal-open');
         const firstInput = modalElement.querySelector('input:not([type="hidden"]):not([disabled]), textarea:not([disabled]), select:not([disabled])');
         if (firstInput) {
-            setTimeout(() => firstInput.focus(), 50); 
+            setTimeout(() => firstInput.focus(), 50);
         }
     }
 }
@@ -1030,18 +1133,16 @@ function closeModal(modalElement) {
     if (modalElement) {
         modalElement.style.display = 'none';
         const form = modalElement.querySelector('form');
-        // Don't reset form for lesson preview modal
         if (form && modalElement.id !== 'lesson-preview-modal') {
-            form.reset(); 
+            form.reset();
         }
         if (modalElement.id === 'lesson-form-modal') {
-            DOMElements.lessonContentFieldsContainerModal.innerHTML = ''; 
+            DOMElements.lessonContentFieldsContainerModal.innerHTML = '';
         }
         if (modalElement.id === 'lesson-preview-modal') {
-            DOMElements.lessonPreviewContent.innerHTML = ''; // Clear preview content
+            DOMElements.lessonPreviewContent.innerHTML = '';
         }
-         // Only remove modal-open if no other modals are open
-        const anyModalOpen = Array.from(DOMElements.allModals).some(m => m.style.display === 'block');
+        const anyModalOpen = Array.from(DOMElements.allModals).some(m => m.style.display === 'flex' || m.style.display === 'block');
         if (!anyModalOpen) {
             document.body.classList.remove('modal-open');
         }
@@ -1060,19 +1161,20 @@ function setupEventListeners() {
         });
     });
 
-    // Fix: Ensure authActions exists before adding listener
     if (DOMElements.authActions) {
         DOMElements.authActions.addEventListener('click', (e) => {
-            if (e.target.classList.contains('login-btn')) {
+            const loginBtn = e.target.closest('.login-btn');
+            const signupBtn = e.target.closest('.signup-btn');
+            if (loginBtn) {
                 openModal(DOMElements.loginModal);
-            } else if (e.target.classList.contains('signup-btn')) {
+            } else if (signupBtn) {
                 openModal(DOMElements.signupModal);
             }
         });
     }
-    
+
     DOMElements.userAvatarContainer.addEventListener('click', (e) => {
-        e.stopPropagation(); // Prevent document click from closing it immediately
+        e.stopPropagation();
         DOMElements.userAvatarContainer.classList.toggle('active');
         DOMElements.userDropdownMenu.classList.toggle('hidden');
         DOMElements.userDropdownMenu.classList.toggle('open', !DOMElements.userDropdownMenu.classList.contains('hidden'));
@@ -1088,17 +1190,21 @@ function setupEventListeners() {
     DOMElements.userDropdownMenu.addEventListener('click', (e) => {
         const target = e.target.closest('.dropdown-item');
         if (!target) return;
-        e.preventDefault();
-         DOMElements.userAvatarContainer.classList.remove('active');
-         DOMElements.userDropdownMenu.classList.add('hidden');
-         DOMElements.userDropdownMenu.classList.remove('open');
+
+        DOMElements.userAvatarContainer.classList.remove('active');
+        DOMElements.userDropdownMenu.classList.add('hidden');
+        DOMElements.userDropdownMenu.classList.remove('open');
 
         if (target.classList.contains('btn-logout')) {
+            e.preventDefault();
             handleLogout();
         } else {
             const section = target.dataset.section;
             const tab = target.dataset.tab;
-            if (section) navigateTo(section, { tab });
+            if (section) {
+                e.preventDefault();
+                navigateTo(section, { tab });
+            }
         }
     });
 
@@ -1121,24 +1227,25 @@ function setupEventListeners() {
     DOMElements.categoryFilter?.addEventListener('change', () => renderAllCoursesPage({ category: DOMElements.categoryFilter.value }));
     DOMElements.difficultyFilter?.addEventListener('change', () => renderAllCoursesPage());
     DOMElements.sortCourses?.addEventListener('change', () => renderAllCoursesPage());
-    DOMElements.globalSearchButton?.addEventListener('click', () => {
-      if (currentSection !== 'all-courses') navigateTo('all-courses', { search: DOMElements.globalSearchInput.value.trim() });
-      else renderAllCoursesPage();
-    });
+
+    const performGlobalSearch = () => {
+        if (currentSection !== 'all-courses') {
+            navigateTo('all-courses', { search: DOMElements.globalSearchInput.value.trim() });
+        } else {
+            renderAllCoursesPage({search: DOMElements.globalSearchInput.value.trim()});
+        }
+    };
+    DOMElements.globalSearchButton?.addEventListener('click', performGlobalSearch);
     DOMElements.globalSearchInput?.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        if (currentSection !== 'all-courses') navigateTo('all-courses', { search: DOMElements.globalSearchInput.value.trim() });
-        else renderAllCoursesPage();
-      }
+      if (e.key === 'Enter') performGlobalSearch();
     });
+
     DOMElements.gridViewBtn?.addEventListener('click', () => {
         DOMElements.allCourseListContainer.classList.remove('list-view');
-        // DOMElements.allCourseListContainer.classList.add('grid-view'); // grid-view is default
         DOMElements.gridViewBtn.classList.add('active');
         DOMElements.listViewBtn.classList.remove('active');
     });
     DOMElements.listViewBtn?.addEventListener('click', () => {
-        // DOMElements.allCourseListContainer.classList.remove('grid-view');
         DOMElements.allCourseListContainer.classList.add('list-view');
         DOMElements.listViewBtn.classList.add('active');
         DOMElements.gridViewBtn.classList.remove('active');
@@ -1151,7 +1258,7 @@ function setupEventListeners() {
         const continueBtn = e.target.closest('.continue-learning-btn-card');
 
         if (wishlistIcon) {
-            e.stopPropagation(); 
+            e.stopPropagation();
             handleToggleWishlist(wishlistIcon.dataset.courseId);
             return;
         }
@@ -1162,12 +1269,10 @@ function setupEventListeners() {
         }
         if (continueBtn) {
             e.stopPropagation();
-            showToast(`Tiếp tục học khóa ID: ${continueBtn.dataset.courseId}`, 'info');
-            // For now, just go to detail. TODO: Navigate to learning interface for this course
-            navigateTo('course-detail', {courseId: continueBtn.dataset.courseId}); 
+            navigateTo('course-detail', {courseId: continueBtn.dataset.courseId});
             return;
         }
-        if (courseCard && !e.target.closest('button, .wishlist-icon')) { // Ensure not clicking a button inside card
+        if (courseCard && !e.target.closest('button, .wishlist-icon, a')) {
             navigateTo('course-detail', { courseId: courseCard.dataset.courseId });
         }
     });
@@ -1183,8 +1288,8 @@ function setupEventListeners() {
             });
         }
     });
-    
-    DOMElements.editCourseInfoBtn?.addEventListener('click', () => navigateTo('create-edit-course', { courseId: currentCourseDetailId }));
+
+    DOMElements.editCourseInfoBtn?.addEventListener('click', () => navigateTo('create-edit-course', { courseId: currentCourseDetailId, formTab: 'basic-info' }));
     DOMElements.manageCourseContentBtn?.addEventListener('click', () => navigateTo('create-edit-course', { courseId: currentCourseDetailId, formTab: 'curriculum' }));
     DOMElements.deleteCourseDetailBtn?.addEventListener('click', () => handleDeleteCourse(currentCourseDetailId));
 
@@ -1203,18 +1308,38 @@ function setupEventListeners() {
             DOMElements.courseFormTabContents.forEach(content => {
                 content.classList.toggle('active', content.dataset.formTabId === tabButton.dataset.formTab);
             });
+            if(currentSection === 'create-edit-course' && history.pushState) {
+                let newUrl = `#create-edit-course`;
+                newUrl += `/${currentCreateEditCourseId || '_'}`;
+                newUrl += `/${tabButton.dataset.formTab}`;
+                // history.replaceState(null, '', newUrl); // Gây ra reload không mong muốn khi back
+            }
         });
     });
     DOMElements.courseForm?.addEventListener('submit', (e) => handleCourseFormSubmit(e, 'save'));
     DOMElements.publishCourseBtn?.addEventListener('click', (e) => handleCourseFormSubmit(e, 'publish'));
 
     DOMElements.addChapterBtnForm?.addEventListener('click', () => {
-        openChapterFormModal(DOMElements.courseFormCourseId.value || null);
+        openChapterFormModal(currentCreateEditCourseId);
     });
 
     DOMElements.chapterForm?.addEventListener('submit', handleChapterModalFormSubmit);
     DOMElements.lessonForm?.addEventListener('submit', handleLessonModalFormSubmit);
-    DOMElements.lessonTypeModalSelect?.addEventListener('change', renderLessonContentFieldsModal);
+    DOMElements.lessonTypeModalSelect?.addEventListener('change', () => {
+        const lessonUiId = DOMElements.lessonFormLessonIdModal.value;
+        let existingDataForContent = {};
+        if (lessonUiId) {
+            const lessonDiv = DOMElements.curriculumBuilderArea.querySelector(`.lesson-form-item[data-lesson-ui-id="${lessonUiId}"]`);
+            if (lessonDiv) {
+                 existingDataForContent = {
+                    contentUrl: lessonDiv.dataset.lessonContentUrl,
+                    contentText: lessonDiv.dataset.lessonContentText,
+                    mediaFileName: lessonDiv.dataset.lessonMediaFileName, // Pass mediaFileName
+                 };
+            }
+        }
+        renderLessonContentFieldsModal(existingDataForContent);
+    });
 
     DOMElements.mobileMenuToggle.addEventListener('click', toggleMobileNav);
 }
@@ -1229,8 +1354,8 @@ async function handleLoginFormSubmit(e) {
         return;
     }
     const response = await window.api.loginUserApi(email, password);
-    if (response.success) {
-        handleLogin(response.data.user); // Assuming API returns user object in data.user
+    if (response.success && response.user) {
+        handleLogin(response.user);
     } else {
         showToast(response.error || "Đăng nhập thất bại. Kiểm tra lại email hoặc mật khẩu.", "error");
     }
@@ -1244,16 +1369,13 @@ async function handleSignupFormSubmit(e) {
     const confirmPassword = DOMElements.signupForm.querySelector('#signup-confirm-password').value;
 
     if (!name || !email || !password || !confirmPassword) {
-        showToast("Vui lòng điền đầy đủ thông tin.", "error");
-        return;
+        showToast("Vui lòng điền đầy đủ thông tin.", "error"); return;
     }
     if (password.length < 6) {
-        showToast("Mật khẩu phải có ít nhất 6 ký tự.", "error");
-        return;
+        showToast("Mật khẩu phải có ít nhất 6 ký tự.", "error"); return;
     }
     if (password !== confirmPassword) {
-        showToast("Mật khẩu xác nhận không khớp.", "error");
-        return;
+        showToast("Mật khẩu xác nhận không khớp.", "error"); return;
     }
     const response = await window.api.registerUserApi(name, email, password);
     if (response.success) {
@@ -1262,80 +1384,6 @@ async function handleSignupFormSubmit(e) {
         openModal(DOMElements.loginModal);
     } else {
         showToast(response.error || "Đăng ký thất bại. Email có thể đã tồn tại.", "error");
-    }
-}
-
-async function handleCourseFormSubmit(e, actionType = 'save') { // actionType can be 'save' or 'publish'
-    e.preventDefault();
-    if (!currentUser) {
-        showToast("Vui lòng đăng nhập để thực hiện.", "error");
-        return;
-    }
-
-    const courseId = DOMElements.courseFormCourseId.value;
-    const courseData = {
-        // id: courseId ? parseInt(courseId) : undefined, // Backend should handle new ID generation
-        title: DOMElements.courseTitleInput.value.trim(),
-        short_description: DOMElements.courseSubtitleInput.value.trim(),
-        description: DOMElements.courseDescriptionInput.value.trim(), // Use a rich text editor in future
-        category_id: DOMElements.courseCategorySelect.value,
-        difficulty: DOMElements.courseDifficultySelect.value,
-        language: DOMElements.courseLanguageInput.value || 'Tiếng Việt', // Default if hidden
-        image_url: DOMElements.courseImageUrlInput.value.trim() || getPlaceholderImage(DOMElements.courseTitleInput.value.trim()),
-        promo_video_url: DOMElements.coursePromoVideoUrlInput.value.trim(),
-        price: parseFloat(DOMElements.coursePriceInput.value) || 0,
-        original_price: parseFloat(DOMElements.courseDiscountPriceInput.value) || undefined,
-        status: actionType === 'publish' ? 'published' : (DOMElements.courseStatusSelect.value || 'draft'),
-        creator_user_id: currentUser.id,
-        chapters: getCurriculumDataFromForm() // Get chapters and lessons
-    };
-    
-    // Validation for required fields
-    if (!courseData.title || !courseData.description || !courseData.category_id || courseData.price === null || courseData.price === undefined) {
-        showToast("Vui lòng điền đầy đủ các trường bắt buộc (*).", "error", 5000);
-        // Highlight first error tab/field if possible
-        if(!courseData.title) DOMElements.courseTitleInput.focus();
-        else if(!courseData.description) DOMElements.courseDescriptionInput.focus();
-        else if(!courseData.category_id) DOMElements.courseCategorySelect.focus();
-        else if(courseData.price === null || courseData.price === undefined) DOMElements.coursePriceInput.focus();
-        return;
-    }
-    if (actionType === 'publish' && !checkPublishPrerequisites(courseData, true)) { // true to show toasts
-        return; // Prerequisites not met
-    }
-
-
-    const apiFunction = courseId ? window.api.updateCourseApi : window.api.createCourseApi;
-    const payload = courseId ? { ...courseData, id: parseInt(courseId) } : courseData; // Add ID only for update
-    
-    DOMElements.saveCourseBtn.disabled = true;
-    DOMElements.publishCourseBtn.disabled = true;
-    DOMElements.saveCourseBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang lưu...';
-
-
-    const response = await apiFunction(payload); // Pass payload directly
-
-    DOMElements.saveCourseBtn.disabled = false;
-    DOMElements.publishCourseBtn.disabled = false;
-    DOMElements.saveCourseBtn.innerHTML = '<i class="fas fa-save"></i> Lưu Khóa học';
-
-
-    if (response.success && response.data.course) {
-        const savedCourse = response.data.course;
-        showToast(actionType === 'publish' ? "Khóa học đã được xuất bản!" : (courseId ? "Khóa học đã được cập nhật!" : "Khóa học đã được lưu làm bản nháp!"), "success");
-        
-        const courseIndex = coursesDataCache.findIndex(c => c.id === savedCourse.id);
-        if (courseIndex > -1) coursesDataCache[courseIndex] = savedCourse;
-        else coursesDataCache.push(savedCourse);
-
-        if (currentUser && !currentUser.createdCourseIds.includes(savedCourse.id)) {
-            currentUser.createdCourseIds.push(savedCourse.id);
-            saveCurrentUser();
-        }
-        
-        navigateTo('course-detail', { courseId: savedCourse.id });
-    } else {
-        showToast(response.error || "Lưu khóa học thất bại.", "error", 5000);
     }
 }
 
@@ -1352,27 +1400,23 @@ async function handleProfileSettingsUpdate(e) {
 
     if (newPassword) {
         if (!currentPassword) {
-            showToast("Vui lòng nhập mật khẩu hiện tại để đổi mật khẩu mới.", "error");
-            return;
+            showToast("Vui lòng nhập mật khẩu hiện tại để đổi mật khẩu mới.", "error"); return;
         }
         if (newPassword.length < 6) {
-            showToast("Mật khẩu mới phải có ít nhất 6 ký tự.", "error");
-            return;
+            showToast("Mật khẩu mới phải có ít nhất 6 ký tự.", "error"); return;
         }
         if (newPassword !== confirmNewPassword) {
-            showToast("Mật khẩu mới và xác nhận không khớp.", "error");
-            return;
+            showToast("Mật khẩu mới và xác nhận không khớp.", "error"); return;
         }
-        updateData.current_password = currentPassword; // Match backend snake_case
+        updateData.current_password = currentPassword;
         updateData.new_password = newPassword;
     }
 
     const response = await window.api.updateUserProfileApi(updateData);
     if (response.success) {
-        currentUser.name = name; 
-        currentUser.avatarChar = name.charAt(0).toUpperCase();
+        currentUser.name = name;
         saveCurrentUser();
-        updateAuthUI(); 
+        updateAuthUI();
         showToast("Thông tin tài khoản đã được cập nhật.", "success");
         if(document.getElementById('profile-current-password')) document.getElementById('profile-current-password').value = '';
         if(document.getElementById('profile-new-password')) document.getElementById('profile-new-password').value = '';
@@ -1399,7 +1443,10 @@ async function handleEnrollCourse(courseId) {
         showToast("Đăng ký khóa học thành công!", "success");
         if (currentSection === 'course-detail' && currentCourseDetailId == numericCourseId) {
             const courseResponse = await window.api.getCourseDetailApi(numericCourseId);
-            if(courseResponse.success) updateCourseDetailButtons(courseResponse.data);
+            if(courseResponse.success) {
+                updateCourseDetailButtons(courseResponse.data);
+                DOMElements.detailCourseEnrollmentsBanner.textContent = courseResponse.data.enrollments || 0;
+            }
         }
     } else {
         showToast(response.error || "Đăng ký thất bại.", "error");
@@ -1412,7 +1459,7 @@ async function handleToggleWishlist(courseId) {
         openModal(DOMElements.loginModal);
         return;
     }
-    const numericCourseId = parseInt(courseId); 
+    const numericCourseId = parseInt(courseId);
     const isWishlisted = currentUser.wishlist.includes(numericCourseId);
     const response = await window.api.toggleWishlistApi(currentUser.id, numericCourseId, !isWishlisted);
 
@@ -1430,17 +1477,18 @@ async function handleToggleWishlist(courseId) {
         wishlistIcons.forEach(icon => {
             icon.classList.toggle('fas', !isWishlisted);
             icon.classList.toggle('far', isWishlisted);
-            icon.classList.toggle('active', !isWishlisted);
+            icon.classList.toggle('text-danger', !isWishlisted);
             icon.title = !isWishlisted ? 'Xóa khỏi Yêu thích' : 'Thêm vào Yêu thích';
         });
+
          if (currentSection === 'course-detail' && currentCourseDetailId == numericCourseId) {
             DOMElements.addToWishlistBtn.innerHTML = !isWishlisted ?
-            `<i class="fas fa-heart"></i> Đã Yêu thích` :
+            `<i class="fas fa-heart text-danger"></i> Đã Yêu thích` :
             `<i class="far fa-heart"></i> Thêm vào Yêu thích`;
             DOMElements.addToWishlistBtn.classList.toggle('active', !isWishlisted);
         }
         if(currentSection === 'user-dashboard' && currentDashboardTab === 'wishlist') {
-            renderUserDashboard('wishlist'); 
+            renderUserDashboard('wishlist');
         }
 
     } else {
@@ -1448,25 +1496,14 @@ async function handleToggleWishlist(courseId) {
     }
 }
 
-async function handleDeleteCourse(courseId) {
-    if (!currentUser || !courseId) return;
-    const numericCourseId = parseInt(courseId);
-    const courseToDelete = coursesDataCache.find(c => c.id == numericCourseId);
-    
-    if (!courseToDelete) { // If not in cache, fetch minimal info or assume ownership based on dashboard context
-        if (currentSection === 'user-dashboard' && currentDashboardTab === 'my-courses') {
-            // Likely safe to proceed with confirmation
-        } else {
-             showToast("Không tìm thấy thông tin khóa học để xóa.", "warning");
-             return;
-        }
-    } else if (courseToDelete.creator_user_id !== currentUser.id) {
-        showToast("Bạn không có quyền xóa khóa học này.", "error");
-        return;
-    }
+async function handleDeleteCourse(courseIdToDelete) {
+    if (!currentUser || !courseIdToDelete) return;
+    const numericCourseId = parseInt(courseIdToDelete);
 
-    const courseTitle = courseToDelete ? courseToDelete.title : `ID ${numericCourseId}`;
-    if (!confirm(`Bạn có chắc chắn muốn xóa khóa học "${courseTitle}" không? Hành động này không thể hoàn tác.`)) {
+    const courseInCache = coursesDataCache.find(c => c.id == numericCourseId);
+    const courseTitle = courseInCache ? courseInCache.title : `ID ${numericCourseId}`;
+
+    if (!confirm(`Bạn có chắc chắn muốn xóa khóa học "${escapeHTML(courseTitle)}" không? Hành động này không thể hoàn tác.`)) {
         return;
     }
 
@@ -1482,6 +1519,8 @@ async function handleDeleteCourse(courseId) {
             navigateTo('user-dashboard', { tab: 'my-courses' });
         } else if (currentSection === 'user-dashboard' && currentDashboardTab === 'my-courses') {
             renderUserDashboard('my-courses');
+        } else if (currentSection === 'all-courses') {
+            renderAllCoursesPage();
         }
     } else {
         showToast(response.error || "Xóa khóa học thất bại.", "error");
@@ -1491,37 +1530,38 @@ async function handleDeleteCourse(courseId) {
 function handleBecomeInstructorClick() {
     if (!currentUser) {
         showToast("Vui lòng đăng nhập hoặc đăng ký để trở thành giảng viên.", "info");
-        openModal(DOMElements.signupModal); // Direct to signup if not logged in
+        openModal(DOMElements.loginModal);
     } else {
+        currentCreateEditCourseId = null;
+        isEditingCourse = false;
         navigateTo('create-edit-course');
     }
 }
 
 
 // --- CURRICULUM BUILDER UI (for Create/Edit Course Form) ---
-let chapterCounter = 0; 
-let lessonCounter = 0;  // For unique temporary IDs for new items
+let chapterCounter = 0;
+let lessonCounter = 0;
 
 function getCurriculumDataFromForm() {
     const chapters = [];
-    DOMElements.curriculumBuilderArea.querySelectorAll('.chapter-form-item').forEach(chapterDiv => {
+    DOMElements.curriculumBuilderArea.querySelectorAll('.chapter-form-item').forEach((chapterDiv, chapterIndex) => {
         const chapterData = {
-            id: chapterDiv.dataset.backendId || undefined, // Backend ID if editing, else undefined for new
-            ui_id: chapterDiv.dataset.chapterUiId, // Always have UI ID
             title: chapterDiv.querySelector('.chapter-title-form-input').value.trim(),
             description: chapterDiv.querySelector('.chapter-desc-form-input').value.trim(),
+            sort_order: chapterIndex,
             lessons: []
         };
-        chapterDiv.querySelectorAll('.lesson-form-item').forEach(lessonDiv => {
+        chapterDiv.querySelectorAll('.lesson-form-item').forEach((lessonDiv, lessonIndex) => {
             chapterData.lessons.push({
-                id: lessonDiv.dataset.backendId || undefined,
-                ui_id: lessonDiv.dataset.lessonUiId,
-                title: lessonDiv.querySelector('.lesson-form-title').textContent.trim(), // Get from display
+                title: lessonDiv.dataset.lessonTitle,
                 type: lessonDiv.dataset.lessonType,
-                content_url: lessonDiv.dataset.lessonContentUrl,
-                content_text: lessonDiv.dataset.lessonContentText,
+                content_url: lessonDiv.dataset.lessonContentUrl || null,
+                content_text: lessonDiv.dataset.lessonContentText || null,
+                media_file_name: lessonDiv.dataset.lessonMediaFileName || null,
                 duration_minutes: parseInt(lessonDiv.dataset.lessonDuration) || null,
-                is_previewable: lessonDiv.dataset.lessonPreviewable === 'true'
+                is_previewable: lessonDiv.dataset.lessonPreviewable === 'true',
+                sort_order: lessonIndex
             });
         });
         chapters.push(chapterData);
@@ -1532,18 +1572,18 @@ function getCurriculumDataFromForm() {
 
 function addChapterToFormUI(backendChapterId = null, title = '', description = '', lessons = []) {
     chapterCounter++;
-    const chapterUiId = backendChapterId ? `ch_be_${backendChapterId}` : `temp_ch_${chapterCounter}`;
+    const chapterUiId = backendChapterId ? `ch_be_${backendChapterId}` : `temp_ch_${Date.now()}_${chapterCounter}`;
 
     const chapterDiv = document.createElement('div');
     chapterDiv.className = 'chapter-form-item';
-    chapterDiv.dataset.chapterUiId = chapterUiId; 
+    chapterDiv.dataset.chapterUiId = chapterUiId;
     if (backendChapterId) chapterDiv.dataset.backendId = backendChapterId;
 
     chapterDiv.innerHTML = `
         <div class="chapter-form-header">
             <h4>
-                <i class="fas fa-grip-vertical" title="Kéo thả để sắp xếp (chưa hoạt động)"></i>
-                <input type="text" class="chapter-title-form-input" placeholder="Tên chương (VD: Giới thiệu về Python)" value="${title}">
+                <i class="fas fa-grip-vertical chapter-drag-handle" title="Kéo thả để sắp xếp (chưa hoạt động)"></i>
+                <input type="text" class="chapter-title-form-input" placeholder="Tên chương (VD: Giới thiệu về Python)" value="${escapeHTML(title)}">
             </h4>
             <div class="chapter-form-actions">
                 <button type="button" class="btn btn-xs btn-success btn-add-lesson-to-chapter" title="Thêm bài giảng"><i class="fas fa-plus"></i> Bài giảng</button>
@@ -1552,23 +1592,35 @@ function addChapterToFormUI(backendChapterId = null, title = '', description = '
             </div>
         </div>
         <div class="form-group">
-            <textarea class="chapter-desc-form-input" rows="2" placeholder="Mô tả ngắn về chương (tùy chọn)">${description}</textarea>
+            <textarea class="chapter-desc-form-input" rows="2" placeholder="Mô tả ngắn về chương (tùy chọn)">${escapeHTML(description)}</textarea>
         </div>
-        <div class="lessons-form-list">
-            <!-- Lessons will be added here -->
-        </div>
+        <div class="lessons-form-list"></div>
     `;
     DOMElements.curriculumBuilderArea.appendChild(chapterDiv);
 
-    lessons.forEach(lesson => {
-        addLessonToChapterFormUI(chapterDiv.querySelector('.lessons-form-list'), chapterUiId, lesson.id, lesson.title, lesson.type, lesson.content_url, lesson.content_text, lesson.duration_minutes, lesson.is_previewable);
-    });
+    if (lessons && lessons.length > 0) {
+        lessons.forEach(lesson => {
+            addLessonToChapterFormUI(
+                chapterDiv.querySelector('.lessons-form-list'),
+                chapterUiId,
+                lesson.id,
+                lesson.title,
+                lesson.type,
+                lesson.content_url,
+                lesson.content_text,
+                lesson.media_file_name,
+                lesson.duration_minutes,
+                lesson.is_previewable
+            );
+        });
+    }
+
 
     chapterDiv.querySelector('.btn-add-lesson-to-chapter').addEventListener('click', () => {
-        openLessonFormModal(DOMElements.courseFormCourseId.value, chapterUiId);
+        openLessonFormModal(currentCreateEditCourseId, chapterUiId);
     });
     chapterDiv.querySelector('.btn-edit-chapter-in-form').addEventListener('click', () => {
-        openChapterFormModal(DOMElements.courseFormCourseId.value, chapterUiId, {
+        openChapterFormModal(currentCreateEditCourseId, chapterUiId, {
             title: chapterDiv.querySelector('.chapter-title-form-input').value,
             description: chapterDiv.querySelector('.chapter-desc-form-input').value,
         });
@@ -1576,41 +1628,48 @@ function addChapterToFormUI(backendChapterId = null, title = '', description = '
     chapterDiv.querySelector('.btn-remove-chapter-from-form').addEventListener('click', () => {
         if (confirm('Bạn có chắc muốn xóa chương này và tất cả bài giảng bên trong?')) {
             chapterDiv.remove();
-            updatePublishButtonState(); // Update after removing
+            DOMElements.curriculumBuilderArea.dispatchEvent(new CustomEvent('chapterRemoved'));
         }
     });
-    // Update publish state whenever chapter/lesson structure changes
-    new MutationObserver(updatePublishButtonState).observe(DOMElements.curriculumBuilderArea, { childList: true, subtree: true });
 
+    chapterDiv.querySelector('.chapter-title-form-input').addEventListener('input', () => {
+      DOMElements.curriculumBuilderArea.dispatchEvent(new CustomEvent('chapterUpdated'));
+    });
 }
 
-function addLessonToChapterFormUI(lessonsListContainer, chapterUiId, backendLessonId = null, title = '', type='video', contentUrl='', contentText='', duration=null, previewable=false) {
+function addLessonToChapterFormUI(
+    lessonsListContainer, chapterUiId, backendLessonId = null,
+    title = '', type='video', contentUrl='', contentText='', mediaFileName='',
+    duration=null, previewable=false
+) {
     lessonCounter++;
-    const lessonUiId = backendLessonId ? `lsn_be_${backendLessonId}` : `temp_lsn_${lessonCounter}`;
+    const lessonUiId = backendLessonId ? `lsn_be_${backendLessonId}` : `temp_lsn_${Date.now()}_${lessonCounter}`;
 
     const lessonDiv = document.createElement('div');
     lessonDiv.className = 'lesson-form-item';
     lessonDiv.dataset.lessonUiId = lessonUiId;
     if (backendLessonId) lessonDiv.dataset.backendId = backendLessonId;
-    
-    // Store all lesson data in dataset attributes for retrieval
+
     lessonDiv.dataset.lessonTitle = title;
     lessonDiv.dataset.lessonType = type;
     lessonDiv.dataset.lessonContentUrl = contentUrl || '';
     lessonDiv.dataset.lessonContentText = contentText || '';
+    lessonDiv.dataset.lessonMediaFileName = mediaFileName || '';
     lessonDiv.dataset.lessonDuration = duration || '';
     lessonDiv.dataset.lessonPreviewable = previewable || false;
 
 
     lessonDiv.innerHTML = `
         <div class="lesson-form-title-container">
+            <i class="fas fa-grip-vertical lesson-drag-handle" title="Kéo thả (chưa hoạt động)"></i>
             <i class="fas ${getLessonIcon(type)}"></i>
-            <span class="lesson-form-title">${title || 'Bài giảng mới'}</span>
-            ${previewable ? '<i class="fas fa-eye text-success" title="Có thể xem trước"></i>' : ''}
+            <span class="lesson-form-title">${escapeHTML(title) || 'Bài giảng mới'}</span>
+            ${previewable ? '<i class="fas fa-eye text-success ml-1" title="Có thể xem trước"></i>' : ''}
         </div>
         <div class="lesson-form-meta">
-            <span>${type.charAt(0).toUpperCase() + type.slice(1)}</span>
-            ${duration ? `<span>&bull; ${formatDuration(duration)}</span>` : ''}
+            <span>${escapeHTML(type.charAt(0).toUpperCase() + type.slice(1))}</span>
+            ${duration ? `<span>• ${formatDuration(duration)}</span>` : ''}
+            ${mediaFileName ? `<span class="text-muted small ml-1" title="${escapeHTML(mediaFileName)}">• <i class="fas fa-paperclip"></i></span>` : ''}
         </div>
         <div class="lesson-form-actions">
             <button type="button" class="btn btn-xs btn-outline btn-edit-lesson-detail" title="Sửa bài giảng"><i class="fas fa-edit"></i></button>
@@ -1621,14 +1680,15 @@ function addLessonToChapterFormUI(lessonsListContainer, chapterUiId, backendLess
 
     lessonDiv.querySelector('.btn-edit-lesson-detail').addEventListener('click', () => {
         openLessonFormModal(
-            DOMElements.courseFormCourseId.value, 
-            chapterUiId, 
-            lessonUiId, 
-            { // Pass current data to modal
+            currentCreateEditCourseId,
+            chapterUiId,
+            lessonUiId,
+            {
                 title: lessonDiv.dataset.lessonTitle,
                 type: lessonDiv.dataset.lessonType,
                 contentUrl: lessonDiv.dataset.lessonContentUrl,
                 contentText: lessonDiv.dataset.lessonContentText,
+                mediaFileName: lessonDiv.dataset.lessonMediaFileName,
                 duration: lessonDiv.dataset.lessonDuration,
                 previewable: lessonDiv.dataset.lessonPreviewable === 'true'
             }
@@ -1637,15 +1697,14 @@ function addLessonToChapterFormUI(lessonsListContainer, chapterUiId, backendLess
     lessonDiv.querySelector('.btn-remove-lesson-from-form').addEventListener('click', () => {
          if (confirm('Bạn có chắc muốn xóa bài giảng này?')) {
             lessonDiv.remove();
-            updatePublishButtonState(); // Update after removing
+             DOMElements.curriculumBuilderArea.dispatchEvent(new CustomEvent('lessonRemoved'));
         }
     });
 }
 
 // --- Chapter/Lesson MODAL Form Handlers ---
 function openChapterFormModal(courseId, chapterUiIdToEdit = null, existingData = {}) {
-    DOMElements.chapterFormCourseIdModal.value = courseId || DOMElements.courseFormCourseId.value; 
-    DOMElements.chapterFormChapterIdModal.value = chapterUiIdToEdit || ''; 
+    DOMElements.chapterFormChapterIdModal.value = chapterUiIdToEdit || '';
 
     if (chapterUiIdToEdit) {
         DOMElements.chapterModalTitle.textContent = "Sửa Chương";
@@ -1653,7 +1712,7 @@ function openChapterFormModal(courseId, chapterUiIdToEdit = null, existingData =
         DOMElements.chapterDescriptionModalInput.value = existingData.description || '';
     } else {
         DOMElements.chapterModalTitle.textContent = "Thêm Chương Mới";
-        DOMElements.chapterForm.reset(); // Reset form for new chapter
+        DOMElements.chapterForm.reset();
     }
     openModal(DOMElements.chapterFormModal);
 }
@@ -1670,23 +1729,21 @@ function handleChapterModalFormSubmit(e) {
         return;
     }
 
-    if (chapterUiId) { 
+    if (chapterUiId) {
         const chapterDiv = DOMElements.curriculumBuilderArea.querySelector(`.chapter-form-item[data-chapter-ui-id="${chapterUiId}"]`);
         if (chapterDiv) {
             chapterDiv.querySelector('.chapter-title-form-input').value = title;
             chapterDiv.querySelector('.chapter-desc-form-input').value = description;
-        } else {
-             console.warn("Could not find chapter UI element to update:", chapterUiId);
+            DOMElements.curriculumBuilderArea.dispatchEvent(new CustomEvent('chapterUpdated'));
         }
-    } else { 
-        addChapterToFormUI(null, title, description); 
+    } else {
+        addChapterToFormUI(null, title, description);
+        DOMElements.curriculumBuilderArea.dispatchEvent(new CustomEvent('chapterAdded'));
     }
     closeModal(DOMElements.chapterFormModal);
-    updatePublishButtonState(); // Update after adding/editing chapter
 }
 
 function openLessonFormModal(courseId, chapterUiId, lessonUiIdToEdit = null, existingData = {}) {
-    DOMElements.lessonFormCourseIdModal.value = courseId || DOMElements.courseFormCourseId.value;
     DOMElements.lessonFormChapterIdModal.value = chapterUiId;
     DOMElements.lessonFormLessonIdModal.value = lessonUiIdToEdit || '';
 
@@ -1696,12 +1753,12 @@ function openLessonFormModal(courseId, chapterUiId, lessonUiIdToEdit = null, exi
         DOMElements.lessonTypeModalSelect.value = existingData.type || 'video';
         DOMElements.lessonDurationModalInput.value = existingData.duration || '';
         DOMElements.lessonPreviewableModalCheckbox.checked = existingData.previewable || false;
-        // Content fields will be populated by renderLessonContentFieldsModal based on type
     } else {
         DOMElements.lessonModalTitle.textContent = "Thêm Bài giảng Mới";
-        DOMElements.lessonForm.reset(); 
+        DOMElements.lessonForm.reset();
+        DOMElements.lessonTypeModalSelect.value = 'video';
     }
-    renderLessonContentFieldsModal(existingData); // Pass existing data to populate content fields
+    renderLessonContentFieldsModal(existingData);
     openModal(DOMElements.lessonFormModal);
 }
 
@@ -1710,66 +1767,81 @@ function renderLessonContentFieldsModal(existingData = {}) {
     let fieldsHTML = '';
     const contentUrl = existingData.contentUrl || '';
     const contentText = existingData.contentText || '';
+    const mediaFileName = existingData.mediaFileName || '';
 
     switch (type) {
         case 'video':
             fieldsHTML = `
                 <div class="form-group">
                     <label for="lesson-video-url-modal">URL Video (YouTube, Vimeo, etc.):</label>
-                    <input type="url" id="lesson-video-url-modal" placeholder="https://youtube.com/watch?v=..." value="${type === 'video' ? contentUrl : ''}">
+                    <input type="url" id="lesson-video-url-modal" placeholder="Dán URL nếu dùng video hosted bên ngoài" value="${type === 'video' ? contentUrl : ''}">
                 </div>
                 <div class="form-group">
-                    <label for="lesson-video-file-modal">Hoặc Upload Video (tính năng giả lập, không hoạt động thực tế):</label>
-                    <input type="file" id="lesson-video-file-modal" accept="video/*">
+                    <label for="lesson-video-file-modal">Hoặc Upload Video Mới:</label>
+                    <input type="file" id="lesson-video-file-modal" class="lesson-file-input" accept="video/mp4,video/webm,video/ogg">
+                    ${mediaFileName && type === 'video' ? `<small class="text-success">File hiện tại: ${escapeHTML(mediaFileName)}</small>` : ''}
                 </div>`;
             break;
         case 'text':
             fieldsHTML = `
                 <div class="form-group">
                     <label for="lesson-text-content-modal">Nội dung văn bản:</label>
-                    <textarea id="lesson-text-content-modal" rows="8" placeholder="Nhập nội dung bài giảng...">${type === 'text' ? contentText : ''}</textarea>
+                    <textarea id="lesson-text-content-modal" rows="8" placeholder="Nhập nội dung bài giảng...">${type === 'text' ? escapeHTML(contentText) : ''}</textarea>
                 </div>`;
             break;
         case 'document':
              fieldsHTML = `
                 <div class="form-group">
                     <label for="lesson-document-url-modal">URL Tài liệu (VD: Google Drive, Dropbox):</label>
-                    <input type="url" id="lesson-document-url-modal" placeholder="https://example.com/document.pdf" value="${type === 'document' ? contentUrl : ''}">
+                    <input type="url" id="lesson-document-url-modal" placeholder="Dán URL nếu dùng tài liệu hosted bên ngoài" value="${type === 'document' ? contentUrl : ''}">
                 </div>
                 <div class="form-group">
-                    <label for="lesson-document-file-modal">Hoặc Upload Tài liệu (giả lập):</label>
-                    <input type="file" id="lesson-document-file-modal" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt">
+                    <label for="lesson-document-file-modal">Hoặc Upload Tài liệu Mới:</label>
+                    <input type="file" id="lesson-document-file-modal" class="lesson-file-input" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.zip">
+                     ${mediaFileName && type === 'document' ? `<small class="text-success">File hiện tại: ${escapeHTML(mediaFileName)}</small>` : ''}
                 </div>`;
-            break;
-        case 'quiz':
-            fieldsHTML = `<p>Trình tạo Quiz sẽ được tích hợp ở đây (Coming soon).</p>`;
             break;
         case 'audio':
              fieldsHTML = `
                 <div class="form-group">
                     <label for="lesson-audio-url-modal">URL Audio (SoundCloud, etc.):</label>
-                    <input type="url" id="lesson-audio-url-modal" placeholder="https://soundcloud.com/track" value="${type === 'audio' ? contentUrl : ''}">
+                    <input type="url" id="lesson-audio-url-modal" placeholder="Dán URL nếu dùng audio hosted bên ngoài" value="${type === 'audio' ? contentUrl : ''}">
                 </div>
                  <div class="form-group">
-                    <label for="lesson-audio-file-modal">Hoặc Upload Audio (giả lập):</label>
-                    <input type="file" id="lesson-audio-file-modal" accept="audio/*">
+                    <label for="lesson-audio-file-modal">Hoặc Upload Audio Mới:</label>
+                    <input type="file" id="lesson-audio-file-modal" class="lesson-file-input" accept="audio/mpeg,audio/ogg,audio/wav">
+                     ${mediaFileName && type === 'audio' ? `<small class="text-success">File hiện tại: ${escapeHTML(mediaFileName)}</small>` : ''}
                 </div>`;
+            break;
+        case 'quiz':
+            fieldsHTML = `<p>Trình tạo Quiz sẽ được tích hợp ở đây (Coming soon).</p>`;
             break;
     }
     DOMElements.lessonContentFieldsContainerModal.innerHTML = fieldsHTML;
 }
 
-function handleLessonModalFormSubmit(e) {
+async function handleLessonModalFormSubmit(e) {
     e.preventDefault();
     const chapterUiId = DOMElements.lessonFormChapterIdModal.value;
-    const lessonUiId = DOMElements.lessonFormLessonIdModal.value; 
+    const lessonUiId = DOMElements.lessonFormLessonIdModal.value;
     const title = DOMElements.lessonTitleModalInput.value.trim();
     const type = DOMElements.lessonTypeModalSelect.value;
     const duration = parseInt(DOMElements.lessonDurationModalInput.value) || null;
     const previewable = DOMElements.lessonPreviewableModalCheckbox.checked;
-    
+
     let contentUrl = '';
     let contentText = '';
+    let mediaFileName = '';
+    let fileToUpload = null;
+
+    const fileInput = DOMElements.lessonContentFieldsContainerModal.querySelector('.lesson-file-input');
+    if (fileInput && fileInput.files && fileInput.files[0]) {
+        fileToUpload = fileInput.files[0];
+    } else if (lessonUiId) {
+        const existingLessonDiv = DOMElements.curriculumBuilderArea.querySelector(`.lesson-form-item[data-lesson-ui-id="${lessonUiId}"]`);
+        if (existingLessonDiv) mediaFileName = existingLessonDiv.dataset.lessonMediaFileName || '';
+    }
+
 
     if (type === 'video' && document.getElementById('lesson-video-url-modal')) {
         contentUrl = document.getElementById('lesson-video-url-modal').value.trim();
@@ -1780,63 +1852,96 @@ function handleLessonModalFormSubmit(e) {
     } else if (type === 'audio' && document.getElementById('lesson-audio-url-modal')) {
         contentUrl = document.getElementById('lesson-audio-url-modal').value.trim();
     }
-    // TODO: Handle file uploads if implementing actual file storage
 
     if (!title) {
-        showToast("Vui lòng nhập tên bài giảng.", "error");
-        DOMElements.lessonTitleModalInput.focus();
-        return;
+        showToast("Vui lòng nhập tên bài giảng.", "error"); DOMElements.lessonTitleModalInput.focus(); return;
     }
     if (!chapterUiId) {
-        showToast("Lỗi: Không xác định được chương.", "error");
-        return;
+        showToast("Lỗi: Không xác định được chương.", "error"); return;
     }
 
     const chapterDiv = DOMElements.curriculumBuilderArea.querySelector(`.chapter-form-item[data-chapter-ui-id="${chapterUiId}"]`);
     if (!chapterDiv) {
-        showToast("Lỗi: Không tìm thấy chương trong biểu mẫu.", "error");
-        return;
+        showToast("Lỗi: Không tìm thấy chương trong biểu mẫu.", "error"); return;
     }
     const lessonsListContainer = chapterDiv.querySelector('.lessons-form-list');
 
-    if (lessonUiId) { 
+    if (fileToUpload) {
+        DOMElements.saveLessonBtnModal.disabled = true;
+        DOMElements.saveLessonBtnModal.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải lên...';
+
+        let fileTypeContext = 'videos';
+        if (type === 'document') fileTypeContext = 'attachments';
+        else if (type === 'audio') fileTypeContext = 'videos';
+
+        const uploadResponse = await window.api.uploadLessonMediaApi(fileToUpload, fileTypeContext);
+
+        DOMElements.saveLessonBtnModal.disabled = false;
+        DOMElements.saveLessonBtnModal.innerHTML = 'Lưu Bài giảng';
+
+        if (uploadResponse.success && uploadResponse.fileName) {
+            mediaFileName = uploadResponse.fileName;
+            contentUrl = '';
+            showToast("Tải file lên thành công!", "success");
+        } else {
+            showToast(`Lỗi tải file: ${uploadResponse.error || 'Không thành công.'}`, "error", 5000);
+            return;
+        }
+    }
+
+
+    if (lessonUiId) {
         const lessonDiv = lessonsListContainer.querySelector(`.lesson-form-item[data-lesson-ui-id="${lessonUiId}"]`);
         if (lessonDiv) {
-            // Update displayed info and data attributes
-            lessonDiv.querySelector('.lesson-form-title').textContent = title;
-            lessonDiv.querySelector('.lesson-form-title-container i:first-child').className = `fas ${getLessonIcon(type)}`;
-            lessonDiv.querySelector('.lesson-form-meta span:first-child').textContent = type.charAt(0).toUpperCase() + type.slice(1);
-            const durationSpan = lessonDiv.querySelector('.lesson-form-meta span:nth-child(2)');
-            if(durationSpan) durationSpan.textContent = duration ? `• ${formatDuration(duration)}` : '';
-            
+            lessonDiv.dataset.lessonTitle = title;
+            lessonDiv.dataset.lessonType = type;
+            lessonDiv.dataset.lessonContentUrl = contentUrl;
+            lessonDiv.dataset.lessonContentText = contentText;
+            lessonDiv.dataset.lessonMediaFileName = mediaFileName;
+            lessonDiv.dataset.lessonDuration = duration || '';
+            lessonDiv.dataset.lessonPreviewable = previewable;
+
+            lessonDiv.querySelector('.lesson-form-title').textContent = escapeHTML(title);
+            lessonDiv.querySelector('.lesson-form-title-container i:nth-child(2)').className = `fas ${getLessonIcon(type)}`;
+            const metaSpans = lessonDiv.querySelectorAll('.lesson-form-meta span');
+            if(metaSpans[0]) metaSpans[0].textContent = escapeHTML(type.charAt(0).toUpperCase() + type.slice(1));
+            if(metaSpans[1]) metaSpans[1].innerHTML = duration ? `• ${formatDuration(duration)}` : '';
+
+            const paperclipIcon = lessonDiv.querySelector('.lesson-form-meta .fa-paperclip');
+            if (mediaFileName && !paperclipIcon) {
+                 const newPaperclip = document.createElement('span');
+                 newPaperclip.className = 'text-muted small ml-1';
+                 newPaperclip.title = escapeHTML(mediaFileName);
+                 newPaperclip.innerHTML = `• <i class="fas fa-paperclip"></i>`;
+                 lessonDiv.querySelector('.lesson-form-meta').appendChild(newPaperclip);
+            } else if (!mediaFileName && paperclipIcon) {
+                 paperclipIcon.parentElement.remove();
+            } else if (mediaFileName && paperclipIcon) {
+                 paperclipIcon.parentElement.title = escapeHTML(mediaFileName);
+            }
+
+
             const previewIcon = lessonDiv.querySelector('.lesson-form-title-container .fa-eye');
             if (previewable && !previewIcon) {
                 const newPreviewIcon = document.createElement('i');
-                newPreviewIcon.className = 'fas fa-eye text-success';
+                newPreviewIcon.className = 'fas fa-eye text-success ml-1';
                 newPreviewIcon.title = 'Có thể xem trước';
                 lessonDiv.querySelector('.lesson-form-title-container').appendChild(newPreviewIcon);
             } else if (!previewable && previewIcon) {
                 previewIcon.remove();
             }
-
-
-            lessonDiv.dataset.lessonTitle = title;
-            lessonDiv.dataset.lessonType = type;
-            lessonDiv.dataset.lessonContentUrl = contentUrl;
-            lessonDiv.dataset.lessonContentText = contentText;
-            lessonDiv.dataset.lessonDuration = duration || '';
-            lessonDiv.dataset.lessonPreviewable = previewable;
+            DOMElements.curriculumBuilderArea.dispatchEvent(new CustomEvent('lessonUpdated'));
         }
-    } else { 
-        addLessonToChapterFormUI(lessonsListContainer, chapterUiId, null, title, type, contentUrl, contentText, duration, previewable);
+    } else {
+        addLessonToChapterFormUI(lessonsListContainer, chapterUiId, null, title, type, contentUrl, contentText, mediaFileName, duration, previewable);
+        DOMElements.curriculumBuilderArea.dispatchEvent(new CustomEvent('lessonAdded'));
     }
     closeModal(DOMElements.lessonFormModal);
-    updatePublishButtonState(); // Update after adding/editing lesson
 }
 
 // --- MOBILE NAVIGATION ---
 function createMobileNav() {
-    if (DOMElements.mobileNavOverlay) return; // Already created
+    if (DOMElements.mobileNavOverlay) return;
 
     const overlay = document.createElement('div');
     overlay.className = 'mobile-nav-overlay';
@@ -1850,7 +1955,7 @@ function createMobileNav() {
     header.className = 'mobile-nav-header';
     header.innerHTML = `
         <div class="logo"><a href="#" id="mobile-logo-link"><i class="fas fa-brain"></i> TriThuc Hub</a></div>
-        <button class="close-mobile-menu" aria-label="Đóng menu">×</button>
+        <button class="close-mobile-menu" aria-label="Đóng menu"><i class="fas fa-times"></i></button>
     `;
     DOMElements.closeMobileMenuBtn = header.querySelector('.close-mobile-menu');
 
@@ -1870,14 +1975,11 @@ function createMobileNav() {
     DOMElements.closeMobileMenuBtn.addEventListener('click', closeMobileNav);
     DOMElements.mobileNavOverlay.addEventListener('click', closeMobileNav);
     nav.querySelector('#mobile-logo-link').addEventListener('click', (e) => {
-        e.preventDefault();
-        closeMobileNav();
-        navigateTo('homepage');
+        e.preventDefault(); closeMobileNav(); navigateTo('homepage');
     });
     nav.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', (e) => {
-            e.preventDefault();
-            closeMobileNav();
+            e.preventDefault(); closeMobileNav();
             const sectionId = link.dataset.section;
             if (sectionId) navigateTo(sectionId);
         });
@@ -1885,10 +1987,10 @@ function createMobileNav() {
 }
 
 function toggleMobileNav() {
-    if (!DOMElements.mobileNavOverlay) createMobileNav(); // Create if not exists
-    document.body.classList.toggle('mobile-menu-open');
-    DOMElements.mobileNavOverlay.classList.toggle('open');
-    DOMElements.mobileMainNav.classList.toggle('open');
+    if (!DOMElements.mobileNavOverlay) createMobileNav();
+    const isOpen = document.body.classList.toggle('mobile-menu-open');
+    DOMElements.mobileNavOverlay.classList.toggle('open', isOpen);
+    DOMElements.mobileMainNav.classList.toggle('open', isOpen);
 }
 function closeMobileNav() {
     if (!DOMElements.mobileNavOverlay || !DOMElements.mobileNavOverlay.classList.contains('open')) return;
@@ -1898,119 +2000,82 @@ function closeMobileNav() {
 }
 
 // --- PUBLISH COURSE LOGIC ---
-
 function checkPublishPrerequisites(courseData, showToasts = false) {
-    const checklistItems = DOMElements.publishChecklist.querySelector('ul');
+    const checklistUl = DOMElements.publishChecklist.querySelector('ul');
+    if(checklistUl) checklistUl.innerHTML = '';
     const messages = [];
+    let allMet = true;
 
     const conditions = {
-        title: courseData.title.trim() !== '',
-        description: courseData.description.trim() !== '',
+        title: courseData.title && courseData.title.trim() !== '',
+        description: courseData.description && courseData.description.trim() !== '',
+        short_description: courseData.short_description && courseData.short_description.trim() !== '',
         category: !!courseData.category_id,
-        price: courseData.price !== null && courseData.price !== undefined && courseData.price >= 0,
+        price: courseData.price !== null && courseData.price !== undefined && !isNaN(parseFloat(courseData.price)) && parseFloat(courseData.price) >= 0,
         hasChapters: courseData.chapters && courseData.chapters.length > 0,
-        chaptersValid: false, // Sẽ được cập nhật bên dưới
-        lessonsValid: false   // Sẽ được cập nhật bên dưới
+        chaptersValid: false,
+        lessonsValid: false
     };
 
     if (conditions.hasChapters) {
-        conditions.chaptersValid = courseData.chapters.every(ch => ch.title.trim() !== '');
-        if (conditions.chaptersValid) { // Chỉ kiểm tra lesson nếu chapter valid
-            conditions.lessonsValid = courseData.chapters.every(ch => 
-                ch.lessons && ch.lessons.length > 0 && 
-                ch.lessons.every(l => l.title.trim() !== '')
+        conditions.chaptersValid = courseData.chapters.every(ch => ch.title && ch.title.trim() !== '');
+        if (conditions.chaptersValid) {
+            conditions.lessonsValid = courseData.chapters.every(ch =>
+                ch.lessons && ch.lessons.length > 0 &&
+                ch.lessons.every(l => l.title && l.title.trim() !== '')
             );
         }
     }
-    
-    let allMet = true;
 
-    const updateChecklistItem = (conditionMet, textMet, textNotMet, iconSelectorBase) => {
-        const li = document.createElement('li');
-        const icon = document.createElement('i');
-        icon.className = `fas ${conditionMet ? 'fa-check-circle text-success' : 'fa-times-circle text-warning'}`;
-        li.appendChild(icon);
-        li.appendChild(document.createTextNode(` ${conditionMet ? textMet : textNotMet}`));
-        if (!conditionMet) allMet = false;
-        return li;
+    const addChecklistItem = (isMet, textMet, textNotMet) => {
+        if (checklistUl) {
+            const li = document.createElement('li');
+            const icon = document.createElement('i');
+            icon.className = `fas ${isMet ? 'fa-check-circle text-success' : 'fa-times-circle text-warning'}`;
+            li.appendChild(icon);
+            li.appendChild(document.createTextNode(` ${isMet ? textMet : textNotMet}`));
+            checklistUl.appendChild(li);
+        }
+        if (!isMet) {
+            allMet = false;
+            if (showToasts && textNotMet) messages.push(textNotMet.replace('Cần có: ', ''));
+        }
     };
-    
-    if (checklistItems) checklistItems.innerHTML = ''; // Xóa checklist cũ
 
-    let li;
-    li = updateChecklistItem(
-        conditions.title && conditions.description && conditions.category,
-        "Tiêu đề, mô tả và danh mục đã điền.",
-        "Cần có: Tiêu đề, mô tả, danh mục."
-    );
-    if (checklistItems) checklistItems.appendChild(li);
-    if (!(conditions.title && conditions.description && conditions.category) && showToasts) messages.push("Vui lòng điền Tiêu đề, Mô tả và chọn Danh mục.");
+    addChecklistItem(conditions.title, "Tiêu đề khóa học đã điền.", "Cần có: Tiêu đề khóa học.");
+    addChecklistItem(conditions.short_description, "Tiêu đề phụ (slogan) đã điền.", "Cần có: Tiêu đề phụ (slogan).");
+    addChecklistItem(conditions.description, "Mô tả chi tiết đã điền.", "Cần có: Mô tả chi tiết.");
+    addChecklistItem(conditions.category, "Danh mục đã chọn.", "Cần có: Chọn danh mục.");
+    addChecklistItem(conditions.price, "Giá khóa học hợp lệ.", "Cần có: Giá khóa học (lớn hơn hoặc bằng 0).");
 
-
-    li = updateChecklistItem(
-        conditions.hasChapters,
-        "Đã có chương.",
-        "Cần có: Ít nhất 1 chương."
-    );
-    if (checklistItems) checklistItems.appendChild(li);
-    if (!conditions.hasChapters && showToasts) messages.push("Khóa học cần ít nhất 1 chương.");
-
-    if (conditions.hasChapters) { // Chỉ hiển thị các check liên quan đến chapter/lesson nếu có chapter
-        li = updateChecklistItem(
-            conditions.chaptersValid,
-            "Tất cả các chương đều có tên.",
-            "Cần có: Mỗi chương phải có tên."
-        );
-        if (checklistItems) checklistItems.appendChild(li);
-        if (!conditions.chaptersValid && showToasts) messages.push("Một số chương chưa có tên.");
-
-
-        li = updateChecklistItem(
-            conditions.lessonsValid,
-            "Mỗi chương có ít nhất 1 bài giảng và mỗi bài giảng đều có tên.",
-            "Cần có: Mỗi chương có ít nhất 1 bài giảng và mỗi bài giảng phải có tên."
-        );
-        if (checklistItems) checklistItems.appendChild(li);
-        if (!conditions.lessonsValid && showToasts) messages.push("Một số chương thiếu bài giảng, hoặc bài giảng chưa có tên.");
+    if (DOMElements.courseFormTabs.length > 1) {
+        addChecklistItem(conditions.hasChapters, "Đã có ít nhất 1 chương.", "Cần có: Ít nhất 1 chương.");
+        if (conditions.hasChapters) {
+            addChecklistItem(conditions.chaptersValid, "Tất cả các chương đều có tên.", "Cần có: Mỗi chương phải có tên.");
+            addChecklistItem(conditions.lessonsValid, "Mỗi chương có ít nhất 1 bài giảng và mỗi bài giảng đều có tên.", "Cần có: Mỗi chương có ít nhất 1 bài giảng và mỗi bài giảng phải có tên.");
+        }
     }
 
+    addChecklistItem(true, "Ảnh bìa (sẽ dùng ảnh mặc định nếu trống).", "");
 
-    li = updateChecklistItem(
-        true, // Ảnh bìa luôn được coi là 'met' vì có placeholder
-        "Ảnh bìa (sẽ dùng ảnh mặc định nếu trống).",
-        "" // Sẽ không bao giờ hiển thị vì luôn met
-    );
-    if (checklistItems) checklistItems.appendChild(li);
-
-    li = updateChecklistItem(
-        conditions.price,
-        "Giá khóa học hợp lệ.",
-        "Cần có: Giá khóa học hợp lệ (lớn hơn hoặc bằng 0)."
-    );
-    if (checklistItems) checklistItems.appendChild(li);
-    if (!conditions.price && showToasts) messages.push("Vui lòng nhập giá khóa học hợp lệ.");
-    
     if (showToasts && messages.length > 0) {
-        showToast(messages.join("<br>"), "warning", 5000 + messages.length * 1000);
+        showToast("Vui lòng hoàn thành các mục sau để xuất bản:<br>" + messages.join("<br>"), "warning", 5000 + messages.length * 500);
     }
-
-    return allMet && conditions.hasChapters && conditions.chaptersValid && conditions.lessonsValid;
+    return allMet && (!DOMElements.courseFormTabs.length > 1 || (conditions.hasChapters && conditions.chaptersValid && conditions.lessonsValid));
 }
 
 
 function updatePublishButtonState() {
     if (currentSection !== 'create-edit-course' || !DOMElements.courseForm) return;
 
-    const courseDataForCheck = { // Chỉ lấy các trường cần thiết cho checkPublishPrerequisites
+    const courseDataForCheck = {
         title: DOMElements.courseTitleInput.value,
+        short_description: DOMElements.courseSubtitleInput.value,
         description: DOMElements.courseDescriptionInput.value,
         category_id: DOMElements.courseCategorySelect.value,
-        price: parseFloat(DOMElements.coursePriceInput.value), // parseFloat có thể trả về NaN
+        price: DOMElements.coursePriceInput.value,
         chapters: getCurriculumDataFromForm()
     };
-    // Đảm bảo price là số hoặc null/undefined, không phải NaN
-    if (isNaN(courseDataForCheck.price)) courseDataForCheck.price = null;
-
 
     const isCurrentlyPublished = DOMElements.courseStatusSelect.value === 'published';
     const canPublishNow = checkPublishPrerequisites(courseDataForCheck, false);
@@ -2022,87 +2087,56 @@ function updatePublishButtonState() {
 
     if (isCurrentlyPublished) {
         DOMElements.saveCourseBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Cập nhật Khóa học';
-        DOMElements.courseStatusSelect.disabled = true; // Giữ disabled nếu đã published
     } else {
         DOMElements.saveCourseBtn.innerHTML = '<i class="fas fa-save"></i> Lưu Bản Nháp';
-        DOMElements.courseStatusSelect.disabled = true; // Luôn disabled, chỉ thay đổi qua nút
     }
 }
 
 async function handleCourseFormSubmit(e, actionType = 'save') {
     e.preventDefault();
     if (!currentUser) {
-        showToast("Vui lòng đăng nhập để thực hiện.", "error");
-        return;
+        showToast("Vui lòng đăng nhập để thực hiện.", "error"); return;
     }
 
-    const courseId = DOMElements.courseFormCourseId.value;
-    // Lấy dữ liệu từ form để kiểm tra và gửi đi
+    const wasEditingBeforeSubmit = !!currentCreateEditCourseId;
+
     const courseData = {
         title: DOMElements.courseTitleInput.value.trim(),
         short_description: DOMElements.courseSubtitleInput.value.trim(),
         description: DOMElements.courseDescriptionInput.value.trim(),
         category_id: DOMElements.courseCategorySelect.value,
         difficulty: DOMElements.courseDifficultySelect.value,
-        language: DOMElements.courseLanguageInput.value || 'Tiếng Việt',
+        language: DOMElements.courseLanguageInput.value.trim() || 'Tiếng Việt',
+        whatYouWillLearn: DOMElements.courseWhatYouWillLearnTextarea.value.trim().split('\n').filter(line => line.trim() !== ''),
+        requirements: DOMElements.courseRequirementsTextarea.value.trim().split('\n').filter(line => line.trim() !== ''),
         image_url: DOMElements.courseImageUrlInput.value.trim() || getPlaceholderImage(DOMElements.courseTitleInput.value.trim()),
-        promo_video_url: DOMElements.coursePromoVideoUrlInput.value.trim(),
-        price: parseFloat(DOMElements.coursePriceInput.value), // Sẽ được validate sau
-        original_price: parseFloat(DOMElements.courseDiscountPriceInput.value) || undefined,
+        banner_image_url: DOMElements.courseBannerImageUrlInput.value.trim() || null,
+        promo_video_url: DOMElements.coursePromoVideoUrlInput.value.trim() || null,
+        price: parseFloat(DOMElements.coursePriceInput.value),
+        original_price: DOMElements.courseOriginalPriceInput.value ? parseFloat(DOMElements.courseOriginalPriceInput.value) : null,
         chapters: getCurriculumDataFromForm(),
-        creator_user_id: currentUser.id, // Luôn gửi creator_user_id
-        status: DOMElements.courseStatusSelect.value // Status ban đầu từ select (thường là 'draft')
+        creator_user_id: currentUser.id,
+        status: DOMElements.courseStatusSelect.value
     };
-    
-    // Validate giá
+
     if (isNaN(courseData.price) || courseData.price < 0) {
         showToast("Giá khóa học không hợp lệ. Vui lòng nhập số lớn hơn hoặc bằng 0.", "error", 5000);
-        DOMElements.coursePriceInput.focus();
-        return;
+        DOMElements.coursePriceInput.focus(); return;
     }
-    if (courseData.original_price !== undefined && (isNaN(courseData.original_price) || courseData.original_price < 0)) {
-        showToast("Giá gốc (khuyến mãi) không hợp lệ. Vui lòng nhập số lớn hơn hoặc bằng 0 hoặc để trống.", "error", 5000);
-        DOMElements.courseDiscountPriceInput.focus();
-        return;
+    if (courseData.original_price !== null && (isNaN(courseData.original_price) || courseData.original_price < 0)) {
+        showToast("Giá gốc không hợp lệ. Vui lòng nhập số lớn hơn hoặc bằng 0 hoặc để trống.", "error", 5000);
+        DOMElements.courseOriginalPriceInput.focus(); return;
     }
-     if (courseData.original_price !== undefined && courseData.original_price <= courseData.price) {
+    if (courseData.original_price !== null && courseData.original_price <= courseData.price) {
         showToast("Giá gốc (khuyến mãi) phải lớn hơn giá bán hiện tại.", "error", 5000);
-        DOMElements.courseDiscountPriceInput.focus();
-        return;
+        DOMElements.courseOriginalPriceInput.focus(); return;
     }
 
-
-    // Gán status dựa trên actionType
     if (actionType === 'publish') {
-        courseData.status = 'published';
-    } else { // actionType === 'save'
-        // Nếu khóa học đã được published trước đó (khi edit), thì lưu vẫn giữ status là published
-        // Nếu là draft, thì vẫn là draft.
-        // DOMElements.courseStatusSelect.value sẽ phản ánh điều này nếu loadCourseDataForEditing chạy đúng.
-        courseData.status = DOMElements.courseStatusSelect.value || 'draft';
-    }
-    
-    // Kiểm tra các trường bắt buộc cơ bản
-    if (!courseData.title || !courseData.description || !courseData.category_id) {
-        showToast("Vui lòng điền đầy đủ Tiêu đề, Mô tả và chọn Danh mục.", "error", 5000);
-        if(!courseData.title) DOMElements.courseTitleInput.focus();
-        else if(!courseData.description) {
-            DOMElements.courseFormTabs.forEach(t => t.classList.remove('active'));
-            DOMElements.courseFormTabContents.forEach(c => c.classList.remove('active'));
-            DOMElements.courseFormTabs[0].classList.add('active'); // Mở tab Basic Info
-            DOMElements.courseFormTabContents[0].classList.add('active');
-            DOMElements.courseDescriptionInput.focus();
-        }
-        else if(!courseData.category_id) DOMElements.courseCategorySelect.focus();
-        return;
-    }
-
-    // Nếu hành động là 'publish', kiểm tra các điều kiện tiên quyết đầy đủ
-    if (actionType === 'publish') {
-        if (!checkPublishPrerequisites(courseData, true)) { // true để hiển thị toast nếu có lỗi
-            // Không cần làm gì thêm ở đây vì checkPublishPrerequisites đã show toast
+        if (!checkPublishPrerequisites(courseData, true)) {
             return;
         }
+        courseData.status = 'published';
     }
 
     const originalSaveBtnText = DOMElements.saveCourseBtn.innerHTML;
@@ -2115,110 +2149,112 @@ async function handleCourseFormSubmit(e, actionType = 'save') {
         DOMElements.publishCourseBtn.innerHTML = loadingText;
     }
 
-    const apiFunction = courseId ? window.api.updateCourseApi : window.api.createCourseApi;
-    // Nếu là update, đảm bảo gửi ID
-    const payload = courseId ? { ...courseData, id: parseInt(courseId) } : courseData;
+    let response;
+    let payload = { ...courseData };
 
-    const response = await apiFunction(payload);
+    if (currentCreateEditCourseId) {
+        payload.id = parseInt(currentCreateEditCourseId);
+        response = await window.api.updateCourseApi(payload);
+    } else {
+        response = await window.api.createCourseApi(payload);
+    }
 
-    // Khôi phục trạng thái nút sau khi API trả về
     DOMElements.saveCourseBtn.disabled = false;
-    // Trạng thái của publishCourseBtn sẽ được updatePublishButtonState() xử lý ngay sau đây
-    // hoặc nếu navigateTo thì không cần nữa.
 
-    if (response.success && response.data.course) {
-        const savedCourse = response.data.course;
+    if (response.success && response.course) {
+        const savedCourse = response.course;
         showToast(
-            actionType === 'publish' ? "Khóa học đã được xuất bản thành công!" : 
-            (courseId ? "Khóa học đã được cập nhật thành công!" : "Khóa học đã được lưu làm bản nháp!"), 
+            actionType === 'publish' ? "Khóa học đã được xuất bản thành công!" :
+            (wasEditingBeforeSubmit ? "Khóa học đã được cập nhật thành công!" : "Khóa học đã được lưu làm bản nháp!"),
             "success"
         );
-        
+
         const courseIndex = coursesDataCache.findIndex(c => c.id === savedCourse.id);
         if (courseIndex > -1) {
-            coursesDataCache[courseIndex] = { ...coursesDataCache[courseIndex], ...savedCourse }; // Merge, giữ lại các key chưa có trong savedCourse nếu cần
+            coursesDataCache[courseIndex] = { ...coursesDataCache[courseIndex], ...savedCourse };
         } else {
             coursesDataCache.push(savedCourse);
         }
 
-        if (currentUser && !currentUser.createdCourseIds.includes(savedCourse.id)) {
+        if (currentUser && !wasEditingBeforeSubmit && !currentUser.createdCourseIds.includes(savedCourse.id)) {
             currentUser.createdCourseIds.push(savedCourse.id);
             saveCurrentUser();
         }
-        
-        // Cập nhật DOMElements.courseStatusSelect.value TRƯỚC KHI navigate
-        // để nếu có quay lại edit ngay, nó đã đúng status
-        DOMElements.courseStatusSelect.value = savedCourse.status;
-        currentCreateEditCourseId = savedCourse.id; // Cập nhật ID nếu là tạo mới
 
-        navigateTo('course-detail', { courseId: savedCourse.id });
+        currentCreateEditCourseId = savedCourse.id;
+        isEditingCourse = true;
+        DOMElements.courseFormCourseId.value = savedCourse.id;
+        DOMElements.courseStatusSelect.value = savedCourse.status;
+
+        updatePublishButtonState();
+
+        if (actionType === 'publish' || !wasEditingBeforeSubmit) {
+            navigateTo('course-detail', { courseId: savedCourse.id });
+        } else {
+             DOMElements.saveCourseBtn.innerHTML = savedCourse.status === 'published' ?
+                '<i class="fas fa-sync-alt"></i> Cập nhật Khóa học' :
+                '<i class="fas fa-save"></i> Lưu Thay đổi';
+        }
     } else {
         showToast(response.error || "Thao tác với khóa học thất bại.", "error", 7000);
-        // Khôi phục text nút nếu thất bại và ở lại trang
         DOMElements.saveCourseBtn.innerHTML = originalSaveBtnText;
         if (!DOMElements.publishCourseBtn.classList.contains('hidden')) {
              DOMElements.publishCourseBtn.innerHTML = originalPublishBtnText;
         }
-        updatePublishButtonState(); // Cập nhật lại trạng thái nút publish và checklist
-    }
-}
-function updatePublishButtonState() {
-    if (currentSection !== 'create-edit-course') return;
-
-    const courseData = {
-        title: DOMElements.courseTitleInput.value.trim(),
-        description: DOMElements.courseDescriptionInput.value.trim(),
-        category_id: DOMElements.courseCategorySelect.value,
-        price: parseFloat(DOMElements.coursePriceInput.value),
-        chapters: getCurriculumDataFromForm()
-    };
-    const isPublished = DOMElements.courseStatusSelect.value === 'published';
-    const canPublish = checkPublishPrerequisites(courseData, false); // false: don't show toasts on every input change
-
-    DOMElements.publishCourseBtn.classList.toggle('hidden', isPublished || !canPublish);
-    DOMElements.publishChecklist.classList.toggle('hidden', isPublished || canPublish); // Show checklist if not published AND cannot publish
-
-    if (isPublished) {
-        DOMElements.saveCourseBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Cập nhật Khóa học (Đã xuất bản)';
-    } else {
-        DOMElements.saveCourseBtn.innerHTML = '<i class="fas fa-save"></i> Lưu Bản Nháp';
+        updatePublishButtonState();
     }
 }
 
 
 // --- LESSON PREVIEW MODAL ---
-function showLessonPreviewModal(lessonData) { // lessonData: { title, type, contentUrl, contentText }
-    DOMElements.lessonPreviewTitle.textContent = `Xem trước: ${lessonData.title}`;
+function showLessonPreviewModal(lessonData) {
+    DOMElements.lessonPreviewTitle.textContent = `Xem trước: ${unescapeHTML(lessonData.title)}`;
     let previewHTML = '';
     switch (lessonData.type) {
         case 'video':
             if (lessonData.contentUrl) {
                 if (lessonData.contentUrl.includes('youtube.com') || lessonData.contentUrl.includes('youtu.be')) {
-                    const videoId = lessonData.contentUrl.split('v=')[1]?.split('&')[0] || lessonData.contentUrl.split('/').pop();
-                    previewHTML = `<iframe width="100%" height="450" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                    const videoIdMatch = lessonData.contentUrl.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+                    const videoId = videoIdMatch ? videoIdMatch[1] : null;
+                    if (videoId) {
+                        previewHTML = `<div class="responsive-iframe-container"><iframe width="100%" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+                    } else {
+                         previewHTML = `<p class="text-warning">Không thể trích xuất YouTube Video ID từ URL.</p>`;
+                    }
                 } else if (lessonData.contentUrl.includes('vimeo.com')) {
-                    const videoId = lessonData.contentUrl.split('/').pop();
-                    previewHTML = `<iframe src="https://player.vimeo.com/video/${videoId}" width="100%" height="450" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
-                } else { // Assume direct video link
-                    previewHTML = `<video controls width="100%" style="max-height: 450px;"><source src="${lessonData.contentUrl}" type="video/mp4">Trình duyệt của bạn không hỗ trợ thẻ video.</video>`;
+                    const videoIdMatch = lessonData.contentUrl.match(/(?:https?:\/\/)?(?:www\.)?vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^\/]*)\/videos\/|album\/(?:\d+)\/video\/|video\/|)(\d+)/i);
+                    const videoId = videoIdMatch ? videoIdMatch[1] : null;
+                    if (videoId) {
+                        previewHTML = `<div class="responsive-iframe-container"><iframe src="https://player.vimeo.com/video/${videoId}" width="100%" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>`;
+                    } else {
+                        previewHTML = `<p class="text-warning">Không thể trích xuất Vimeo Video ID từ URL.</p>`;
+                    }
+                } else {
+                    previewHTML = `<video controls width="100%" style="max-height: 70vh; border-radius: var(--border-radius-medium);"><source src="${escapeHTML(lessonData.contentUrl)}" type="video/mp4">Trình duyệt của bạn không hỗ trợ thẻ video.</video>`;
                 }
             } else {
-                previewHTML = `<p class="text-warning">Không có URL video để xem trước.</p>`;
+                previewHTML = `<p class="text-warning">Không có URL video hoặc file video để xem trước.</p>`;
             }
             break;
         case 'text':
-            previewHTML = `<div class="text-content-preview">${lessonData.contentText || '<p class="text-warning">Không có nội dung văn bản để xem trước.</p>'}</div>`;
+            previewHTML = `<div class="text-content-preview">${lessonData.contentText ? unescapeHTML(lessonData.contentText).replace(/\n/g, '<br>') : '<p class="text-warning">Không có nội dung văn bản để xem trước.</p>'}</div>`;
             break;
         case 'document':
              if (lessonData.contentUrl) {
-                // Attempt to embed PDF, otherwise provide a link
                 if (lessonData.contentUrl.toLowerCase().endsWith('.pdf')) {
-                    previewHTML = `<iframe src="${lessonData.contentUrl}" width="100%" height="500px" style="border: none;"></iframe><p class="text-center mt-2"><a href="${lessonData.contentUrl}" target="_blank" class="btn btn-sm btn-secondary">Mở tài liệu trong tab mới</a></p>`;
+                     previewHTML = `<div class="responsive-iframe-container" style="height:70vh;"><iframe src="${escapeHTML(lessonData.contentUrl)}" width="100%" height="100%" style="border: none;"></iframe></div><p class="text-center mt-2"><a href="${escapeHTML(lessonData.contentUrl)}" target="_blank" class="btn btn-sm btn-secondary">Mở tài liệu trong tab mới</a></p>`;
                 } else {
-                    previewHTML = `<p>Không thể nhúng trực tiếp loại tài liệu này. <a href="${lessonData.contentUrl}" target="_blank" class="btn btn-sm btn-primary">Xem tài liệu</a></p>`;
+                    previewHTML = `<p>Không thể nhúng trực tiếp loại tài liệu này. <a href="${escapeHTML(lessonData.contentUrl)}" target="_blank" class="btn btn-sm btn-primary">Xem tài liệu <i class="fas fa-external-link-alt"></i></a></p>`;
                 }
             } else {
-                previewHTML = `<p class="text-warning">Không có URL tài liệu để xem trước.</p>`;
+                previewHTML = `<p class="text-warning">Không có URL tài liệu hoặc file tài liệu để xem trước.</p>`;
+            }
+            break;
+        case 'audio':
+            if(lessonData.contentUrl) {
+                 previewHTML = `<audio controls src="${escapeHTML(lessonData.contentUrl)}" style="width: 100%;">Trình duyệt không hỗ trợ thẻ audio.</audio>`;
+            } else {
+                previewHTML = `<p class="text-warning">Không có URL audio hoặc file audio để xem trước.</p>`;
             }
             break;
         default:

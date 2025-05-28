@@ -1,4 +1,3 @@
-/* --- GLOBAL STYLES & VARIABLES --- */
 :root {
     --primary-color: #4A90E2; /* A calming blue */
     --secondary-color: #34495E; /* Dark blue-gray */
@@ -112,8 +111,23 @@ img {
 
 ul, ol {
     list-style-position: inside;
-    padding-left: 0;
+    padding-left: 0; /* Reset default user-agent padding */
 }
+.fa-ul { /* For FontAwesome list icons */
+    list-style-type: none;
+    padding-left: 2.5em; /* Adjust as needed */
+}
+.fa-ul li {
+    position: relative;
+}
+.fa-ul .fa-li {
+    position: absolute;
+    left: -2.1em; /* Adjust to align icon */
+    width: 2em;
+    text-align: center;
+    line-height: inherit;
+}
+
 
 /* --- UTILITY CLASSES --- */
 .hidden { display: none !important; }
@@ -121,17 +135,18 @@ ul, ol {
 .text-right { text-align: right; }
 .text-left { text-align: left; }
 .font-bold { font-weight: 700; }
-.mb-1 { margin-bottom: 0.5rem; }
-.mb-2 { margin-bottom: 1rem; }
-.mb-3 { margin-bottom: 1.5rem; }
-.mt-1 { margin-top: 0.5rem; }
-.mt-2 { margin-top: 1rem; }
-.mt-3 { margin-top: 1.5rem; }
-.p-1 { padding: 0.5rem; }
-.p-2 { padding: 1rem; }
-.p-3 { padding: 1.5rem; }
+.mb-1 { margin-bottom: 0.5rem !important; }
+.mb-2 { margin-bottom: 1rem !important; }
+.mb-3 { margin-bottom: 1.5rem !important; }
+.mt-1 { margin-top: 0.5rem !important; }
+.mt-2 { margin-top: 1rem !important; }
+.mt-3 { margin-top: 1.5rem !important; }
+.p-1 { padding: 0.5rem !important; }
+.p-2 { padding: 1rem !important; }
+.p-3 { padding: 1.5rem !important; }
 .required { color: var(--danger-color); margin-left: 2px; }
 .text-success { color: var(--success-color) !important; }
+.text-danger { color: var(--danger-color) !important; }
 .text-warning { color: var(--warning-color) !important; }
 
 
@@ -241,6 +256,7 @@ ul, ol {
 
 .user-menu { position: relative; }
 .user-avatar-container { display: flex; align-items: center; cursor: pointer; gap: 5px; padding: 5px; border-radius: 50px; transition: background-color 0.2s; }
+.user-avatar-container.active, /* Added .active state for visual feedback */
 .user-avatar-container:hover { background-color: var(--bg-light-accent); }
 .user-avatar-placeholder {
     width: 36px;
@@ -255,7 +271,9 @@ ul, ol {
     font-weight: 600;
     text-transform: uppercase;
 }
-.user-avatar-container i.fa-chevron-down { font-size: 0.8rem; color: var(--text-medium); }
+.user-avatar-container i.fa-chevron-down { font-size: 0.8rem; color: var(--text-medium); transition: transform 0.2s; }
+.user-avatar-container.active i.fa-chevron-down { transform: rotate(180deg); }
+
 
 .dropdown-menu {
     position: absolute;
@@ -273,7 +291,7 @@ ul, ol {
     transform: translateY(10px);
     transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
 }
-.user-menu.open .dropdown-menu {
+.user-menu .dropdown-menu.open { /* Changed selector to be more specific if needed */
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
@@ -305,17 +323,19 @@ ul, ol {
 .dropdown-item:hover { background-color: var(--bg-light-accent); color: var(--primary-color); }
 .dropdown-item i { width: 18px; text-align: center; color: var(--text-medium); }
 .dropdown-item:hover i { color: var(--primary-color); }
-.btn-logout { color: var(--danger-color); }
-.btn-logout:hover { background-color: var(--danger-color); color: white; }
-.btn-logout:hover i { color: white; }
+.btn-logout { color: var(--danger-color); /* This is a button but styled as dropdown-item */ }
+.btn-logout:hover { background-color: var(--danger-color); color: white !important; /* Important to override general hover */ }
+.btn-logout:hover i { color: white !important; }
 
-.mobile-menu-toggle { display: none; background: none; border: none; font-size: 1.5rem; color: var(--secondary-color); cursor: pointer; }
+.mobile-menu-toggle { display: none; background: none; border: none; font-size: 1.5rem; color: var(--secondary-color); cursor: pointer; padding: 5px; }
 
 /* --- CONTENT SECTIONS --- */
 .content-section {
     padding: 60px 0;
+    display: none; /* All sections hidden by default */
 }
-.content-section.active-section { display: block; }
+.content-section.active-section { display: block; } /* JS will toggle this */
+
 .page-content { padding-top: 30px; padding-bottom: 30px; }
 .section-title {
     text-align: center;
@@ -401,7 +421,7 @@ ul, ol {
     display: flex;
     flex-direction: column;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
+    cursor: pointer; /* Make the whole card clickable */
 }
 .course-card:hover {
     transform: translateY(-5px);
@@ -440,7 +460,7 @@ ul, ol {
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    min-height: calc(1.4em * 2); /* min-height to prevent jump on hover when title is short */
+    min-height: calc(1.4em * 2); 
 }
 .course-card-instructor { font-size: 0.9rem; color: var(--text-medium); margin-bottom: 10px; }
 .course-card-instructor i { margin-right: 5px; }
@@ -460,17 +480,35 @@ ul, ol {
 .course-card-price { font-size: 1.2rem; font-weight: 700; color: var(--primary-color); }
 .course-card-price .original { text-decoration: line-through; color: var(--text-light); font-size: 0.9rem; margin-left: 5px; }
 .course-card .wishlist-icon {
-    font-size: 1.2rem;
+    font-size: 1.3rem; /* Slightly larger */
     color: var(--text-light);
     cursor: pointer;
-    transition: color 0.2s;
+    transition: color 0.2s, transform 0.2s;
+    padding: 5px; /* Add some padding for easier clicking */
 }
-.course-card .wishlist-icon:hover, .course-card .wishlist-icon.active { color: var(--danger-color); }
+.course-card .wishlist-icon:hover { color: var(--danger-color); transform: scale(1.1); }
+.course-card .wishlist-icon.active { 
+    color: var(--danger-color); 
+    font-weight: 900; /* Make it solid if using FontAwesome's fas */
+}
+
+/* For status badges on course cards (e.g., in dashboard "My Courses") */
+.course-card-footer .badge {
+    padding: .3em .6em;
+    font-size: 0.75em;
+    font-weight: 600;
+    border-radius: var(--border-radius-small);
+}
+.badge-warning { color: var(--text-dark); background-color: var(--warning-color); }
+.badge-success { color: var(--text-on-primary); background-color: var(--success-color); }
+
+
 
 /* List View for Courses */
 #all-course-list-container.list-view .course-card {
     flex-direction: row;
     align-items: center;
+    gap: 20px; /* Gap between image and content */
 }
 #all-course-list-container.list-view .course-card-image {
     width: 200px; 
@@ -479,9 +517,9 @@ ul, ol {
 }
 #all-course-list-container.list-view .course-card-content {
     flex-grow: 1;
-    padding-left: 25px;
+    padding: 15px; /* Adjust padding for list view */
 }
-#all-course-list-container.list-view .course-card-title { min-height: auto; -webkit-line-clamp: initial; }
+#all-course-list-container.list-view .course-card-title { min-height: auto; -webkit-line-clamp: 2; } /* Allow title to wrap */
 #all-course-list-container.list-view .course-card-footer {
     border-top: none;
     padding-top: 0;
@@ -489,6 +527,22 @@ ul, ol {
     align-items: flex-end;
     gap: 10px;
     min-width: 120px; 
+    margin-left: auto; /* Push footer to the right */
+    padding-right: 15px; /* Padding for footer content */
+}
+.course-progress-bar {
+    width: 100%;
+    background-color: var(--bg-light-accent);
+    border-radius: var(--border-radius-small);
+    height: 8px;
+    margin-bottom: 5px;
+    overflow: hidden;
+}
+.course-progress-bar div {
+    height: 100%;
+    background-color: var(--success-color);
+    border-radius: var(--border-radius-small);
+    transition: width 0.3s ease;
 }
 
 
@@ -523,8 +577,7 @@ ul, ol {
 /* --- CTA BECOME INSTRUCTOR --- */
 .cta-become-instructor {
     position: relative;
-    background-color: var(--primary-color); /* Fallback color */
-    /* background-image: url('your-background-image.jpg'); */ /* Optional image */
+    background-color: var(--primary-color); 
     background-size: cover;
     background-position: center;
     color: var(--text-on-secondary);
@@ -534,20 +587,19 @@ ul, ol {
     margin-top: 50px;
     z-index: 1;
 }
-.cta-become-instructor::before { /* Lớp phủ gradient/màu */
+.cta-become-instructor::before { 
     content: "";
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(to right, rgba(52, 73, 94, 0.85), rgba(74, 144, 226, 0.75)); /* secondary to primary with opacity */
-    /* background-color: rgba(44, 62, 80, 0.6);  Alternative: Single color overlay */
+    background: linear-gradient(to right, rgba(52, 73, 94, 0.85), rgba(74, 144, 226, 0.75)); 
     border-radius: var(--border-radius-large);
     z-index: -1;
 }
 .cta-content {
-    position: relative; /* Ensure content is above ::before */
+    position: relative; 
     z-index: 2;
 }
 .cta-become-instructor .cta-content h2 {
@@ -614,6 +666,8 @@ ul, ol {
     margin-bottom: 30px;
     background-size: cover;
     background-position: center;
+    /* Default gradient if no image, otherwise image is set by JS */
+    background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)); 
 }
 .course-detail-header-banner .container {
     position: relative; 
@@ -623,10 +677,10 @@ ul, ol {
 .course-meta-banner { display: flex; flex-wrap: wrap; gap: 20px; font-size: 0.9rem; opacity: 0.9; }
 .course-meta-banner span { display: flex; align-items: center; gap: 5px; }
 .course-meta-banner i { color: var(--accent-color); }
-.course-meta-banner #detail-course-instructor-banner i { color: var(--text-on-secondary); }
+.course-meta-banner #detail-course-instructor-banner i { color: var(--text-on-secondary); } /* Or accent if preferred */
 
 .course-detail-layout { display: flex; gap: 30px; }
-.course-detail-main { flex: 3; min-width: 0; }
+.course-detail-main { flex: 3; min-width: 0; } /* Prevents overflow issues */
 .course-detail-sidebar { flex: 1; min-width: 300px; position: sticky; top: calc(var(--header-height) + 20px); height: fit-content; }
 
 .course-video-preview {
@@ -635,6 +689,7 @@ ul, ol {
     overflow: hidden;
     margin-bottom: 30px;
     box-shadow: var(--shadow-medium);
+    background-color: #000; /* BG for image loading */
 }
 .course-video-preview img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
 .play-preview-btn {
@@ -657,8 +712,12 @@ ul, ol {
     display: flex;
     border-bottom: 1px solid var(--border-color);
     margin-bottom: 25px;
-    overflow-x: auto; /* For mobile if tabs overflow */
+    overflow-x: auto; 
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
 }
+.course-detail-tabs::-webkit-scrollbar { display: none; /* Chrome, Safari, Opera */ }
+
 .course-detail-tabs .tab-link {
     padding: 12px 20px;
     font-weight: 500;
@@ -672,10 +731,10 @@ ul, ol {
 .course-detail-tabs .tab-link.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
 
 #course-tab-content .tab-pane { display: none; }
-#course-tab-content .tab-pane.active { display: block; }
+#course-tab-content .tab-pane.active { display: block; animation: fadeIn 0.3s ease-in-out; }
 #course-tab-content h3 { font-size: 1.5rem; margin-bottom: 15px; color: var(--secondary-color); }
 .course-description-content p { line-height: 1.7; }
-.course-description-content ul { margin-left: 20px; margin-bottom: 1em; }
+.course-description-content ul { margin-left: 0; margin-bottom: 1em; padding-left: 1.5em; } /* Standard ul style */
 .course-description-content ul li { margin-bottom: 0.5em; }
 
 
@@ -685,6 +744,7 @@ ul, ol {
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-medium);
     background-color: var(--bg-card);
+    overflow: hidden; /* Ensures border-radius applies correctly with children */
 }
 .curriculum-section-header {
     display: flex;
@@ -693,14 +753,10 @@ ul, ol {
     padding: 15px 20px;
     cursor: pointer;
     background-color: var(--bg-light-accent);
-    border-bottom: 1px solid var(--border-color);
-    border-radius: var(--border-radius-medium) var(--border-radius-medium) 0 0;
+    border-bottom: 1px solid transparent; /* Transparent when closed */
 }
 .curriculum-section.open .curriculum-section-header {
-     border-bottom-color: var(--border-color); /* Keep border when open */
-}
-.curriculum-section:not(.open) .curriculum-section-header {
-    border-bottom-color: transparent; /* No border if closed and not last */
+     border-bottom-color: var(--border-color); 
 }
 
 .curriculum-section-header h4 { margin-bottom: 0; font-size: 1.2rem; color: var(--secondary-color); }
@@ -716,8 +772,8 @@ ul, ol {
     transition: max-height 0.3s ease-out, padding 0.3s ease-out;
 }
 .curriculum-section.open .curriculum-lessons-list {
-    max-height: 1000px; 
-    padding: 10px 0;
+    max-height: 1000px; /* Large enough for content */
+    padding: 10px 0; /* Padding when open */
 }
 .curriculum-lesson-item {
     display: flex;
@@ -747,7 +803,7 @@ ul, ol {
 
 
 /* Instructor Tab */
-.instructor-profile-box { display: flex; gap: 20px; align-items: center; margin-bottom: 20px;}
+.instructor-profile-box { display: flex; gap: 20px; align-items: flex-start; margin-bottom: 20px;} /* Changed to flex-start */
 .instructor-avatar img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; box-shadow: var(--shadow-light); }
 .instructor-info h4 { margin-bottom: 5px; font-size: 1.3rem; }
 .instructor-title { color: var(--text-medium); font-size: 1rem; margin-bottom: 10px; }
@@ -771,10 +827,11 @@ ul, ol {
 }
 .review-item:last-child { border-bottom: none; }
 .review-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-.review-avatar { width: 40px; height: 40px; border-radius: 50%; background-color: var(--bg-light-accent); display: flex; align-items: center; justify-content: center; font-weight: 500; color: var(--primary-color); }
+.review-avatar { width: 40px; height: 40px; border-radius: 50%; background-color: var(--primary-color); color:white; display: flex; align-items: center; justify-content: center; font-weight: 500; }
 .review-author-name { font-weight: 600; }
 .review-rating .fa-star { color: var(--accent-color); }
-.review-rating .fa-star-o { color: var(--text-light); } /* For empty stars */
+.review-rating .fa-star-half-alt { color: var(--accent-color); } /* For half stars */
+.review-rating .far.fa-star { color: var(--text-light); } /* For empty stars (FontAwesome 5 syntax) */
 .review-date { font-size: 0.85rem; color: var(--text-light); margin-left: auto; }
 .review-content { font-size: 0.95rem; }
 
@@ -826,6 +883,12 @@ ul, ol {
     width: 80px; height: 80px;
     font-size: 2.5rem;
     margin: 0 auto 15px auto;
+    background-color: var(--primary-color); /* Ensure it has bg color */
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
 }
 #dashboard-username { font-size: 1.3rem; margin-bottom: 5px; }
 #dashboard-useremail { font-size: 0.9rem; color: var(--text-medium); word-break: break-all; }
@@ -851,8 +914,15 @@ ul, ol {
 .dashboard-main-content .dashboard-tab-content.active { display: block; }
 .dashboard-main-content .section-title { text-align: left; margin-bottom: 20px; }
 .dashboard-main-content .section-title h2 { font-size: 1.8rem; }
-.dashboard-main-content .section-title h2::after { display: none; }
+.dashboard-main-content .section-title h2::after { display: none; } /* No underline for dashboard titles */
 .dashboard-main-content .course-grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+.dashboard-course-grid .course-card { /* Specific styles for cards in dashboard if needed */
+    box-shadow: var(--shadow-light);
+}
+.dashboard-course-grid .course-card:hover {
+    box-shadow: var(--shadow-medium);
+}
+
 
 .empty-state-message {
     text-align: center;
@@ -860,7 +930,7 @@ ul, ol {
     background-color: var(--bg-card);
     border-radius: var(--border-radius-medium);
     box-shadow: var(--shadow-light);
-    grid-column: 1 / -1; /* Make it span all columns if inside a grid */
+    grid-column: 1 / -1; 
 }
 .empty-state-message i { font-size: 3rem; color: var(--text-light); margin-bottom: 15px; }
 .empty-state-message p { font-size: 1.1rem; color: var(--text-medium); margin-bottom: 20px; }
@@ -873,7 +943,16 @@ ul, ol {
     border-radius: var(--border-radius-large);
     box-shadow: var(--shadow-medium);
 }
-.form-tabs { display: flex; margin-bottom: 25px; border-bottom: 1px solid var(--border-color); overflow-x: auto; }
+.form-tabs { 
+    display: flex; 
+    margin-bottom: 25px; 
+    border-bottom: 1px solid var(--border-color); 
+    overflow-x: auto; 
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+.form-tabs::-webkit-scrollbar { display: none; /* Chrome, Safari, Opera */ }
+
 .form-tab-link {
     background: none; border: none;
     padding: 12px 20px;
@@ -891,7 +970,7 @@ ul, ol {
 
 .form-tab-content { display: none; }
 .form-tab-content.active { display: block; animation: fadeIn 0.3s ease-in-out; }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
 .form-tab-content h3 {
     font-size: 1.5rem;
@@ -914,6 +993,7 @@ ul, ol {
 .form-group input[type="password"],
 .form-group input[type="number"],
 .form-group input[type="url"],
+.form-group input[type="file"], /* Added file type */
 .form-group textarea,
 .form-group select {
     width: 100%;
@@ -925,11 +1005,12 @@ ul, ol {
     transition: border-color 0.2s, box-shadow 0.2s;
     background-color: #FFFFFF; 
 }
+.form-group input[type="file"] { padding: 8px 10px; } /* Adjust padding for file input */
 .form-group input:focus,
 .form-group textarea:focus,
 .form-group select:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(var(--primary-color), 0.1); /* Use RGB if var doesn't work directly */
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2); /* Use actual color for box-shadow */
     outline: none;
 }
 .form-group input::placeholder,
@@ -938,21 +1019,26 @@ ul, ol {
 }
 .form-group textarea { resize: vertical; min-height: 120px; }
 .form-group small { display: block; font-size: 0.85rem; color: var(--text-medium); margin-top: 5px; }
-.form-row { display: flex; gap: 20px; flex-wrap: wrap;} /* Added flex-wrap */
-.form-row .form-group { flex: 1; min-width: 200px; } /* Added min-width for better wrapping */
+.form-row { display: flex; gap: 20px; flex-wrap: wrap;} 
+.form-row .form-group { flex: 1; min-width: 200px; } 
 
 /* Curriculum Builder in Form */
 #curriculum-builder-area .chapter-form-item {
     background-color: var(--bg-light-accent);
-    padding: 15px;
-    border: 1px solid var(--border-color); /* Changed from dashed */
-    border-radius: var(--border-radius-medium);
-    margin-bottom: 20px; /* Increased margin */
+    padding: 20px; /* Increased padding */
+    border: 1px solid var(--border-color); 
+    border-radius: var(--border-radius-large); /* Larger radius */
+    margin-bottom: 25px; 
     box-shadow: var(--shadow-light);
 }
 .chapter-form-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
 .chapter-form-header h4 { margin: 0; font-size: 1.2rem; color: var(--secondary-color); display: flex; align-items: center; gap: 10px; }
-.chapter-form-header h4 input.chapter-title-form-input { font-size: 1.1rem; padding: 8px 10px; border-radius: var(--border-radius-small); border: 1px solid var(--border-color); flex-grow: 1; }
+.chapter-form-header h4 i.fa-grip-vertical { cursor: grab; color: var(--text-light); }
+.chapter-form-header h4 input.chapter-title-form-input { 
+    font-size: 1.1rem; padding: 8px 10px; 
+    border-radius: var(--border-radius-small); border: 1px solid var(--border-color); 
+    flex-grow: 1; background-color: white;
+}
 .chapter-form-actions button { margin-left: 8px; }
 
 .lessons-form-list { margin-left: 0; margin-top: 15px; padding-left: 0; list-style: none; }
@@ -960,7 +1046,7 @@ ul, ol {
     background-color: white;
     padding: 12px 15px;
     border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-small);
+    border-radius: var(--border-radius-medium); /* Consistent radius */
     margin-bottom: 10px;
     display: flex; justify-content: space-between; align-items: center;
     transition: box-shadow 0.2s;
@@ -971,15 +1057,14 @@ ul, ol {
 .lesson-form-title-container { flex-grow: 1; display: flex; align-items: center; gap: 10px; }
 .lesson-form-title-container i { color: var(--primary-color); font-size: 1.1rem; }
 .lesson-form-title { font-weight: 500; color: var(--text-dark); }
-.lesson-form-meta { font-size: 0.85rem; color: var(--text-medium); margin-left: 10px; }
+.lesson-form-meta { font-size: 0.85rem; color: var(--text-medium); margin-left: 10px; white-space: nowrap; }
+.lesson-form-actions button { margin-left: 5px; }
 
 
 #publish-checklist ul { list-style: none; padding-left: 0; }
-#publish-checklist ul li { margin-bottom: 8px; color: var(--text-medium); display: flex; align-items: center; }
-#publish-checklist ul li i { margin-right: 8px; font-size: 1.1em; }
-#publish-checklist ul li.met i { color: var(--success-color); }
-#publish-checklist ul li.not-met i { color: var(--warning-color); }
-
+#publish-checklist ul li { margin-bottom: 8px; color: var(--text-medium); display: flex; align-items: center; font-size: 0.9rem; }
+#publish-checklist ul li i { margin-right: 10px; font-size: 1.1em; }
+/* Colors for checklist items are handled by JS adding text-success/text-warning */
 
 .form-actions { margin-top: 30px; text-align: right; padding-top: 20px; border-top: 1px solid var(--border-color); }
 .form-actions .btn { margin-left: 10px; }
@@ -989,24 +1074,25 @@ ul, ol {
 .category-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 25px; /* Increased gap */
+    gap: 25px; 
 }
 .category-card {
     background-color: var(--bg-card);
     border-radius: var(--border-radius-large);
     box-shadow: var(--shadow-light);
-    padding: 30px; /* Increased padding */
+    padding: 30px; 
     text-align: center;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    border: 1px solid transparent; /* Placeholder for hover border */
 }
 .category-card:hover {
     transform: translateY(-5px);
     box-shadow: var(--shadow-medium);
-    border: 1px solid var(--primary-color);
+    border-color: var(--primary-color); /* Show border on hover */
 }
 .category-card i { font-size: 3rem; color: var(--primary-color); margin-bottom: 20px; transition: transform 0.3s; }
 .category-card:hover i { transform: scale(1.1); }
@@ -1016,7 +1102,7 @@ ul, ol {
 /* --- ABOUT US PAGE --- */
 .about-content {
     background-color: var(--bg-card);
-    padding: 40px; /* Increased padding */
+    padding: 40px; 
     border-radius: var(--border-radius-large);
     box-shadow: var(--shadow-medium);
     line-height: 1.8;
@@ -1029,14 +1115,14 @@ ul, ol {
 
 /* --- MODALS --- */
 .modal {
-    display: none;
+    display: none; 
     position: fixed;
     z-index: 1050;
     left: 0; top: 0;
     width: 100%; height: 100%;
-    overflow-y: auto; /* Changed from overflow: auto to allow vertical scroll only */
+    overflow-y: auto; 
     background-color: rgba(0,0,0,0.6);
-    padding: 50px 15px; /* Added horizontal padding for smaller screens */
+    padding: 30px 15px; /* Padding for scroll and content centering */
 }
 .modal-content {
     background-color: var(--bg-card);
@@ -1045,15 +1131,17 @@ ul, ol {
     border-radius: var(--border-radius-large);
     box-shadow: var(--shadow-strong);
     max-width: 500px;
-    width: 100%; /* Fallback for smaller screens before max-width kicks in */
+    width: 100%; 
     position: relative;
     animation: modalFadeIn 0.3s ease-out;
 }
 .modal-content.large-modal { max-width: 800px; }
+
 #lesson-preview-content {
-    min-height: 300px; /* Ensure some height for content */
-    max-height: 70vh;
-    overflow-y: auto;
+    min-height: 300px; 
+    max-height: 70vh; /* Max height relative to viewport */
+    overflow-y: auto; /* Scroll content if it overflows */
+    padding: 10px; /* Padding inside the preview area */
 }
 #lesson-preview-content img,
 #lesson-preview-content video,
@@ -1063,10 +1151,13 @@ ul, ol {
     display: block;
     margin: 10px auto;
     border-radius: var(--border-radius-medium);
+    box-shadow: var(--shadow-light); /* Add subtle shadow */
 }
 #lesson-preview-content .text-content-preview {
-    white-space: pre-wrap; /* Preserve formatting for text */
+    white-space: pre-wrap; 
     line-height: 1.7;
+    font-size: 1rem;
+    color: var(--text-dark);
 }
 
 
@@ -1091,6 +1182,16 @@ ul, ol {
 /* Specific Modal content (e.g., lesson form fields) */
 #lesson-content-fields .form-group { margin-top: 15px; }
 #lesson-content-fields label { font-weight: normal; font-size: 0.9rem; }
+#lesson-form-modal .checkbox-label { /* For lesson previewable checkbox */
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+#lesson-form-modal .checkbox-label input[type="checkbox"] {
+    width: auto; /* Override global form input width */
+    margin-right: 10px;
+}
+
 
 /* --- FOOTER --- */
 .site-footer-main {
@@ -1134,7 +1235,7 @@ ul, ol {
 .footer-col ul { list-style: none; padding: 0; }
 .footer-col ul li { margin-bottom: 10px; }
 .footer-col ul li a { color: rgba(255,255,255,0.7); font-size: 0.9rem; transition: color 0.2s, padding-left 0.2s; }
-.footer-col ul li a:hover { color: white; text-decoration: none; padding-left: 5px; } /* Added padding-left for subtle hover effect */
+.footer-col ul li a:hover { color: white; text-decoration: none; padding-left: 5px; }
 
 .footer-bottom {
     text-align: center;
@@ -1147,13 +1248,13 @@ ul, ol {
 /* --- TOAST NOTIFICATIONS --- */
 #toast-notifications-area {
     position: fixed;
-    top: var(--header-height); /* Position below sticky header */
+    top: var(--header-height); 
     right: 20px;
     z-index: 2000;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    margin-top: 10px;
+    margin-top: 10px; /* Spacing from header */
 }
 .toast-notification {
     background-color: var(--secondary-color);
@@ -1161,21 +1262,22 @@ ul, ol {
     padding: 15px 20px;
     border-radius: var(--border-radius-medium);
     box-shadow: var(--shadow-strong);
-    min-width: 280px; /* Increased min-width */
-    max-width: 380px; /* Increased max-width */
+    min-width: 300px; 
+    max-width: 400px; 
     opacity: 0;
-    transform: translateX(110%); /* Start further off-screen */
-    animation: toastInRight 0.5s forwards, toastOutRight 0.5s 3.5s forwards; /* 3.5s delay before fade out */
+    transform: translateX(120%); /* Start further off-screen */
+    animation: toastInRight 0.5s forwards, toastOutRight 0.5s 3.5s forwards; 
     display: flex;
     align-items: center;
-    gap: 15px; /* Increased gap */
+    gap: 15px; 
     font-size: 0.95rem;
 }
 .toast-notification.success { background-color: var(--success-color); }
 .toast-notification.error { background-color: var(--danger-color); }
 .toast-notification.info { background-color: var(--info-color); }
-.toast-notification i { font-size: 1.3rem; line-height: 1; } /* Ensured icon aligns better */
-.toast-notification p { margin-bottom: 0; line-height: 1.4; }
+.toast-notification.warning { background-color: var(--warning-color); color: var(--text-dark); } /* Warning with dark text */
+.toast-notification i { font-size: 1.3rem; line-height: 1; } 
+.toast-notification p { margin-bottom: 0; line-height: 1.4; flex-grow: 1; } /* Allow text to wrap */
 
 
 @keyframes toastInRight {
@@ -1183,7 +1285,7 @@ ul, ol {
 }
 @keyframes toastOutRight {
     from { opacity: 1; transform: translateX(0); }
-    to { opacity: 0; transform: translateX(110%); }
+    to { opacity: 0; transform: translateX(120%); }
 }
 
 /* --- RESPONSIVE DESIGN --- */
@@ -1192,14 +1294,14 @@ ul, ol {
     h1 { font-size: 2.5rem; }
     h2 { font-size: 2rem; }
     .hero-content h1 { font-size: 3rem; }
-    .main-nav { display: none; }
-    .mobile-menu-toggle { display: block; }
+    .main-nav { display: none; } /* Hide desktop nav */
+    .mobile-menu-toggle { display: block; } /* Show mobile toggle */
     .search-bar-header input { min-width: 150px; }
     .dashboard-layout { flex-direction: column; }
     .dashboard-sidebar { width: 100%; margin-bottom: 20px; position: static; align-self: stretch; }
     .course-detail-layout { flex-direction: column; }
     .course-detail-sidebar { position: static; width: 100%; margin-top: 30px; }
-    .form-tabs { padding-bottom: 5px; } /* Prevent scrollbar cutting off bottom border */
+    .form-tabs { padding-bottom: 5px; } 
 }
 
 @media (max-width: 768px) {
@@ -1211,8 +1313,8 @@ ul, ol {
     .hero-cta { display: flex; flex-direction: column; gap: 15px; align-items: center; }
     .hero-cta .btn { width: 100%; max-width: 300px; }
     
-    .header-actions { gap: 15px; }
-    .search-bar-header { display: none; }
+    .header-actions { gap: 10px; } /* Reduced gap */
+    .search-bar-header { display: none; } /* Hide search bar in header for mobile */
     .auth-actions .auth-buttons .btn { padding: 6px 10px; font-size: 0.85rem; }
     .user-avatar-placeholder { width: 32px; height: 32px; font-size: 1rem; }
 
@@ -1220,22 +1322,40 @@ ul, ol {
     .courses-toolbar { flex-direction: column; gap: 15px; }
     .filter-sort-controls { width: 100%; justify-content: space-around; flex-direction: column; gap: 10px; }
     .filter-sort-controls select { width: 100%; }
-    .course-grid { grid-template-columns: 1fr; }
+    .course-grid { grid-template-columns: 1fr; } /* Single column for mobile */
+    
+    /* Adjust list view for mobile */
     #all-course-list-container.list-view .course-card { flex-direction: column; align-items: stretch;}
     #all-course-list-container.list-view .course-card-image { width: 100%; height: 180px; }
-    #all-course-list-container.list-view .course-card-content { padding-left: 20px; padding-right: 20px; }
-    #all-course-list-container.list-view .course-card-footer { align-items: flex-start; flex-direction: row; justify-content: space-between; }
+    #all-course-list-container.list-view .course-card-content { padding: 15px; } /* Consistent padding */
+    #all-course-list-container.list-view .course-card-footer { 
+        flex-direction: row; 
+        justify-content: space-between; 
+        align-items: center; /* Align items in footer */
+        padding: 10px 15px; /* Padding for footer */
+    }
 
 
     .footer-grid { grid-template-columns: 1fr; text-align: center; }
     .footer-col h4::after { left: 50%; transform: translateX(-50%); }
     .social-links { text-align: center; }
-    .form-row { flex-direction: column; gap: 0; } /* Remove gap for column layout */
-    .form-row .form-group { margin-bottom: 20px; } /* Ensure groups have bottom margin */
-    .modal-content { width: 95%; padding: 20px; }
+    .form-row { flex-direction: column; gap: 0; } 
+    .form-row .form-group { margin-bottom: 20px; } 
+    .modal-content { width: 95%; padding: 20px; margin-top: 20px; margin-bottom: 20px; } /* Add top/bottom margin for scroll */
     .modal-content.large-modal { padding: 25px; }
-    #toast-notifications-area { top: var(--mobile-header-height); margin-top: 10px; right:10px; width: calc(100% - 20px);}
-    .toast-notification { min-width: unset; width: 100%;}
+
+    #toast-notifications-area { 
+        top: var(--mobile-header-height); 
+        margin-top: 10px; 
+        right:10px; left: 10px; /* Span width */
+        width: auto; /* Let flexbox handle width of items */
+        align-items: center; /* Center toasts if they don't take full width */
+    }
+    .toast-notification { 
+        min-width: unset; 
+        width: 100%; 
+        max-width: calc(100vw - 40px); /* Ensure some padding from screen edges */
+    }
 
 
     /* Mobile Navigation Menu */
@@ -1249,9 +1369,10 @@ ul, ol {
         transition: opacity 0.3s, visibility 0.3s;
     }
     .mobile-nav-overlay.open { opacity: 1; visibility: visible; }
+
     .mobile-main-nav {
         position: fixed;
-        top: 0; left: -300px; 
+        top: 0; left: -300px; /* Start off-screen */
         width: 300px; height: 100%;
         background-color: var(--bg-header);
         padding: 20px;
@@ -1260,11 +1381,15 @@ ul, ol {
         overflow-y: auto;
         transition: left 0.3s ease-in-out;
     }
-    .mobile-main-nav.open { left: 0; }
-    .mobile-nav-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .mobile-main-nav.open { left: 0; } /* Slide in */
+
+    .mobile-nav-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
     .mobile-nav-header .logo { font-size: 1.5rem; }
     .mobile-nav-header .logo a { color: var(--secondary-color); }
-    .close-mobile-menu { background: none; border: none; font-size: 1.8rem; color: var(--secondary-color); cursor: pointer;}
+    .close-mobile-menu { background: none; border: none; font-size: 1.8rem; color: var(--secondary-color); cursor: pointer; padding: 5px;}
+    .close-mobile-menu i { font-size: 1.5rem; }
+
+
     .mobile-main-nav ul { list-style: none; padding: 0; flex-direction: column; gap: 0; }
     .mobile-main-nav a.nav-link {
         display: block;
@@ -1273,7 +1398,8 @@ ul, ol {
         border-bottom: 1px solid var(--bg-light-accent);
         color: var(--text-medium);
     }
-    .mobile-main-nav a.nav-link::after { display: none; } 
+    .mobile-main-nav a.nav-link:last-child { border-bottom: none; }
+    .mobile-main-nav a.nav-link::after { display: none; } /* No underline for mobile nav items */
     .mobile-main-nav a.nav-link.active-nav { color: var(--primary-color); font-weight: 600; }
     .mobile-main-nav a.nav-link:hover { color: var(--primary-color); }
 }
@@ -1282,11 +1408,10 @@ ul, ol {
     h1 { font-size: 2rem; }
     .hero-content h1 { font-size: 2.2rem; }
     .content-section { padding: 40px 0; }
-    .container { padding: 0 calc(var(--gutter-width) / 2); } /* Reduce container padding */
+    .container { padding: 0 calc(var(--gutter-width) / 1.5); } /* Slightly more padding */
     .btn-lg { padding: 12px 24px; font-size: 1rem; }
     .course-card-title { font-size: 1.1rem; }
-    .mobile-main-nav { width: 260px; left: -260px; } /* Slightly smaller mobile nav */
+    .mobile-main-nav { width: 260px; left: -260px; } 
     .modal-content, .modal-content.large-modal { padding: 15px; }
     .modal-content h2 { font-size: 1.5rem; }
-
 }
